@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ProcessInjectionDetectionService {
 
+    private final ServerGuardConfig config;
     private final Map<Integer, ProcessSnapshot> processBaseline = new ConcurrentHashMap<>();
     private final Map<String, List<InjectionEvent>> detections = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -32,11 +34,21 @@ public class ProcessInjectionDetectionService {
     );
 
     public ProcessInjectionDetectionService() {
-        captureBaseline();
-        scheduler.scheduleAtFixedRate(this::scanProcesses, 60, 120, TimeUnit.SECONDS);
+        this(new ServerGuardConfig());
+    }
+
+    public ProcessInjectionDetectionService(ServerGuardConfig config) {
+        this.config = config;
+        if (config.getSecurity().getSuperEvolution().isProcessInjection()) {
+            captureBaseline();
+            scheduler.scheduleAtFixedRate(this::scanProcesses, 60, 120, TimeUnit.SECONDS);
+        }
     }
 
     public InjectionCheckResult scanProcesses() {
+        if (!config.getSecurity().getSuperEvolution().isProcessInjection()) {
+            return new InjectionCheckResult(List.of(), 0, totalDetections.get());
+        }
         List<String> alerts = new ArrayList<>();
         Map<Integer, ProcessSnapshot> current = captureProcessSnapshots();
 

@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -12,6 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class AntiXrayDetectionService {
+
+    private final ServerGuardConfig config;
 
     private final Map<String, PlayerMiningData> miningData = new ConcurrentHashMap<>();
     private final Map<String, Instant> flaggedPlayers = new ConcurrentHashMap<>();
@@ -47,10 +50,19 @@ public class AntiXrayDetectionService {
     );
 
     public AntiXrayDetectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public AntiXrayDetectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupOldData, 120, 300, TimeUnit.SECONDS);
     }
 
     public XrayCheckResult checkBlockBreak(String playerName, String blockType, int x, int y, int z, String world) {
+        if (!config.getSecurity().getSuperEvolution().isAntiXray()) {
+            return XrayCheckResult.clean();
+        }
+
         if (flaggedPlayers.containsKey(playerName)) {
             if (Instant.now().isAfter(flaggedPlayers.get(playerName))) {
                 flaggedPlayers.remove(playerName);

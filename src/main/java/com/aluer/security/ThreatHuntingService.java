@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,6 +14,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ThreatHuntingService {
 
+    private final ServerGuardConfig config;
+
     private final Map<String, List<HuntResult>> huntResults = new ConcurrentHashMap<>();
     private final Map<String, HuntDefinition> huntDefinitions = new ConcurrentHashMap<>();
     private final AtomicLong totalHunts = new AtomicLong(0);
@@ -20,6 +23,11 @@ public class ThreatHuntingService {
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public ThreatHuntingService() {
+        this(new ServerGuardConfig());
+    }
+
+    public ThreatHuntingService(ServerGuardConfig config) {
+        this.config = config;
         registerDefaultHunts();
         scheduler.scheduleAtFixedRate(this::runAllHunts, 300, 1800, TimeUnit.SECONDS);
     }
@@ -68,6 +76,10 @@ public class ThreatHuntingService {
     }
 
     public HuntResult runHunt(String huntId, List<String> dataSources) {
+        if (!config.getSecurity().getSuperEvolution().isThreatHunting()) {
+            return new HuntResult(huntId, "Module Disabled", "DISABLED", HuntSeverity.LOW, Instant.now(), List.of(), 0);
+        }
+
         HuntDefinition def = huntDefinitions.get(huntId);
         if (def == null) return null;
 

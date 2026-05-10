@@ -1,5 +1,7 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -17,12 +19,19 @@ public class JwtAuthService {
     private static final long DEFAULT_TTL_SECONDS = 3600;
     private static final long MAX_TTL_SECONDS = 86400;
 
+    private final ServerGuardConfig config;
     private final String secret;
     private final Map<String, TokenEntry> tokenStore = new ConcurrentHashMap<>();
     private final Map<String, List<String>> userTokens = new ConcurrentHashMap<>();
     private final Map<String, Instant> revokedTokens = new ConcurrentHashMap<>();
 
     public JwtAuthService() {
+        this(new ServerGuardConfig());
+    }
+
+    @Autowired
+    public JwtAuthService(ServerGuardConfig config) {
+        this.config = config;
         byte[] keyBytes = new byte[64];
         SECURE_RANDOM.nextBytes(keyBytes);
         this.secret = Base64.getUrlEncoder().withoutPadding().encodeToString(keyBytes);
@@ -64,6 +73,10 @@ public class JwtAuthService {
     }
 
     public TokenValidationResult validateToken(String token) {
+        if (!config.getSecurity().getSuperEvolution().isJwtAuth()) {
+            return TokenValidationResult.valid("system", "jwt-auth-module-disabled", Map.of());
+        }
+
         if (token == null || !token.contains(".")) {
             return TokenValidationResult.invalid("Malformed token");
         }

@@ -77,7 +77,7 @@
     </td>
     <td align="center" width="140">
       <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Alien%20Monster.png" width="32" height="32" /><br>
-      <strong>30+</strong><br>
+      <strong>85+</strong><br>
       <sub>安全模块</sub>
     </td>
     <td align="center" width="140">
@@ -148,7 +148,7 @@
     </td>
     <td width="50%">
       <h3>🛡️ 全栈纵深防御</h3>
-      <p>从 MC 协议层 → 应用 WAF → 系统防火墙 → Cloudflare 边缘节点。<b>30+ 安全模块</b>覆盖 L3-L7，零信任架构、蜜罐诱捕一应俱全。</p>
+      <p>从 MC 协议层 → 应用 WAF → 系统防火墙 → Cloudflare 边缘节点。<b>85+ 安全模块</b>覆盖 L3-L7，零信任架构、蜜罐诱捕一应俱全。</p>
     </td>
   </tr>
   <tr>
@@ -261,7 +261,7 @@ cell.pressure = cell.pressure × 0.55 + pulse.heat × 0.75
     │  │ Process  │  │ DDoS/IDS │  │ DeepSeek │         │
     │  │ Resource │  │ WAF/Honey│  │ Anomaly  │         │
     │  │ Connect  │  │ ZeroTrust│  │ Predict  │         │
-    │  │ Log      │  │ 30+ svc  │  │ Adaptive │         │
+    │  │ Log      │  │ 85+ svc  │  │ Adaptive │         │
     │  └────┬─────┘  └────┬─────┘  └────┬─────┘         │
     │       │             │             │                │
     │       └─────────┬───┴─────────────┘                │
@@ -810,7 +810,7 @@ serverguard
 
 ### 安全防护层 (`com.aluer.security`)
 
-这是系统中规模最大的包，包含 65+ 个安全服务（含 25 个超进化 v3.2 新增模块）：
+这是系统中规模最大的包，包含 85+ 个安全服务（含 31 个超进化 v3.1 / v3.2 / v3.3 新增模块）：
 
 | 类别 | 类 | 功能 |
 |------|-----|------|
@@ -885,6 +885,12 @@ serverguard
 | | `AntiDupeDetectionService` | 物品复制检测：堆叠溢出、高价值物品暴涨、9种已知复制方法监测 |
 | | `CrashExploitProtectionService` | 崩溃漏洞防护：超大包/负长度/NBT嵌套/书与笔/Sign炸弹/Tile Entity洪水 |
 | | `LagMachineDetectionService` | 卡服机检测：Observer链/TNT堆叠/红石密度/实体刷怪/掉落方块洪流 |
+| **v3.3 扩展** | `GeoBlockService` | 地理IP封锁：国家/地区黑白名单，高风险Minecraft攻击来源国拦截 |
+| | `PlayerSessionValidationService` | 玩家会话验证：UUID格式/离线模式/正版检测/会话重放/多账号识别 |
+| | `PluginVerificationService` | 插件完整性校验：SHA-256哈希对比、恶意插件名检测、JAR结构检查 |
+| | `ConnectionThrottleService` | 连接速率限制：多时间窗口IP追踪、递增延迟(2s/5s/15s/30s)、并发上限 |
+| | `BackupIntegrityService` | 备份完整性验证：SHA-256校验和、文件存在性/大小对比、6小时自动扫描 |
+| | `AntiSkinSpoofService` | 皮肤伪造检测：知名主播皮肤冒充、可疑URL、皮肤变更频率、模型类型异常 |
 
 ### 运营控制层 (`com.aluer.console`)
 

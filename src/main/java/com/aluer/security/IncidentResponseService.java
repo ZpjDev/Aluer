@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -9,6 +10,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class IncidentResponseService {
+
+    private final ServerGuardConfig config;
 
     private final Map<String, Incident> activeIncidents = new ConcurrentHashMap<>();
     private final Map<String, List<ResponseAction>> actionLog = new ConcurrentHashMap<>();
@@ -60,7 +63,21 @@ public class IncidentResponseService {
         ), IncidentSeverity.CRITICAL));
     }
 
+    public IncidentResponseService() {
+        this(new ServerGuardConfig());
+    }
+
+    public IncidentResponseService(ServerGuardConfig config) {
+        this.config = config;
+    }
+
     public Incident declareIncident(String type, String description, String source, IncidentSeverity severity) {
+        if (!config.getSecurity().getSuperEvolution().isIncidentResponse()) {
+            Incident incident = new Incident("DISABLED", type, "incident-response-module-disabled", source, severity, null, Instant.now());
+            incident.resolve("incident-response-module-disabled");
+            return incident;
+        }
+
         String incidentId = "INC-" + Instant.now().getEpochSecond() + "-" + randomHex(4);
         ResponsePlaybook playbook = PLAYBOOKS.getOrDefault(type, null);
         Incident incident = new Incident(incidentId, type, description, source, severity, playbook, Instant.now());

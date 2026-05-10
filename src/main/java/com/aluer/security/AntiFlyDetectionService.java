@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -12,6 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class AntiFlyDetectionService {
+
+    private final ServerGuardConfig config;
 
     private final Map<String, PlayerMovementData> movementData = new ConcurrentHashMap<>();
     private final Map<String, Instant> flaggedPlayers = new ConcurrentHashMap<>();
@@ -29,11 +32,20 @@ public class AntiFlyDetectionService {
     private static final long FLAG_DURATION_SECONDS = 3600;
 
     public AntiFlyDetectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public AntiFlyDetectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupOldData, 120, 300, TimeUnit.SECONDS);
     }
 
     public FlyCheckResult checkMovement(String playerName, double fromX, double fromY, double fromZ,
                                         double toX, double toY, double toZ, boolean onGround, String gameMode) {
+        if (!config.getSecurity().getSuperEvolution().isAntiFly()) {
+            return FlyCheckResult.clean();
+        }
+
         if (flaggedPlayers.containsKey(playerName)) {
             if (Instant.now().isAfter(flaggedPlayers.get(playerName))) {
                 flaggedPlayers.remove(playerName);

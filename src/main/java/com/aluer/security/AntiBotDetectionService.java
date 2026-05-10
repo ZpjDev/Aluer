@@ -1,5 +1,7 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class AntiBotDetectionService {
 
+    private final ServerGuardConfig config;
     private final Map<String, PlayerJoinRecord> joinHistory = new ConcurrentHashMap<>();
     private final Map<String, List<Instant>> ipJoinTimeline = new ConcurrentHashMap<>();
     private final Map<String, Instant> blockedBots = new ConcurrentHashMap<>();
@@ -47,10 +50,20 @@ public class AntiBotDetectionService {
     private final AtomicLong totalBotsBlocked = new AtomicLong(0);
 
     public AntiBotDetectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    @Autowired
+    public AntiBotDetectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupExpired, 120, 300, TimeUnit.SECONDS);
     }
 
     public BotCheckResult checkPlayerJoin(String playerName, String ip, String clientBrand) {
+        if (!config.getSecurity().getSuperEvolution().isAntiBot()) {
+            return BotCheckResult.clean();
+        }
+
         if (blockedBots.containsKey(ip)) {
             Instant until = blockedBots.get(ip);
             if (Instant.now().isAfter(until)) {

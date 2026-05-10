@@ -1,5 +1,7 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.*;
@@ -11,6 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class SSRFProtectionService {
 
+    private final ServerGuardConfig config;
     private final Map<String, List<SSRFEvent>> detections = new ConcurrentHashMap<>();
     private final AtomicLong totalBlocked = new AtomicLong(0);
 
@@ -39,7 +42,20 @@ public class SSRFProtectionService {
             "metadata.alibabacloud.com", "169.254.169.254"
     );
 
+    public SSRFProtectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    @Autowired
+    public SSRFProtectionService(ServerGuardConfig config) {
+        this.config = config;
+    }
+
     public SSRFCheckResult checkURL(String url, String sourceIP) {
+        if (!config.getSecurity().getSuperEvolution().isSsrf()) {
+            return SSRFCheckResult.clean();
+        }
+
         if (url == null || url.trim().isEmpty()) return SSRFCheckResult.clean();
 
         List<String> reasons = new ArrayList<>();

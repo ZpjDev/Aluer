@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -12,6 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class AntiDupeDetectionService {
+
+    private final ServerGuardConfig config;
 
     private final Map<String, PlayerInventorySnapshot> inventorySnapshots = new ConcurrentHashMap<>();
     private final Map<String, List<DupeEvent>> dupeEvents = new ConcurrentHashMap<>();
@@ -48,11 +51,20 @@ public class AntiDupeDetectionService {
     }
 
     public AntiDupeDetectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public AntiDupeDetectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupOldData, 300, 600, TimeUnit.SECONDS);
     }
 
     public DupeCheckResult checkInventoryChange(String playerName, String itemType, int newCount, int oldCount,
                                                  String containerType, int x, int y, int z) {
+        if (!config.getSecurity().getSuperEvolution().isAntiDupe()) {
+            return DupeCheckResult.clean();
+        }
+
         if (flaggedPlayers.containsKey(playerName)) {
             if (Instant.now().isAfter(flaggedPlayers.get(playerName))) {
                 flaggedPlayers.remove(playerName);

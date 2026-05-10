@@ -61,6 +61,13 @@ public class DashboardController {
     private final AntiDupeDetectionService antiDupeDetectionService;
     private final CrashExploitProtectionService crashExploitProtectionService;
     private final LagMachineDetectionService lagMachineDetectionService;
+    // v3.3 new modules
+    private final GeoBlockService geoBlockService;
+    private final PlayerSessionValidationService playerSessionValidationService;
+    private final PluginVerificationService pluginVerificationService;
+    private final ConnectionThrottleService connectionThrottleService;
+    private final BackupIntegrityService backupIntegrityService;
+    private final AntiSkinSpoofService antiSkinSpoofService;
 
     @SuppressWarnings("java:S107")
     public DashboardController(
@@ -100,7 +107,13 @@ public class DashboardController {
             AntiFlyDetectionService antiFlyDetectionService,
             AntiDupeDetectionService antiDupeDetectionService,
             CrashExploitProtectionService crashExploitProtectionService,
-            LagMachineDetectionService lagMachineDetectionService) {
+            LagMachineDetectionService lagMachineDetectionService,
+            GeoBlockService geoBlockService,
+            PlayerSessionValidationService playerSessionValidationService,
+            PluginVerificationService pluginVerificationService,
+            ConnectionThrottleService connectionThrottleService,
+            BackupIntegrityService backupIntegrityService,
+            AntiSkinSpoofService antiSkinSpoofService) {
         this.rconClient = rconClient;
         this.profiler = profiler;
         this.backupService = backupService;
@@ -138,6 +151,12 @@ public class DashboardController {
         this.antiDupeDetectionService = antiDupeDetectionService;
         this.crashExploitProtectionService = crashExploitProtectionService;
         this.lagMachineDetectionService = lagMachineDetectionService;
+        this.geoBlockService = geoBlockService;
+        this.playerSessionValidationService = playerSessionValidationService;
+        this.pluginVerificationService = pluginVerificationService;
+        this.connectionThrottleService = connectionThrottleService;
+        this.backupIntegrityService = backupIntegrityService;
+        this.antiSkinSpoofService = antiSkinSpoofService;
     }
 
     @GetMapping("/status")
@@ -466,5 +485,37 @@ public class DashboardController {
     @GetMapping("/security/lag-machine/status")
     public Map<String, Object> getLagMachineStatus() {
         return lagMachineDetectionService.getStatus();
+    }
+
+    // --- v3.3 New Module API Endpoints ---
+
+    @GetMapping("/security/geo-block/status")
+    public Map<String, Object> getGeoBlockStatus() {
+        return geoBlockService.getStatus();
+    }
+
+    @GetMapping("/security/session-validation/status")
+    public Map<String, Object> getSessionValidationStatus() {
+        return playerSessionValidationService.getStatus();
+    }
+
+    @GetMapping("/security/plugin-verification/status")
+    public Map<String, Object> getPluginVerificationStatus() {
+        return pluginVerificationService.getStatus();
+    }
+
+    @GetMapping("/security/connection-throttle/status")
+    public Map<String, Object> getConnectionThrottleStatus() {
+        return connectionThrottleService.getStatus();
+    }
+
+    @GetMapping("/security/backup-integrity/status")
+    public Map<String, Object> getBackupIntegrityStatus() {
+        return backupIntegrityService.getStatus();
+    }
+
+    @GetMapping("/security/anti-skin-spoof/status")
+    public Map<String, Object> getAntiSkinSpoofStatus() {
+        return antiSkinSpoofService.getStatus();
     }
 }

@@ -1,5 +1,7 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class DNSTunnelDetectionService {
 
+    private final ServerGuardConfig config;
     private final Map<String, DNSQueryTracker> queryTrackers = new ConcurrentHashMap<>();
     private final Map<String, Instant> blockedSources = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -31,10 +34,20 @@ public class DNSTunnelDetectionService {
             ".pw", ".club", ".work", ".date", ".bid", ".surf");
 
     public DNSTunnelDetectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    @Autowired
+    public DNSTunnelDetectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupExpired, 120, 300, TimeUnit.SECONDS);
     }
 
     public TunnelCheckResult checkDNSQuery(String sourceIP, String domain, String queryType) {
+        if (!config.getSecurity().getSuperEvolution().isDnsTunnel()) {
+            return TunnelCheckResult.clean();
+        }
+
         if (blockedSources.containsKey(sourceIP)) {
             if (Instant.now().isAfter(blockedSources.get(sourceIP))) {
                 blockedSources.remove(sourceIP);

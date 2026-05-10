@@ -452,6 +452,17 @@ export ALUER_WEBHOOK_SLACK="https://hooks.slack.com/services/xxx/yyy/zzz"
 | `/api/security/crash-exploit/status` | GET | 崩溃漏洞防护状态（超大包、NBT炸弹、书与笔攻击） |
 | `/api/security/lag-machine/status` | GET | 卡服机检测状态（Observer链、TNT堆、红石密度） |
 
+#### v3.3 新增安全 API
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/security/geo-block/status` | GET | 地理IP封锁状态（拦截计数、黑白名单大小） |
+| `/api/security/session-validation/status` | GET | 玩家会话验证状态（UUID检测、重放攻击计数） |
+| `/api/security/plugin-verification/status` | GET | 插件完整性校验状态（已验证、失败、恶意检测） |
+| `/api/security/connection-throttle/status` | GET | 连接速率限制状态（活跃IP、已拦截、已延迟） |
+| `/api/security/backup-integrity/status` | GET | 备份完整性验证状态（通过/失败/损坏计数） |
+| `/api/security/anti-skin-spoof/status` | GET | 皮肤伪造检测状态（冒充者、可疑URL、变更频率） |
+
 ---
 
 ## 配置说明
@@ -516,6 +527,56 @@ backup:
   backup-plugins: true
   backup-config: true
 ```
+
+#### 超进化安全模块开关
+
+所有超进化安全模块均可通过 `application.yml` 中的 `serverguard.security.super-evolution` 节点独立控制开关。设为 `false` 即可关闭该模块，不消耗任何性能。
+
+```yaml
+serverguard:
+  security:
+    super-evolution:
+      # === v3.1 超进化安全模块（20个）===
+      jwt-auth: true                    # JWT身份认证与令牌管理
+      brute-force: true                 # 暴力破解防护（多时间窗口检测）
+      anti-bot: true                    # 反机器人检测（Bot名称/加入速率/IP关联）
+      reverse-shell: true               # 反向Shell检测（50+ shell模式匹配）
+      arp-spoof: true                   # ARP欺骗检测（MAC变更/网关伪造）
+      dns-tunnel: true                  # DNS隧道检测（熵值/Base32编码/可疑TLD）
+      exploit-signature: true           # 漏洞签名检测（Log4Shell/SQLi/RCE等15种）
+      ssrf: true                        # SSRF防护（内网IP/云元数据/协议限制）
+      xxe: true                         # XXE防护（实体注入/Billion Laughs检测）
+      csp: true                         # CSP安全头强制执行（8种响应头）
+      database-firewall: true           # 数据库防火墙（SQL注入/联合查询/时间盲注）
+      dlp: true                         # 数据防泄漏（12种敏感信息规则+自动脱敏）
+      memory-protection: true           # JVM内存保护（堆/GC/内存泄漏检测）
+      process-injection: true           # 进程注入检测（/proc扫描/线程异常）
+      secure-delete: true               # 安全文件删除（多道覆写DoD标准）
+      forensics: true                   # 取证收集（进程/网络/日志快照）
+      incident-response: true           # 事件响应（5种预定义响应剧本）
+      threat-hunting: true              # 威胁狩猎（10种狩猎定义/5个类别）
+      compliance: true                  # 合规扫描（7类20+检查项）
+      anti-grief: true                  # 反破坏检测（方块破坏率/TNT/纵火/偷箱）
+      # === v3.2 Minecraft专属模块（5个）===
+      anti-xray: true                   # X-ray透视检测（钻石比/直线挖掘/暗处精准）
+      anti-fly: true                    # 飞行外挂检测（垂直/水平速度/悬空时间）
+      anti-dupe: true                   # 物品复制检测（堆叠异常/高价值暴涨/9种复制法）
+      crash-exploit: true               # 崩溃漏洞防护（超大包/NBT炸弹/书与笔攻击）
+      lag-machine: true                 # 卡服机检测（Observer链/TNT堆/红石密度）
+      # === v3.3 新模块（6个）===
+      geo-block: true                   # 地理IP封锁（按国家/地区拦截）
+      session-validation: true          # 玩家会话验证（UUID伪造/正版/离线检测）
+      plugin-verification: true         # 插件完整性校验（Hash对比/未授权修改）
+      connection-throttle: true         # 连接速率限制（IP/时间窗口/递增延迟）
+      backup-integrity: true            # 备份完整性校验（SHA-256/文件计数/大小对比）
+      anti-skin-spoof: true             # 皮肤伪造检测（模型数据异常/皮肤URL检测）
+```
+
+**开关说明：**
+- 所有模块默认 `true`（开启），可根据需要设为 `false` 关闭
+- 关闭模块后，对应的 API 端点仍可访问但返回空数据
+- 关闭不需要的模块可以降低 CPU/内存开销
+- 修改配置后需重启服务生效
 
 ---
 

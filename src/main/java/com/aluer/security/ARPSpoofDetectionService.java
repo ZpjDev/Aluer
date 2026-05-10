@@ -1,5 +1,7 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -15,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ARPSpoofDetectionService {
 
+    private final ServerGuardConfig config;
     private final Map<String, String> arpCache = new ConcurrentHashMap<>();
     private final Map<String, List<ARPEvent>> arpEvents = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -23,8 +26,16 @@ public class ARPSpoofDetectionService {
     private static final int BASELINE_SAMPLES = 3;
 
     public ARPSpoofDetectionService() {
-        buildBaseline();
-        scheduler.scheduleAtFixedRate(this::scanARPTable, 30, 60, TimeUnit.SECONDS);
+        this(new ServerGuardConfig());
+    }
+
+    @Autowired
+    public ARPSpoofDetectionService(ServerGuardConfig config) {
+        this.config = config;
+        if (config.getSecurity().getSuperEvolution().isArpSpoof()) {
+            buildBaseline();
+            scheduler.scheduleAtFixedRate(this::scanARPTable, 30, 60, TimeUnit.SECONDS);
+        }
     }
 
     private void buildBaseline() {
@@ -35,6 +46,10 @@ public class ARPSpoofDetectionService {
     }
 
     public ARPScanResult scanARPTable() {
+        if (!config.getSecurity().getSuperEvolution().isArpSpoof()) {
+            return new ARPScanResult(List.of(), arpCache.size(), totalSpoofDetections.get());
+        }
+
         Map<String, String> current = readARPTable();
         List<ARPEvent> alerts = new ArrayList<>();
 

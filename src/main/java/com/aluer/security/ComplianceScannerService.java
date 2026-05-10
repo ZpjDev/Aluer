@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,15 +14,26 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ComplianceScannerService {
 
+    private final ServerGuardConfig config;
+
     private final Map<String, List<ComplianceFinding>> findings = new ConcurrentHashMap<>();
     private final AtomicLong totalFindings = new AtomicLong(0);
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public ComplianceScannerService() {
+        this(new ServerGuardConfig());
+    }
+
+    public ComplianceScannerService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::runComplianceScan, 120, 86400, TimeUnit.SECONDS);
     }
 
     public ComplianceReport runComplianceScan() {
+        if (!config.getSecurity().getSuperEvolution().isCompliance()) {
+            return new ComplianceReport(Instant.now(), List.of(), 0.0);
+        }
+
         List<ComplianceFinding> allFindings = new ArrayList<>();
         Instant scanTime = Instant.now();
 

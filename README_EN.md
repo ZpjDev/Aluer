@@ -83,7 +83,7 @@
     </td>
     <td align="center" width="140">
       <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Alien%20Monster.png" width="32" height="32" /><br>
-      <strong>30+</strong><br>
+      <strong>85+</strong><br>
       <sub>Security Modules</sub>
     </td>
     <td align="center" width="140">
@@ -154,7 +154,7 @@
     </td>
     <td width="50%">
       <h3>🛡️ Full-Stack Defense</h3>
-      <p>From Minecraft protocol layer → Application WAF → OS firewall → Cloudflare edge. <b>30+ security modules</b> covering L3-L7, zero-trust architecture, and honeypot deception.</p>
+      <p>From Minecraft protocol layer → Application WAF → OS firewall → Cloudflare edge. <b>85+ security modules</b> covering L3-L7, zero-trust architecture, and honeypot deception.</p>
     </td>
   </tr>
   <tr>
@@ -269,7 +269,7 @@ cell.pressure = cell.pressure × 0.55 + pulse.heat × 0.75
     │  │ Process  │  │ DDoS/IDS │  │ DeepSeek │         │
     │  │ Resource │  │ WAF/Honey│  │ Anomaly  │         │
     │  │ Connect  │  │ ZeroTrust│  │ Predict  │         │
-    │  │ Log      │  │ 30+ svc  │  │ Adaptive │         │
+    │  │ Log      │  │ 85+ svc  │  │ Adaptive │         │
     │  └────┬─────┘  └────┬─────┘  └────┬─────┘         │
     │       │             │             │                │
     │       └─────────┬───┴─────────────┘                │
@@ -667,7 +667,7 @@ serverguard
 
 ### Security Defense Layer (`com.aluer.security`)
 
-The largest package in the system, containing 65+ security services (with 25 Super Evolution v3.2 modules):
+The largest package in the system, containing 85+ security services (with 31 Super Evolution v3.1 / v3.2 / v3.3 modules):
 
 | Category | Key Classes | Description |
 |----------|------------|-------------|
@@ -707,6 +707,12 @@ The largest package in the system, containing 65+ security services (with 25 Sup
 | | `AntiDupeDetectionService` | Item duplication detection: stack overflow, high-value item surges, 9 known methods |
 | | `CrashExploitProtectionService` | Crash exploit protection: oversized packets, NBT bombs, book/sign exploits |
 | | `LagMachineDetectionService` | Lag machine detection: observer chains, TNT stacks, entity spam, falling blocks |
+| **v3.3 New Modules** | `GeoBlockService` | Geo IP blocking: country allowlist/blocklist, high-risk Minecraft attack source interception |
+| | `PlayerSessionValidationService` | Player session validation: UUID format, offline/premium detection, session replay, multi-account |
+| | `PluginVerificationService` | Plugin integrity verification: SHA-256 hash comparison, malicious plugin name detection |
+| | `ConnectionThrottleService` | Connection rate limiting: multi-window IP tracking, progressive delay (2s/5s/15s/30s) |
+| | `BackupIntegrityService` | Backup integrity verification: SHA-256 checksum, file existence/size comparison, 6h auto-scan |
+| | `AntiSkinSpoofService` | Skin spoofing detection: impersonation detection, suspicious URL checks, skin change frequency |
 
 ### Operations Control Layer (`com.aluer.console`)
 

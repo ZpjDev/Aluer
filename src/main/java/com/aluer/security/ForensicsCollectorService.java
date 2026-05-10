@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -12,18 +13,31 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ForensicsCollectorService {
 
+    private final ServerGuardConfig config;
     private final Map<String, ForensicsCase> cases = new ConcurrentHashMap<>();
     private final Map<String, List<ForensicEvidence>> evidenceStore = new ConcurrentHashMap<>();
     private final AtomicLong totalEvidenceCollected = new AtomicLong(0);
     private final String evidenceDir = "./forensics";
 
     public ForensicsCollectorService() {
+        this(new ServerGuardConfig());
+    }
+
+    public ForensicsCollectorService(ServerGuardConfig config) {
+        this.config = config;
         try {
             Files.createDirectories(Path.of(evidenceDir));
         } catch (IOException ignored) {}
     }
 
     public ForensicsCase openCase(String caseName, String reason, String operator) {
+        if (!config.getSecurity().getSuperEvolution().isForensics()) {
+            ForensicsCase disabledCase = new ForensicsCase("forensics-module-disabled", caseName, reason, operator, Instant.now());
+            disabledCase.conclusion = "forensics-module-disabled";
+            disabledCase.closed = true;
+            disabledCase.closeTime = Instant.now();
+            return disabledCase;
+        }
         String caseId = "CASE-" + Instant.now().getEpochSecond() + "-" + randomHex(6);
         ForensicsCase fCase = new ForensicsCase(caseId, caseName, reason, operator, Instant.now());
         cases.put(caseId, fCase);

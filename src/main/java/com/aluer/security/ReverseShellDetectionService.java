@@ -1,5 +1,7 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ReverseShellDetectionService {
 
+    private final ServerGuardConfig config;
     private final Map<String, List<ShellDetectionEvent>> detections = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final AtomicLong totalDetections = new AtomicLong(0);
@@ -67,10 +70,20 @@ public class ReverseShellDetectionService {
     );
 
     public ReverseShellDetectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    @Autowired
+    public ReverseShellDetectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupOldDetections, 300, 600, TimeUnit.SECONDS);
     }
 
     public DetectionResult scanCommand(String command, String user, String source) {
+        if (!config.getSecurity().getSuperEvolution().isReverseShell()) {
+            return DetectionResult.clean();
+        }
+
         if (command == null) return DetectionResult.clean();
 
         String lower = command.toLowerCase().trim();

@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -12,6 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class LagMachineDetectionService {
+
+    private final ServerGuardConfig config;
 
     private final Map<String, List<LagEvent>> lagEvents = new ConcurrentHashMap<>();
     private final Map<String, Instant> flaggedPlayers = new ConcurrentHashMap<>();
@@ -47,10 +50,19 @@ public class LagMachineDetectionService {
     );
 
     public LagMachineDetectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public LagMachineDetectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupOldData, 120, 300, TimeUnit.SECONDS);
     }
 
     public LagCheckResult checkBlockPlace(String playerName, String blockType, int x, int y, int z, String world) {
+        if (!config.getSecurity().getSuperEvolution().isLagMachine()) {
+            return LagCheckResult.clean();
+        }
+
         String chunkKey = (x >> 4) + ":" + (z >> 4) + ":" + world;
         ChunkActivity chunk = chunkActivity.computeIfAbsent(chunkKey, k -> new ChunkActivity());
         chunk.recordBlockPlace(blockType, playerName);

@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -10,8 +11,17 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class CSPEnforcementService {
 
+    private final ServerGuardConfig config;
     private final Map<String, List<CSPViolation>> violations = new ConcurrentHashMap<>();
     private final AtomicLong totalViolations = new AtomicLong(0);
+
+    public CSPEnforcementService() {
+        this(new ServerGuardConfig());
+    }
+
+    public CSPEnforcementService(ServerGuardConfig config) {
+        this.config = config;
+    }
 
     private static final String DEFAULT_CSP_HEADER = String.join("; ",
             "default-src 'self'",
@@ -57,6 +67,7 @@ public class CSPEnforcementService {
     );
 
     public CSPCheckResult checkRequest(String uri, Map<String, String> headers, String body) {
+        if (!config.getSecurity().getSuperEvolution().isCsp()) return CSPCheckResult.clean();
         List<String> matched = new ArrayList<>();
         int score = 0;
 

@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.lang.management.ManagementFactory;
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class MemoryProtectionService {
 
+    private final ServerGuardConfig config;
     private final MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final Map<String, List<MemoryAlert>> alerts = new ConcurrentHashMap<>();
@@ -30,15 +32,25 @@ public class MemoryProtectionService {
     private long lastGcTime;
 
     public MemoryProtectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public MemoryProtectionService(ServerGuardConfig config) {
+        this.config = config;
         lastGcCount = ManagementFactory.getGarbageCollectorMXBeans().stream()
                 .mapToLong(gc -> gc.getCollectionCount()).sum();
         lastGcTime = ManagementFactory.getGarbageCollectorMXBeans().stream()
                 .mapToLong(gc -> gc.getCollectionTime()).sum();
-        scheduler.scheduleAtFixedRate(this::checkMemory, MEMORY_CHECK_INTERVAL_SECONDS,
-                MEMORY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        if (config.getSecurity().getSuperEvolution().isMemoryProtection()) {
+            scheduler.scheduleAtFixedRate(this::checkMemory, MEMORY_CHECK_INTERVAL_SECONDS,
+                    MEMORY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        }
     }
 
     public MemoryCheckResult checkMemory() {
+        if (!config.getSecurity().getSuperEvolution().isMemoryProtection()) {
+            return new MemoryCheckResult(0, 0, 0, 0, 0, 0, List.of());
+        }
         List<String> warnings = new ArrayList<>();
 
         MemoryUsage heap = memoryMXBean.getHeapMemoryUsage();

@@ -1,5 +1,7 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class BruteForceProtectionService {
 
+    private final ServerGuardConfig config;
     private final Map<String, FailureRecord> failureTracker = new ConcurrentHashMap<>();
     private final Map<String, Instant> blockedAccounts = new ConcurrentHashMap<>();
     private final Map<String, List<Instant>> ipAttemptTimeline = new ConcurrentHashMap<>();
@@ -40,10 +43,20 @@ public class BruteForceProtectionService {
     private final AtomicLong totalBruteForceDetections = new AtomicLong(0);
 
     public BruteForceProtectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    @Autowired
+    public BruteForceProtectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupExpired, 60, 120, TimeUnit.SECONDS);
     }
 
     public AuthResult checkLoginAttempt(String username, String ip, String source) {
+        if (!config.getSecurity().getSuperEvolution().isBruteForce()) {
+            return AuthResult.allowed(0);
+        }
+
         if (isBlocked(username)) {
             return AuthResult.blocked("Account " + username + " is temporarily locked due to excessive failed attempts");
         }

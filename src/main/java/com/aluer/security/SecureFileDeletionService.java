@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -13,10 +14,19 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class SecureFileDeletionService {
 
+    private final ServerGuardConfig config;
     private final SecureRandom secureRandom = new SecureRandom();
     private final Map<String, DeletionRecord> deletionLog = new ConcurrentHashMap<>();
     private final AtomicLong totalFilesDeleted = new AtomicLong(0);
     private final AtomicLong totalBytesWiped = new AtomicLong(0);
+
+    public SecureFileDeletionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public SecureFileDeletionService(ServerGuardConfig config) {
+        this.config = config;
+    }
 
     private static final int DEFAULT_PASSES = 3;
     private static final int MAX_PASSES = 7;
@@ -24,6 +34,27 @@ public class SecureFileDeletionService {
 
     public DeletionResult secureDelete(String filePath, int passes) {
         File file = new File(filePath);
+        if (!config.getSecurity().getSuperEvolution().isSecureDelete()) {
+            if (!file.exists()) {
+                return DeletionResult.error("File does not exist: " + filePath);
+            }
+            if (!file.isFile()) {
+                return DeletionResult.error("Not a file: " + filePath);
+            }
+            if (!file.canWrite()) {
+                return DeletionResult.error("File not writable: " + filePath);
+            }
+            long fileSize = file.length();
+            boolean deleted = file.delete();
+            if (deleted) {
+                DeletionRecord record = new DeletionRecord(filePath, fileSize, 0, Instant.now());
+                deletionLog.put(filePath, record);
+                totalFilesDeleted.incrementAndGet();
+                return DeletionResult.success(filePath, fileSize, 0);
+            } else {
+                return DeletionResult.error("Simple deletion failed (module disabled): " + filePath);
+            }
+        }
         if (!file.exists()) {
             return DeletionResult.error("File does not exist: " + filePath);
         }

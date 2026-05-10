@@ -372,6 +372,7 @@ public class ServerGuardConfig {
         private KernelConfig kernel = new KernelConfig();
         private TaskBusConfig taskBus = new TaskBusConfig();
         private SelfHealingConfig selfHealing = new SelfHealingConfig();
+        private SuperEvolutionConfig superEvolution = new SuperEvolutionConfig();
 
         public boolean isEnabled() { return enabled; }
         public void setEnabled(boolean enabled) { this.enabled = enabled; }
@@ -411,6 +412,8 @@ public class ServerGuardConfig {
         public void setTaskBus(TaskBusConfig taskBus) { this.taskBus = taskBus; }
         public SelfHealingConfig getSelfHealing() { return selfHealing; }
         public void setSelfHealing(SelfHealingConfig selfHealing) { this.selfHealing = selfHealing; }
+        public SuperEvolutionConfig getSuperEvolution() { return superEvolution; }
+        public void setSuperEvolution(SuperEvolutionConfig superEvolution) { this.superEvolution = superEvolution; }
     }
 
     public static class MinecraftDefenseConfig {
@@ -863,6 +866,103 @@ public class ServerGuardConfig {
         public void setRequireEngineHandshake(boolean requireEngineHandshake) { this.requireEngineHandshake = requireEngineHandshake; }
         public int getHandshakeTtlSeconds() { return handshakeTtlSeconds; }
         public void setHandshakeTtlSeconds(int handshakeTtlSeconds) { this.handshakeTtlSeconds = handshakeTtlSeconds; }
+    }
+
+    public static class SuperEvolutionConfig {
+        private boolean jwtAuth = true;
+        private boolean bruteForce = true;
+        private boolean antiBot = true;
+        private boolean reverseShell = true;
+        private boolean arpSpoof = true;
+        private boolean dnsTunnel = true;
+        private boolean exploitSignature = true;
+        private boolean ssrf = true;
+        private boolean xxe = true;
+        private boolean csp = true;
+        private boolean databaseFirewall = true;
+        private boolean dlp = true;
+        private boolean memoryProtection = true;
+        private boolean processInjection = true;
+        private boolean secureDelete = true;
+        private boolean forensics = true;
+        private boolean incidentResponse = true;
+        private boolean threatHunting = true;
+        private boolean compliance = true;
+        private boolean antiGrief = true;
+        private boolean antiXray = true;
+        private boolean antiFly = true;
+        private boolean antiDupe = true;
+        private boolean crashExploit = true;
+        private boolean lagMachine = true;
+        private boolean geoBlock = true;
+        private boolean sessionValidation = true;
+        private boolean pluginVerification = true;
+        private boolean connectionThrottle = true;
+        private boolean backupIntegrity = true;
+        private boolean antiSkinSpoof = true;
+
+        public boolean isJwtAuth() { return jwtAuth; }
+        public void setJwtAuth(boolean jwtAuth) { this.jwtAuth = jwtAuth; }
+        public boolean isBruteForce() { return bruteForce; }
+        public void setBruteForce(boolean bruteForce) { this.bruteForce = bruteForce; }
+        public boolean isAntiBot() { return antiBot; }
+        public void setAntiBot(boolean antiBot) { this.antiBot = antiBot; }
+        public boolean isReverseShell() { return reverseShell; }
+        public void setReverseShell(boolean reverseShell) { this.reverseShell = reverseShell; }
+        public boolean isArpSpoof() { return arpSpoof; }
+        public void setArpSpoof(boolean arpSpoof) { this.arpSpoof = arpSpoof; }
+        public boolean isDnsTunnel() { return dnsTunnel; }
+        public void setDnsTunnel(boolean dnsTunnel) { this.dnsTunnel = dnsTunnel; }
+        public boolean isExploitSignature() { return exploitSignature; }
+        public void setExploitSignature(boolean exploitSignature) { this.exploitSignature = exploitSignature; }
+        public boolean isSsrf() { return ssrf; }
+        public void setSsrf(boolean ssrf) { this.ssrf = ssrf; }
+        public boolean isXxe() { return xxe; }
+        public void setXxe(boolean xxe) { this.xxe = xxe; }
+        public boolean isCsp() { return csp; }
+        public void setCsp(boolean csp) { this.csp = csp; }
+        public boolean isDatabaseFirewall() { return databaseFirewall; }
+        public void setDatabaseFirewall(boolean databaseFirewall) { this.databaseFirewall = databaseFirewall; }
+        public boolean isDlp() { return dlp; }
+        public void setDlp(boolean dlp) { this.dlp = dlp; }
+        public boolean isMemoryProtection() { return memoryProtection; }
+        public void setMemoryProtection(boolean memoryProtection) { this.memoryProtection = memoryProtection; }
+        public boolean isProcessInjection() { return processInjection; }
+        public void setProcessInjection(boolean processInjection) { this.processInjection = processInjection; }
+        public boolean isSecureDelete() { return secureDelete; }
+        public void setSecureDelete(boolean secureDelete) { this.secureDelete = secureDelete; }
+        public boolean isForensics() { return forensics; }
+        public void setForensics(boolean forensics) { this.forensics = forensics; }
+        public boolean isIncidentResponse() { return incidentResponse; }
+        public void setIncidentResponse(boolean incidentResponse) { this.incidentResponse = incidentResponse; }
+        public boolean isThreatHunting() { return threatHunting; }
+        public void setThreatHunting(boolean threatHunting) { this.threatHunting = threatHunting; }
+        public boolean isCompliance() { return compliance; }
+        public void setCompliance(boolean compliance) { this.compliance = compliance; }
+        public boolean isAntiGrief() { return antiGrief; }
+        public void setAntiGrief(boolean antiGrief) { this.antiGrief = antiGrief; }
+        public boolean isAntiXray() { return antiXray; }
+        public void setAntiXray(boolean antiXray) { this.antiXray = antiXray; }
+        public boolean isAntiFly() { return antiFly; }
+        public void setAntiFly(boolean antiFly) { this.antiFly = antiFly; }
+        public boolean isAntiDupe() { return antiDupe; }
+        public void setAntiDupe(boolean antiDupe) { this.antiDupe = antiDupe; }
+        public boolean isCrashExploit() { return crashExploit; }
+        public void setCrashExploit(boolean crashExploit) { this.crashExploit = crashExploit; }
+        public boolean isLagMachine() { return lagMachine; }
+        public void setLagMachine(boolean lagMachine) { this.lagMachine = lagMachine; }
+        public boolean isGeoBlock() { return geoBlock; }
+        public void setGeoBlock(boolean geoBlock) { this.geoBlock = geoBlock; }
+        public boolean isSessionValidation() { return sessionValidation; }
+        public void setSessionValidation(boolean sessionValidation) { this.sessionValidation = sessionValidation; }
+        public boolean isPluginVerification() { return pluginVerification; }
+        public void setPluginVerification(boolean pluginVerification) { this.pluginVerification = pluginVerification; }
+        public boolean isConnectionThrottle() { return connectionThrottle; }
+        public void setConnectionThrottle(boolean connectionThrottle) { this.connectionThrottle = connectionThrottle; }
+        public boolean isBackupIntegrity() { return backupIntegrity; }
+        public void setBackupIntegrity(boolean backupIntegrity) { this.backupIntegrity = backupIntegrity; }
+        public boolean isAntiSkinSpoof() { return antiSkinSpoof; }
+        public void setAntiSkinSpoof(boolean antiSkinSpoof) { this.antiSkinSpoof = antiSkinSpoof; }
     }
 
     public static class AnnouncementConfig {

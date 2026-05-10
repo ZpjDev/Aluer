@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -12,6 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class AntiGriefDetectionService {
+
+    private final ServerGuardConfig config;
 
     private final Map<String, PlayerActivity> playerActivities = new ConcurrentHashMap<>();
     private final Map<String, List<GriefEvent>> griefEvents = new ConcurrentHashMap<>();
@@ -39,10 +42,19 @@ public class AntiGriefDetectionService {
     );
 
     public AntiGriefDetectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public AntiGriefDetectionService(ServerGuardConfig config) {
+        this.config = config;
         scheduler.scheduleAtFixedRate(this::cleanupOldData, 120, 300, TimeUnit.SECONDS);
     }
 
     public GriefCheckResult checkBlockBreak(String playerName, String blockType, int x, int y, int z, String world) {
+        if (!config.getSecurity().getSuperEvolution().isAntiGrief()) {
+            return GriefCheckResult.clean();
+        }
+
         PlayerActivity activity = playerActivities.computeIfAbsent(playerName, k -> new PlayerActivity());
         activity.recordBlockBreak(blockType, x, y, z, world);
 

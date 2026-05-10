@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -10,8 +11,17 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class XXEProtectionService {
 
+    private final ServerGuardConfig config;
     private final Map<String, List<XXEEvent>> detections = new ConcurrentHashMap<>();
     private final AtomicLong totalDetections = new AtomicLong(0);
+
+    public XXEProtectionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public XXEProtectionService(ServerGuardConfig config) {
+        this.config = config;
+    }
 
     private static final List<String> XXE_PATTERNS = List.of(
             "<!ENTITY", "<!DOCTYPE", "SYSTEM \"file://", "SYSTEM 'file://",
@@ -30,6 +40,7 @@ public class XXEProtectionService {
     );
 
     public XXECheckResult checkXML(String xmlContent, String sourceIP) {
+        if (!config.getSecurity().getSuperEvolution().isXxe()) return XXECheckResult.clean();
         if (xmlContent == null || xmlContent.trim().isEmpty()) return XXECheckResult.clean();
 
         List<String> matched = new ArrayList<>();

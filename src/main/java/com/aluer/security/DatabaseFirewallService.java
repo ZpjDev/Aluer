@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -10,9 +11,18 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class DatabaseFirewallService {
 
+    private final ServerGuardConfig config;
     private final Map<String, List<QueryEvent>> queryLog = new ConcurrentHashMap<>();
     private final AtomicLong totalBlocked = new AtomicLong(0);
     private final AtomicLong totalQueries = new AtomicLong(0);
+
+    public DatabaseFirewallService() {
+        this(new ServerGuardConfig());
+    }
+
+    public DatabaseFirewallService(ServerGuardConfig config) {
+        this.config = config;
+    }
 
     private static final List<String> DANGEROUS_KEYWORDS = List.of(
             "DROP TABLE", "DROP DATABASE", "TRUNCATE TABLE", "DELETE FROM",
@@ -28,6 +38,7 @@ public class DatabaseFirewallService {
     private static final int MAX_JOIN_COUNT = 10;
 
     public QueryCheckResult checkQuery(String sql, String source, String database) {
+        if (!config.getSecurity().getSuperEvolution().isDatabaseFirewall()) return QueryCheckResult.clean();
         if (sql == null || sql.trim().isEmpty()) return QueryCheckResult.clean();
         totalQueries.incrementAndGet();
 

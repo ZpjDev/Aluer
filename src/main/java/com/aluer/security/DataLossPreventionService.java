@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.config.ServerGuardConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -11,8 +12,17 @@ import java.util.regex.Pattern;
 @Service
 public class DataLossPreventionService {
 
+    private final ServerGuardConfig config;
     private final Map<String, List<DLPEvent>> detections = new ConcurrentHashMap<>();
     private final AtomicLong totalDetections = new AtomicLong(0);
+
+    public DataLossPreventionService() {
+        this(new ServerGuardConfig());
+    }
+
+    public DataLossPreventionService(ServerGuardConfig config) {
+        this.config = config;
+    }
 
     private static final List<DLPRule> RULES = new ArrayList<>();
 
@@ -67,6 +77,7 @@ public class DataLossPreventionService {
     }
 
     public DLPCheckResult scan(String content, String source, String channel) {
+        if (!config.getSecurity().getSuperEvolution().isDlp()) return DLPCheckResult.clean();
         if (content == null || content.trim().isEmpty()) return DLPCheckResult.clean();
 
         Map<DLPLevel, List<String>> findings = new LinkedHashMap<>();
