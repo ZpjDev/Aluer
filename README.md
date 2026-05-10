@@ -4,13 +4,11 @@
 
 </div>
 
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Java-Dark.svg" width="48" height="48" />
-<img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Spring-Dark.svg" width="48" height="48" />
-<img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/React-Dark.svg" width="48" height="48" />
-
-</div>
+<br>
+<p align="center">
+  <img src="logo.png" width="200" alt="Aluer ServerGuard 徽标" />
+</p>
+<br>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Java-17%2B-orange?logo=openjdk&logoColor=white&style=for-the-badge" alt="Java">
@@ -18,48 +16,44 @@
   <img src="https://img.shields.io/badge/React-19.1-61DAFB?logo=react&logoColor=black&style=for-the-badge" alt="React">
   <img src="https://img.shields.io/badge/Vite-6.3-646CFF?logo=vite&logoColor=white&style=for-the-badge" alt="Vite">
   <img src="https://img.shields.io/badge/DeepSeek-AI-536DFE?logo=openai&logoColor=white&style=for-the-badge" alt="DeepSeek AI">
-  <img src="https://img.shields.io/badge/License-Apache_2.0-blue?logo=apache&logoColor=white&style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/许可证-Apache_2.0-blue?logo=apache&logoColor=white&style=for-the-badge" alt="许可证">
 </p>
 
 <p align="center">
-  <a href="https://github.com/ZpjDev/Aluer/stargazers"><img src="https://img.shields.io/github/stars/ZpjDev/Aluer?style=for-the-badge&logo=github&color=f1c40f&labelColor=1a1a2e" alt="Stars"></a>
-  <a href="https://github.com/ZpjDev/Aluer/network/members"><img src="https://img.shields.io/github/forks/ZpjDev/Aluer?style=for-the-badge&logo=github&color=3498db&labelColor=1a1a2e" alt="Forks"></a>
-  <a href="https://github.com/ZpjDev/Aluer/issues"><img src="https://img.shields.io/github/issues/ZpjDev/Aluer?style=for-the-badge&logo=github&color=e74c3c&labelColor=1a1a2e" alt="Issues"></a>
-  <a href="https://github.com/ZpjDev/Aluer/pulls"><img src="https://img.shields.io/github/issues-pr/ZpjDev/Aluer?style=for-the-badge&logo=github&color=2ecc71&labelColor=1a1a2e" alt="PRs"></a>
-  <a href="https://github.com/ZpjDev/Aluer/commits/main"><img src="https://img.shields.io/github/last-commit/ZpjDev/Aluer?style=for-the-badge&logo=git&color=9b59b6&labelColor=1a1a2e" alt="Last Commit"></a>
+  <a href="https://github.com/ZpjDev/Aluer/stargazers"><img src="https://img.shields.io/github/stars/ZpjDev/Aluer?style=for-the-badge&logo=github&color=f1c40f&labelColor=1a1a2e" alt="收藏"></a>
+  <a href="https://github.com/ZpjDev/Aluer/network/members"><img src="https://img.shields.io/github/forks/ZpjDev/Aluer?style=for-the-badge&logo=github&color=3498db&labelColor=1a1a2e" alt="复刻"></a>
+  <a href="https://github.com/ZpjDev/Aluer/issues"><img src="https://img.shields.io/github/issues/ZpjDev/Aluer?style=for-the-badge&logo=github&color=e74c3c&labelColor=1a1a2e" alt="问题"></a>
+  <a href="https://github.com/ZpjDev/Aluer/pulls"><img src="https://img.shields.io/github/issues-pr/ZpjDev/Aluer?style=for-the-badge&logo=github&color=2ecc71&labelColor=1a1a2e" alt="合并请求"></a>
+  <a href="https://github.com/ZpjDev/Aluer/commits/main"><img src="https://img.shields.io/github/last-commit/ZpjDev/Aluer?style=for-the-badge&logo=git&color=9b59b6&labelColor=1a1a2e" alt="最后提交"></a>
 </p>
 
 ---
 
-<h1 align="center">
-  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shield.png" width="36" height="36" />
-  Aluer ServerGuard
-  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shield.png" width="36" height="36" />
-</h1>
+<h1 align="center">Aluer ServerGuard</h1>
 
 <p align="center">
-  <strong>🛡️ AI-Powered Minecraft PaperMC Server Security & Automation Platform</strong>
+  <strong>🛡️ AI 驱动的 Minecraft PaperMC 服务器安全防护与自动化运维系统</strong>
 </p>
 
 <p align="center">
-  <sub>Built with ❤️ for Minecraft server operators who refuse to compromise on security</sub>
+  <sub>为不愿在安全上妥协的 Minecraft 服主用心构建</sub>
 </p>
 
 <blockquote align="center">
   <p>
-    <i>"In a world where DDoS attacks, bot swarms, and zero-day exploits threaten your Minecraft community,<br>Aluer stands as the autonomous guardian — powered by DeepSeek AI and a multi-layer kernel fusion engine."</i>
+    <i>"当 DDoS 攻击、机器人潮和零日漏洞威胁着你的 Minecraft 社区，<br>Aluer 以自主守护者的姿态屹立——由 DeepSeek AI 与多层内核融合引擎驱动。"</i>
   </p>
 </blockquote>
 
 <p align="center">
-  <a href="#-system-architecture">🏗 Architecture</a> &nbsp;·&nbsp;
-  <a href="#-quick-start">🚀 Quick Start</a> &nbsp;·&nbsp;
-  <a href="#-configuration">⚙️ Config</a> &nbsp;·&nbsp;
-  <a href="#-modules">📦 Modules</a> &nbsp;·&nbsp;
-  <a href="#-api-reference">🌐 API</a> &nbsp;·&nbsp;
-  <a href="#-web-console">🖥 Console</a> &nbsp;·&nbsp;
-  <a href="#-commands">💻 Commands</a> &nbsp;·&nbsp;
-  <a href="#-faq">❓ FAQ</a>
+  <a href="#-系统架构">🏗 系统架构</a> &nbsp;·&nbsp;
+  <a href="#-快速开始">🚀 快速开始</a> &nbsp;·&nbsp;
+  <a href="#️-配置参考">⚙️ 配置参考</a> &nbsp;·&nbsp;
+  <a href="#-模块清单">📦 模块清单</a> &nbsp;·&nbsp;
+  <a href="#-api-参考">🌐 API 参考</a> &nbsp;·&nbsp;
+  <a href="#-web-控制台">🖥 Web 控制台</a> &nbsp;·&nbsp;
+  <a href="#-shell-命令参考">💻 命令参考</a> &nbsp;·&nbsp;
+  <a href="#-faq">❓ 常见问题</a>
 </p>
 
 <hr>
@@ -68,28 +62,28 @@
   <tr>
     <td align="center" width="140">
       <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rocket.png" width="32" height="32" /><br>
-      <strong>2-5s</strong><br>
-      <sub>LLM Response</sub>
+      <strong>2-5秒</strong><br>
+      <sub>大模型响应</sub>
     </td>
     <td align="center" width="140">
       <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Electric%20Plug.png" width="32" height="32" /><br>
-      <strong>&lt;1ms</strong><br>
-      <sub>Kernel Latency</sub>
+      <strong>&lt;1毫秒</strong><br>
+      <sub>内核延迟</sub>
     </td>
     <td align="center" width="140">
       <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Locked%20with%20Key.png" width="32" height="32" /><br>
-      <strong>4-Tier</strong><br>
-      <sub>Defense Levels</sub>
+      <strong>四级</strong><br>
+      <sub>防御体系</sub>
     </td>
     <td align="center" width="140">
       <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Alien%20Monster.png" width="32" height="32" /><br>
       <strong>30+</strong><br>
-      <sub>Security Modules</sub>
+      <sub>安全模块</sub>
     </td>
     <td align="center" width="140">
       <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bar%20Chart.png" width="32" height="32" /><br>
-      <strong>~200MB</strong><br>
-      <sub>Memory Footprint</sub>
+      <strong>约200MB</strong><br>
+      <sub>内存占用</sub>
     </td>
   </tr>
 </table>
@@ -138,33 +132,33 @@
 - [Web 控制台](#-web-控制台)
 - [Shell 命令参考](#-shell-命令参考)
 - [开发指南](#-开发指南)
-- [FAQ](#-faq)
+- [常见问题](#-常见问题)
 - [许可证](#-许可证)
 - [支持项目](#-支持项目)
 
 ---
 
-## ✨ Why Aluer?
+## ✨ 为什么选择 Aluer
 
 <table>
   <tr>
     <td width="50%">
-      <h3>🧠 Dual-Engine Intelligence</h3>
-      <p>LLM (DeepSeek) + Kernel Rule Engine working in tandem. Sovereign handles unknown threats; Kernel reacts in <1ms for known patterns. <b>No single point of decision failure.</b></p>
+      <h3>🧠 双引擎智能决策</h3>
+      <p>大模型（DeepSeek）+ 内核规则引擎协同工作。Sovereign 处理未知威胁，Kernel 在 1 毫秒内响应已知模式。<b>杜绝单点决策失效。</b></p>
     </td>
     <td width="50%">
-      <h3>🛡️ Full-Stack Defense</h3>
-      <p>From Minecraft protocol layer → Application WAF → OS firewall → Cloudflare edge. <b>30+ security modules</b> covering L3-L7, zero-trust architecture, and honeypot deception.</p>
+      <h3>🛡️ 全栈纵深防御</h3>
+      <p>从 MC 协议层 → 应用 WAF → 系统防火墙 → Cloudflare 边缘节点。<b>30+ 安全模块</b>覆盖 L3-L7，零信任架构、蜜罐诱捕一应俱全。</p>
     </td>
   </tr>
   <tr>
     <td>
-      <h3>📊 Real-Time Visualization</h3>
-      <p>React 19 Nebula Console with SSE live streaming, performance sparklines, health probes, auto-refresh — designed for <b>incident commanders</b> who need instant clarity.</p>
+      <h3>📊 实时可视化控制台</h3>
+      <p>React 19 星云控制台，SSE 实时流、性能走势条、健康探针、自动刷新——专为<b>应急指挥官</b>设计，一眼看清全局。</p>
     </td>
     <td>
-      <h3>🔧 Autonomous Operations</h3>
-      <p>Self-healing orchestration, auto-backup before recovery, scheduled tasks, Discord/Slack webhooks, and HTML attack reports. <b>Your server guards itself while you sleep.</b></p>
+      <h3>🔧 全自动运维</h3>
+      <p>自愈编排、恢复前自动备份、定时任务、Discord/Slack 通知、HTML 攻击报告。<b>你睡觉时，服务器自己守着自己。</b></p>
     </td>
   </tr>
 </table>
@@ -1432,7 +1426,7 @@ cat target/surefire-reports/*.txt
 
 ---
 
-## ❓ FAQ
+## ❓ 常见问题
 
 <details>
 <summary><strong>如何验证 AI 是否正常工作？</strong></summary>
@@ -1582,18 +1576,18 @@ sudo systemctl restart serverguard
 如果 Aluer ServerGuard 帮助了你，请考虑：
 
 <p align="center">
-  <a href="https://github.com/ZpjDev/Aluer"><img src="https://img.shields.io/badge/⭐_Star_this_repo-f1c40f?style=for-the-badge&logo=github" alt="Star"></a>
+  <a href="https://github.com/ZpjDev/Aluer"><img src="https://img.shields.io/badge/⭐_收藏仓库-f1c40f?style=for-the-badge&logo=github" alt="收藏"></a>
   &nbsp;
-  <a href="https://github.com/ZpjDev/Aluer/fork"><img src="https://img.shields.io/badge/🍴_Fork-3498db?style=for-the-badge&logo=github" alt="Fork"></a>
+  <a href="https://github.com/ZpjDev/Aluer/fork"><img src="https://img.shields.io/badge/🍴_复刻-3498db?style=for-the-badge&logo=github" alt="复刻"></a>
   &nbsp;
-  <a href="https://github.com/ZpjDev/Aluer/issues"><img src="https://img.shields.io/badge/🐛_Report_Bug-e74c3c?style=for-the-badge&logo=github" alt="Bug"></a>
+  <a href="https://github.com/ZpjDev/Aluer/issues"><img src="https://img.shields.io/badge/🐛_报告问题-e74c3c?style=for-the-badge&logo=github" alt="报告问题"></a>
   &nbsp;
-  <a href="https://github.com/ZpjDev/Aluer/discussions"><img src="https://img.shields.io/badge/💬_Discussions-2ecc71?style=for-the-badge&logo=github" alt="Discuss"></a>
+  <a href="https://github.com/ZpjDev/Aluer/discussions"><img src="https://img.shields.io/badge/💬_讨论-2ecc71?style=for-the-badge&logo=github" alt="讨论"></a>
 </p>
 
 ---
 
-<h2 align="center">🏆 Contributors</h2>
+<h2 align="center">🏆 贡献者</h2>
 
 <p align="center">
   <a href="https://github.com/ZpjDev/Aluer/graphs/contributors">
@@ -1602,19 +1596,19 @@ sudo systemctl restart serverguard
 </p>
 
 <p align="center">
-  <sub>Made with ❤️ by the Aluer community — defending Minecraft servers worldwide</sub>
+  <sub>由 Aluer 社区用 ❤️ 构建 — 守护世界各地的 Minecraft 服务器</sub>
 </p>
 
 ---
 
 <p align="center">
   <a href="https://github.com/ZpjDev/Aluer">
-    <img src="https://img.shields.io/github/repo-size/ZpjDev/Aluer?style=flat-square&label=Repo%20Size&color=3498db" alt="Repo Size">
+    <img src="https://img.shields.io/github/repo-size/ZpjDev/Aluer?style=flat-square&label=仓库大小&color=3498db" alt="仓库大小">
   </a>
   <a href="https://github.com/ZpjDev/Aluer/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/ZpjDev/Aluer?style=flat-square&label=License&color=2ecc71" alt="License">
+    <img src="https://img.shields.io/github/license/ZpjDev/Aluer?style=flat-square&label=许可证&color=2ecc71" alt="许可证">
   </a>
-  <img src="https://img.shields.io/badge/Built%20With-Java%2017%20%7C%20Spring%20Boot%203.2%20%7C%20React%2019%20%7C%20DeepSeek%20AI-536DFE?style=flat-square" alt="Built With">
+  <img src="https://img.shields.io/badge/技术栈-Java%2017%20%7C%20Spring%20Boot%203.2%20%7C%20React%2019%20%7C%20DeepSeek%20AI-536DFE?style=flat-square" alt="技术栈">
   <br>
-  <sub>Aluer ServerGuard v1.0.0 — Autonomous protection for your Minecraft community</sub>
+  <sub>Aluer ServerGuard v3.0 — 为你的 Minecraft 社区提供自主防护</sub>
 </p>
