@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/react-19.1-61dafb?logo=react" alt="React 19">
   <img src="https://img.shields.io/badge/vite-6.3-purple?logo=vite" alt="Vite 6">
   <img src="https://img.shields.io/badge/deepseek-ai-536DFE?logo=openai" alt="DeepSeek AI">
-  <img src="https://img.shields.io/badge/license-custom-red" alt="License">
+  <img src="https://img.shields.io/badge/license-Apache%202.0-blue?logo=apache" alt="License">
 </p>
 
 <h1 align="center">Aluer ServerGuard</h1>
@@ -1416,17 +1416,15 @@ sudo systemctl restart serverguard
 
 ---
 
-## 📄 许可证与免责声明
+## 📄 许可证
 
-本项目为自定义许可证。
+本项目基于 **Apache License 2.0** 开源。完整许可证文本见 [LICENSE](LICENSE) 文件。
 
-- **授权范围**：仅供 Minecraft 服务器的授权管理员在其自有服务器上部署使用。
-- **禁止行为**：未经授权不得将本系统用于下列任何目的：
-  - 攻击、入侵或未授权访问他人服务器
-  - 发起 DDoS 攻击或任何形式的网络攻击
-  - 规避 Minecraft EULA 或任何适用法律法规
-  - 将系统重新分发并声称是自己的作品
-- **免责声明**：本软件按"现状"提供，不作任何明示或暗示的保证。作者不对因使用本软件导致的任何直接或间接损失承担责任，包括但不限于：数据丢失、服务器停机、安全漏洞导致的入侵。
+### 主要条款摘要
+
+- **允许**：商业使用、修改、分发、专利授权、私人使用
+- **条件**：分发时需包含许可证声明和版权声明，修改文件需标注变更
+- **限制**：不提供任何担保，作者不对使用本软件造成的损失承担责任
 
 ---
 
