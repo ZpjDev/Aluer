@@ -1,0 +1,1273 @@
+{
+  "groups": [
+    {
+      "name": "serverguard",
+      "type": "com.aluer.config.ServerGuardConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig"
+    },
+    {
+      "name": "serverguard.afk",
+      "type": "com.aluer.config.ServerGuardConfig$AfkConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getAfk()"
+    },
+    {
+      "name": "serverguard.ai",
+      "type": "com.aluer.config.ServerGuardConfig$AiConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getAi()"
+    },
+    {
+      "name": "serverguard.ai.deepseek",
+      "type": "com.aluer.config.ServerGuardConfig$DeepSeekConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AiConfig",
+      "sourceMethod": "getDeepseek()"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute",
+      "type": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig",
+      "sourceMethod": "getAutoExecute()"
+    },
+    {
+      "name": "serverguard.alert",
+      "type": "com.aluer.config.ServerGuardConfig$AlertConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getAlert()"
+    },
+    {
+      "name": "serverguard.alert.email",
+      "type": "com.aluer.config.ServerGuardConfig$EmailConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AlertConfig",
+      "sourceMethod": "getEmail()"
+    },
+    {
+      "name": "serverguard.alert.email.rate-limit",
+      "type": "com.aluer.config.ServerGuardConfig$RateLimitConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$EmailConfig",
+      "sourceMethod": "getRateLimit()"
+    },
+    {
+      "name": "serverguard.announcement",
+      "type": "com.aluer.config.ServerGuardConfig$AnnouncementConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getAnnouncement()"
+    },
+    {
+      "name": "serverguard.backup",
+      "type": "com.aluer.config.ServerGuardConfig$BackupConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getBackup()"
+    },
+    {
+      "name": "serverguard.chat-filter",
+      "type": "com.aluer.config.ServerGuardConfig$ChatFilterConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getChatFilter()"
+    },
+    {
+      "name": "serverguard.dashboard",
+      "type": "com.aluer.config.ServerGuardConfig$DashboardConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getDashboard()"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway",
+      "type": "com.aluer.config.ServerGuardConfig$SshGatewayConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DashboardConfig",
+      "sourceMethod": "getSshGateway()"
+    },
+    {
+      "name": "serverguard.minecraft",
+      "type": "com.aluer.config.ServerGuardConfig$MinecraftConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getMinecraft()"
+    },
+    {
+      "name": "serverguard.minecraft.rcon",
+      "type": "com.aluer.config.ServerGuardConfig$RconConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftConfig",
+      "sourceMethod": "getRcon()"
+    },
+    {
+      "name": "serverguard.monitor",
+      "type": "com.aluer.config.ServerGuardConfig$MonitorConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getMonitor()"
+    },
+    {
+      "name": "serverguard.schedule",
+      "type": "com.aluer.config.ServerGuardConfig$ScheduleConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getSchedule()"
+    },
+    {
+      "name": "serverguard.security",
+      "type": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig",
+      "sourceMethod": "getSecurity()"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion",
+      "type": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getAntiIntrusion()"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.file-integrity",
+      "type": "com.aluer.config.ServerGuardConfig$FileIntegrityConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig",
+      "sourceMethod": "getFileIntegrity()"
+    },
+    {
+      "name": "serverguard.security.automation",
+      "type": "com.aluer.config.ServerGuardConfig$AutomationConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getAutomation()"
+    },
+    {
+      "name": "serverguard.security.autonomy",
+      "type": "com.aluer.config.ServerGuardConfig$AutonomyConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getAutonomy()"
+    },
+    {
+      "name": "serverguard.security.cloud-edge",
+      "type": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getCloudEdge()"
+    },
+    {
+      "name": "serverguard.security.ddos-defense",
+      "type": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getDdosDefense()"
+    },
+    {
+      "name": "serverguard.security.host-enforcement",
+      "type": "com.aluer.config.ServerGuardConfig$HostEnforcementConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getHostEnforcement()"
+    },
+    {
+      "name": "serverguard.security.kernel",
+      "type": "com.aluer.config.ServerGuardConfig$KernelConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getKernel()"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense",
+      "type": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getMinecraftDefense()"
+    },
+    {
+      "name": "serverguard.security.orchestration",
+      "type": "com.aluer.config.ServerGuardConfig$OrchestrationConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getOrchestration()"
+    },
+    {
+      "name": "serverguard.security.self-healing",
+      "type": "com.aluer.config.ServerGuardConfig$SelfHealingConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getSelfHealing()"
+    },
+    {
+      "name": "serverguard.security.shield",
+      "type": "com.aluer.config.ServerGuardConfig$ShieldConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getShield()"
+    },
+    {
+      "name": "serverguard.security.task-bus",
+      "type": "com.aluer.config.ServerGuardConfig$TaskBusConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getTaskBus()"
+    },
+    {
+      "name": "serverguard.security.threat-feeds",
+      "type": "com.aluer.config.ServerGuardConfig$ThreatFeedsConfig",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig",
+      "sourceMethod": "getThreatFeeds()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "serverguard.afk.afk-timeout-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AfkConfig"
+    },
+    {
+      "name": "serverguard.afk.afk-zone",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AfkConfig"
+    },
+    {
+      "name": "serverguard.afk.auto-logout",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AfkConfig"
+    },
+    {
+      "name": "serverguard.afk.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AfkConfig"
+    },
+    {
+      "name": "serverguard.afk.max-afk-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AfkConfig"
+    },
+    {
+      "name": "serverguard.afk.teleport-to-afk-zone",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AfkConfig"
+    },
+    {
+      "name": "serverguard.ai.anomaly-threshold",
+      "type": "java.lang.Double",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AiConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.analysis-interval-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.api-key",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-analyze-alerts",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute.ban-ip",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute.clear-lag",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute.kick-player",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute.kill-entity",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute.min-confidence",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute.set-spawn-rate",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.auto-execute.whitelist",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutoExecuteConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.base-url",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.max-tokens",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.model",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig"
+    },
+    {
+      "name": "serverguard.ai.deepseek.temperature",
+      "type": "java.lang.Double",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DeepSeekConfig"
+    },
+    {
+      "name": "serverguard.ai.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AiConfig"
+    },
+    {
+      "name": "serverguard.ai.prediction-horizon-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AiConfig"
+    },
+    {
+      "name": "serverguard.ai.sliding-window-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AiConfig"
+    },
+    {
+      "name": "serverguard.ai.use-isolation-forest",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AiConfig"
+    },
+    {
+      "name": "serverguard.ai.use-prediction",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AiConfig"
+    },
+    {
+      "name": "serverguard.alert.email.password",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$EmailConfig"
+    },
+    {
+      "name": "serverguard.alert.email.rate-limit.max-emails-per-minute",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$RateLimitConfig"
+    },
+    {
+      "name": "serverguard.alert.email.rate-limit.per-type-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$RateLimitConfig"
+    },
+    {
+      "name": "serverguard.alert.email.smtp-host",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$EmailConfig"
+    },
+    {
+      "name": "serverguard.alert.email.smtp-port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$EmailConfig"
+    },
+    {
+      "name": "serverguard.alert.email.to",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.aluer.config.ServerGuardConfig$EmailConfig"
+    },
+    {
+      "name": "serverguard.alert.email.username",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$EmailConfig"
+    },
+    {
+      "name": "serverguard.alert.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AlertConfig"
+    },
+    {
+      "name": "serverguard.announcement.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AnnouncementConfig"
+    },
+    {
+      "name": "serverguard.announcement.interval-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AnnouncementConfig"
+    },
+    {
+      "name": "serverguard.announcement.messages",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AnnouncementConfig"
+    },
+    {
+      "name": "serverguard.backup.backup-config",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.backup-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.backup-plugins",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.compress",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.config-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.interval-hours",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.max-backups",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.notify-on-complete",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.plugin-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.backup.world-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$BackupConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.block-advertising",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.block-illegal",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.block-ip",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.block-profanity",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.block-spam",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.custom-words",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.kick-on-repeat",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.max-violations-before-kick",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.mute-duration-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.mute-on-violation",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.spam-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.chat-filter.spam-window-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ChatFilterConfig"
+    },
+    {
+      "name": "serverguard.dashboard.compact-terminal",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DashboardConfig"
+    },
+    {
+      "name": "serverguard.dashboard.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DashboardConfig"
+    },
+    {
+      "name": "serverguard.dashboard.refresh-interval-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DashboardConfig"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway.allow-private-key-paste",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SshGatewayConfig"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway.command-timeout-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SshGatewayConfig"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SshGatewayConfig"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway.handshake-ttl-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SshGatewayConfig"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway.max-sessions",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SshGatewayConfig"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway.require-engine-handshake",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SshGatewayConfig"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway.session-timeout-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SshGatewayConfig"
+    },
+    {
+      "name": "serverguard.dashboard.ssh-gateway.strict-host-key-checking",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SshGatewayConfig"
+    },
+    {
+      "name": "serverguard.dashboard.subtitle",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DashboardConfig"
+    },
+    {
+      "name": "serverguard.dashboard.title",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DashboardConfig"
+    },
+    {
+      "name": "serverguard.minecraft.check-interval-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftConfig"
+    },
+    {
+      "name": "serverguard.minecraft.jar-file",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftConfig"
+    },
+    {
+      "name": "serverguard.minecraft.java-opts",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftConfig"
+    },
+    {
+      "name": "serverguard.minecraft.process-name",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftConfig"
+    },
+    {
+      "name": "serverguard.minecraft.rcon.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$RconConfig"
+    },
+    {
+      "name": "serverguard.minecraft.rcon.host",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$RconConfig"
+    },
+    {
+      "name": "serverguard.minecraft.rcon.password",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$RconConfig"
+    },
+    {
+      "name": "serverguard.minecraft.rcon.port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$RconConfig"
+    },
+    {
+      "name": "serverguard.minecraft.service-name",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftConfig"
+    },
+    {
+      "name": "serverguard.minecraft.working-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftConfig"
+    },
+    {
+      "name": "serverguard.monitor.connection-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MonitorConfig"
+    },
+    {
+      "name": "serverguard.monitor.cpu-threshold",
+      "type": "java.lang.Double",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MonitorConfig"
+    },
+    {
+      "name": "serverguard.monitor.log-path",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MonitorConfig"
+    },
+    {
+      "name": "serverguard.monitor.log-watch-lines",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MonitorConfig"
+    },
+    {
+      "name": "serverguard.monitor.memory-threshold",
+      "type": "java.lang.Double",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MonitorConfig"
+    },
+    {
+      "name": "serverguard.monitor.tps-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MonitorConfig"
+    },
+    {
+      "name": "serverguard.schedule.announce-message",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.announce-restart",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.backup-day",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.backup-time",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.clear-lag-daily",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.clear-lag-time",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.daily-restart",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.restart-time",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.save-before-restart",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.schedule.weekly-backup",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ScheduleConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.file-integrity.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$FileIntegrityConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.file-integrity.max-depth",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$FileIntegrityConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.file-integrity.monitored-paths",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.aluer.config.ServerGuardConfig$FileIntegrityConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.monitor-commands",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.monitor-files",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.monitor-plugins",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.monitor-processes",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.monitor-rcon",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig"
+    },
+    {
+      "name": "serverguard.security.anti-intrusion.monitor-systemd",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AntiIntrusionConfig"
+    },
+    {
+      "name": "serverguard.security.auto-ban-v-p-n",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig"
+    },
+    {
+      "name": "serverguard.security.automation.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutomationConfig"
+    },
+    {
+      "name": "serverguard.security.automation.feed-refresh-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutomationConfig"
+    },
+    {
+      "name": "serverguard.security.automation.incident-retention-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutomationConfig"
+    },
+    {
+      "name": "serverguard.security.automation.integrity-rescan-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutomationConfig"
+    },
+    {
+      "name": "serverguard.security.automation.posture-snapshot-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutomationConfig"
+    },
+    {
+      "name": "serverguard.security.automation.rule-sync-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutomationConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.critical-risk-score",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.deepseek-dominant",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.loop-interval-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.max-actions-per-hour",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.min-risk-score-for-action",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.quiet-console",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.require-second-signal-for-containment",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.autonomy.workflow-cooldown-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$AutonomyConfig"
+    },
+    {
+      "name": "serverguard.security.block-common-exploits",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig"
+    },
+    {
+      "name": "serverguard.security.check-on-login",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.api-email",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.api-key",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.default-block-mode",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.default-challenge-mode",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.dry-run",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.enable-under-attack-on-critical",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.provider",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.cloud-edge.zone-id",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$CloudEdgeConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.amplification-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.http-flood-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.icmp-flood-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.minecraft-bot-swarm-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.minecraft-login-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.minecraft-query-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.minecraft-rcon-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.minecraft-status-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.slow-connection-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.syn-flood-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.ddos-defense.udp-flood-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$DDoSDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig"
+    },
+    {
+      "name": "serverguard.security.host-enforcement.default-block-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$HostEnforcementConfig"
+    },
+    {
+      "name": "serverguard.security.host-enforcement.default-rate-limit-per-minute",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$HostEnforcementConfig"
+    },
+    {
+      "name": "serverguard.security.host-enforcement.dry-run",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$HostEnforcementConfig"
+    },
+    {
+      "name": "serverguard.security.host-enforcement.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$HostEnforcementConfig"
+    },
+    {
+      "name": "serverguard.security.host-enforcement.mirror-to-cloud-edge",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$HostEnforcementConfig"
+    },
+    {
+      "name": "serverguard.security.host-enforcement.preferred-backend",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$HostEnforcementConfig"
+    },
+    {
+      "name": "serverguard.security.kernel.adaptive-weights",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$KernelConfig"
+    },
+    {
+      "name": "serverguard.security.kernel.directive-heat-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$KernelConfig"
+    },
+    {
+      "name": "serverguard.security.kernel.echo-retention-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$KernelConfig"
+    },
+    {
+      "name": "serverguard.security.kernel.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$KernelConfig"
+    },
+    {
+      "name": "serverguard.security.kernel.journal-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$KernelConfig"
+    },
+    {
+      "name": "serverguard.security.kernel.lockdown-heat-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$KernelConfig"
+    },
+    {
+      "name": "serverguard.security.kernel.pulse-history-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$KernelConfig"
+    },
+    {
+      "name": "serverguard.security.kernel.pulse-interval-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$KernelConfig"
+    },
+    {
+      "name": "serverguard.security.log-all-commands",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig"
+    },
+    {
+      "name": "serverguard.security.max-connections-per-i-p",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SecurityConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.bot-swarm-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.compression-payload-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.game-tcp-port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.login-burst-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.query-flood-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.query-udp-port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.rcon-brute-force-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.rcon-tcp-port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.minecraft-defense.status-ping-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$MinecraftDefenseConfig"
+    },
+    {
+      "name": "serverguard.security.orchestration.allow-edge-challenge",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$OrchestrationConfig"
+    },
+    {
+      "name": "serverguard.security.orchestration.allow-local-block",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$OrchestrationConfig"
+    },
+    {
+      "name": "serverguard.security.orchestration.allow-minecraft-defense",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$OrchestrationConfig"
+    },
+    {
+      "name": "serverguard.security.orchestration.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$OrchestrationConfig"
+    },
+    {
+      "name": "serverguard.security.orchestration.notify-on-critical",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$OrchestrationConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.allow-soft-restart",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.auto-backup-before-recovery",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.auto-whitelist-on-swarm",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.cpu-emergency-threshold",
+      "type": "java.lang.Double",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.dry-run",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.loop-interval-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.max-recovery-actions-per-hour",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.memory-emergency-threshold",
+      "type": "java.lang.Double",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.self-healing.tps-emergency-threshold",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$SelfHealingConfig"
+    },
+    {
+      "name": "serverguard.security.shield.attacker-notice-enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.auto-enable-under-attack",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.auto-mode",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.deterrence-message",
+      "type": "java.lang.String",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.edge-challenge-offender-limit",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.heat-trigger",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.resonance-trigger",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.shelter-rate-limit-per-minute",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.shield.threat-score-trigger",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ShieldConfig"
+    },
+    {
+      "name": "serverguard.security.task-bus.auto-dispatch",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$TaskBusConfig"
+    },
+    {
+      "name": "serverguard.security.task-bus.dispatch-interval-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$TaskBusConfig"
+    },
+    {
+      "name": "serverguard.security.task-bus.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$TaskBusConfig"
+    },
+    {
+      "name": "serverguard.security.task-bus.history-limit",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$TaskBusConfig"
+    },
+    {
+      "name": "serverguard.security.task-bus.queue-limit",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$TaskBusConfig"
+    },
+    {
+      "name": "serverguard.security.threat-feeds.cache-ttl-minutes",
+      "type": "java.lang.Long",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ThreatFeedsConfig"
+    },
+    {
+      "name": "serverguard.security.threat-feeds.connect-timeout-ms",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ThreatFeedsConfig"
+    },
+    {
+      "name": "serverguard.security.threat-feeds.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ThreatFeedsConfig"
+    },
+    {
+      "name": "serverguard.security.threat-feeds.read-timeout-ms",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ThreatFeedsConfig"
+    },
+    {
+      "name": "serverguard.security.threat-feeds.refresh-interval-minutes",
+      "type": "java.lang.Integer",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ThreatFeedsConfig"
+    },
+    {
+      "name": "serverguard.security.threat-feeds.sources",
+      "type": "java.util.List<com.aluer.config.ServerGuardConfig$FeedSourceConfig>",
+      "sourceType": "com.aluer.config.ServerGuardConfig$ThreatFeedsConfig"
+    }
+  ],
+  "hints": []
+}

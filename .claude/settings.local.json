@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_oh-my-claudecode_t__list_omc_skills",
+      "Bash(command -v ruby)",
+      "Bash(ruby --version)",
+      "Bash(echo \"Ruby detected: $\\(ruby --version)",
+      "Bash(node *)",
+      "Skill(claude-hud:setup)",
+      "Bash(command *)",
+      "Bash(omc --version)",
+      "Bash(echo \"INSTALLED: $\\(omc --version)",
+      "Bash(npm install *)",
+      "Bash(claude mcp *)",
+      "Bash(gh auth *)"
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true
+  }
+}
