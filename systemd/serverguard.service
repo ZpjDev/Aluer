@@ -1,0 +1,15 @@
+[Unit]
+Description=Aluer ServerGuard Protection System
+After=network.target minecraft.service
+Requires=minecraft.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/serverguard
+ExecStart=/usr/bin/java -jar serverguard.jar
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

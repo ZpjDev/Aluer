@@ -1,0 +1,11 @@
+# Sudo configuration for ServerGuard to control Minecraft service
+# Add this to /etc/sudoers.d/serverguard
+
+# Allow serverguard to restart Minecraft service without password
+%sudo   ALL=(ALL) NOPASSWD: /bin/systemctl restart minecraft
+%sudo   ALL=(ALL) NOPASSWD: /bin/systemctl stop minecraft
+%sudo   ALL=(ALL) NOPASSWD: /bin/systemctl start minecraft
+%sudo   ALL=(ALL) NOPASSWD: /bin/systemctl status minecraft
+
+# Allow serverguard to control rcon-cli commands
+%sudo   ALL=(minecraft) NOPASSWD: /usr/bin/rcon-cli *

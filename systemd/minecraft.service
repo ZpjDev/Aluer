@@ -1,0 +1,15 @@
+[Unit]
+Description=Minecraft PaperMC Server
+After=network.target
+
+[Service]
+Type=simple
+User=minecraft
+WorkingDirectory=/opt/minecraft
+ExecStart=/usr/bin/java -Xms4G -Xmx4G -jar paper-1.21.11.jar nogui
+Restart=on-failure
+RestartSec=10
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target
