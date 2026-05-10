@@ -16,11 +16,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/aluer/serverguard/stargazers"><img src="https://img.shields.io/github/stars/aluer/serverguard?style=for-the-badge&logo=github&color=f1c40f&labelColor=1a1a2e" alt="Stars"></a>
-  <a href="https://github.com/aluer/serverguard/network/members"><img src="https://img.shields.io/github/forks/aluer/serverguard?style=for-the-badge&logo=github&color=3498db&labelColor=1a1a2e" alt="Forks"></a>
-  <a href="https://github.com/aluer/serverguard/issues"><img src="https://img.shields.io/github/issues/aluer/serverguard?style=for-the-badge&logo=github&color=e74c3c&labelColor=1a1a2e" alt="Issues"></a>
-  <a href="https://github.com/aluer/serverguard/pulls"><img src="https://img.shields.io/github/issues-pr/aluer/serverguard?style=for-the-badge&logo=github&color=2ecc71&labelColor=1a1a2e" alt="PRs"></a>
-  <a href="https://github.com/aluer/serverguard/commits/main"><img src="https://img.shields.io/github/last-commit/aluer/serverguard?style=for-the-badge&logo=git&color=9b59b6&labelColor=1a1a2e" alt="Last Commit"></a>
+  <a href="https://github.com/ZpjDev/Aluer/stargazers"><img src="https://img.shields.io/github/stars/ZpjDev/Aluer?style=for-the-badge&logo=github&color=f1c40f&labelColor=1a1a2e" alt="Stars"></a>
+  <a href="https://github.com/ZpjDev/Aluer/network/members"><img src="https://img.shields.io/github/forks/ZpjDev/Aluer?style=for-the-badge&logo=github&color=3498db&labelColor=1a1a2e" alt="Forks"></a>
+  <a href="https://github.com/ZpjDev/Aluer/issues"><img src="https://img.shields.io/github/issues/ZpjDev/Aluer?style=for-the-badge&logo=github&color=e74c3c&labelColor=1a1a2e" alt="Issues"></a>
+  <a href="https://github.com/ZpjDev/Aluer/pulls"><img src="https://img.shields.io/github/issues-pr/ZpjDev/Aluer?style=for-the-badge&logo=github&color=2ecc71&labelColor=1a1a2e" alt="PRs"></a>
+  <a href="https://github.com/ZpjDev/Aluer/commits/main"><img src="https://img.shields.io/github/last-commit/ZpjDev/Aluer?style=for-the-badge&logo=git&color=9b59b6&labelColor=1a1a2e" alt="Last Commit"></a>
 </p>
 
 ---
@@ -307,7 +307,7 @@ cell.pressure = cell.pressure × 0.55 + pulse.heat × 0.75
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/aluer/serverguard.git
+git clone https://github.com/ZpjDev/Aluer.git
 cd serverguard
 
 # 2. 使用项目内置的 Maven 构建
@@ -1576,13 +1576,13 @@ sudo systemctl restart serverguard
 如果 Aluer ServerGuard 帮助了你，请考虑：
 
 <p align="center">
-  <a href="https://github.com/aluer/serverguard"><img src="https://img.shields.io/badge/⭐_Star_this_repo-f1c40f?style=for-the-badge&logo=github" alt="Star"></a>
+  <a href="https://github.com/ZpjDev/Aluer"><img src="https://img.shields.io/badge/⭐_Star_this_repo-f1c40f?style=for-the-badge&logo=github" alt="Star"></a>
   &nbsp;
-  <a href="https://github.com/aluer/serverguard/fork"><img src="https://img.shields.io/badge/🍴_Fork-3498db?style=for-the-badge&logo=github" alt="Fork"></a>
+  <a href="https://github.com/ZpjDev/Aluer/fork"><img src="https://img.shields.io/badge/🍴_Fork-3498db?style=for-the-badge&logo=github" alt="Fork"></a>
   &nbsp;
-  <a href="https://github.com/aluer/serverguard/issues"><img src="https://img.shields.io/badge/🐛_Report_Bug-e74c3c?style=for-the-badge&logo=github" alt="Bug"></a>
+  <a href="https://github.com/ZpjDev/Aluer/issues"><img src="https://img.shields.io/badge/🐛_Report_Bug-e74c3c?style=for-the-badge&logo=github" alt="Bug"></a>
   &nbsp;
-  <a href="https://github.com/aluer/serverguard/discussions"><img src="https://img.shields.io/badge/💬_Discussions-2ecc71?style=for-the-badge&logo=github" alt="Discuss"></a>
+  <a href="https://github.com/ZpjDev/Aluer/discussions"><img src="https://img.shields.io/badge/💬_Discussions-2ecc71?style=for-the-badge&logo=github" alt="Discuss"></a>
 </p>
 
 ---
@@ -1590,8 +1590,8 @@ sudo systemctl restart serverguard
 <h2 align="center">🏆 Contributors</h2>
 
 <p align="center">
-  <a href="https://github.com/aluer/serverguard/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=aluer/serverguard&max=12" />
+  <a href="https://github.com/ZpjDev/Aluer/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=ZpjDev/Aluer&max=12" />
   </a>
 </p>
 
@@ -1602,11 +1602,11 @@ sudo systemctl restart serverguard
 ---
 
 <p align="center">
-  <a href="https://github.com/aluer/serverguard">
-    <img src="https://img.shields.io/github/repo-size/aluer/serverguard?style=flat-square&label=Repo%20Size&color=3498db" alt="Repo Size">
+  <a href="https://github.com/ZpjDev/Aluer">
+    <img src="https://img.shields.io/github/repo-size/ZpjDev/Aluer?style=flat-square&label=Repo%20Size&color=3498db" alt="Repo Size">
   </a>
-  <a href="https://github.com/aluer/serverguard/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/aluer/serverguard?style=flat-square&label=License&color=2ecc71" alt="License">
+  <a href="https://github.com/ZpjDev/Aluer/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/ZpjDev/Aluer?style=flat-square&label=License&color=2ecc71" alt="License">
   </a>
   <img src="https://img.shields.io/badge/Built%20With-Java%2017%20%7C%20Spring%20Boot%203.2%20%7C%20React%2019%20%7C%20DeepSeek%20AI-536DFE?style=flat-square" alt="Built With">
   <br>

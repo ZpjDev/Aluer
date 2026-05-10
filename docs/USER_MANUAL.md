@@ -532,7 +532,7 @@ sudo systemctl start aluer
 
 ## 技术支持
 
-- 问题反馈: https://github.com/aluer/serverguard/issues
+- 问题反馈: https://github.com/ZpjDev/Aluer/issues
 - 文档更新: https://docs.aluer.com
 
 ---
