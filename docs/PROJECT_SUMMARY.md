@@ -110,7 +110,30 @@ AluerIII 是一个专为 Minecraft (PaperMC) 服务器设计的高级安全防�
 
 ---
 
-## 7. 数据模型与配置管理 (`com.aluer.model` / `com.aluer.config`)
+## 6.5. 通知与报告模块 (`com.aluer.notification`)
+- **`WebhookService`** (Webhook 通知服务)
+  - 支持 Discord 和 Slack 双通道 Webhook 推送。
+  - 安全告警发生时自动发送 Embed 消息，包含告警类型、严重程度、置信度。
+  - 支持自定义消息推送，含颜色编码（critical=红色 / warning=橙色 / info=绿色）。
+- **`AttackReportService`** (攻击报告服务)
+  - 记录最近 500 条攻击事件到内存环形缓冲区。
+  - 一键生成 HTML 格式安全事件报告，含时间线、攻击类型、来源 IP、置信度。
+  - 报告自动保存到可配置目录，文件名含时间戳。
+
+---
+
+## 7. Web 基础设施层 (`com.aluer.web` / `com.aluer.config`)
+- **`HealthService`** (健康检查服务)
+  - 组件级健康探针：逐一检查 RCON 连接、DeepSeek API、邮件服务、安全引擎、自愈编排。
+  - 系统资源信息汇总：JVM 内存使用、堆内存、CPU 负载、运行时间。
+  - 兼容 Kubernetes liveness / readiness probe 格式。
+- **`RequestLoggingFilter`** (请求日志过滤器)
+  - 拦截所有 HTTP 请求，记录慢请求（>1s）和服务器错误（5xx）。
+  - 不影响正常请求性能（debug 级别日志）。
+- **`CorsConfig`** (跨域配置)
+  - 允许 `/api/**` 路径的跨域请求，支持所有 Origin、常用 HTTP 方法和预检缓存。
+
+## 8. 数据模型与配置管理 (`com.aluer.model` / `com.aluer.config`)
 - **`ServerGuardConfig`** (全局参数配置)
   - 映射 `application.yml` 中的参数，包括：各类安全触发阈值、DeepSeek API 密钥、数据库连接及告警邮箱配置等。
 - **`AlertEvent`** (告警数据模型)

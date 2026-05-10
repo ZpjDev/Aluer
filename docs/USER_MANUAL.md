@@ -23,6 +23,9 @@ Aluer 是一款专为 Minecraft PaperMC 服务器设计的安全防护系统，�
 - 📧 **邮件预警** - 实时告警通知管理员
 - 🔄 **自动备份** - 定时自动备份服务器数据
 - 💬 **聊天过滤** - 智能过滤违规内容和广告
+- 🔔 **Webhook 通知** - Discord / Slack 实时推送安全告警
+- 📊 **攻击报告** - 自动生成 HTML 安全事件报告
+- ❤️ **健康检查** - 组件级健康探针，兼容 K8s 部署
 
 ---
 
@@ -331,6 +334,59 @@ Aluer 内置了轻量级的 Web Dashboard 和 RESTful API，方便与 Pterodacty
 | `/api/punishment/list` | GET | 获取封禁与禁言记录统计 |
 
 *(提示：在生产环境中，请务必通过反向代理并配置鉴权，以保护 API 接口安全)*
+
+### 系统健康检查 API（新增）
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/health` | GET | 完整健康报告（组件状态 + JVM 内存 + CPU 负载） |
+| `/api/health/live` | GET | 存活探针，返回 `{"status":"UP"}` |
+| `/api/health/ready` | GET | 就绪探针，检查 RCON 可用性 |
+
+**健康检查响应示例**：
+```json
+{
+  "status": "HEALTHY",
+  "uptimeSeconds": 86400,
+  "components": {
+    "rcon": {"status": "UP"},
+    "deepseek-ai": {"status": "UP", "model": "deepseek-chat"},
+    "email-alert": {"status": "UP"},
+    "security": {"status": "UP", "kernelEnabled": true},
+    "self-healing": {"status": "UP", "dryRun": true}
+  },
+  "system": {
+    "memory": {"usedMB": 320, "maxMB": 4096},
+    "heapUsedMB": 180,
+    "systemCpuLoad": 12.5
+  }
+}
+```
+
+### 通知与攻击报告 API（新增）
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/attacks/recent?limit=20` | GET | 最近攻击记录列表 |
+| `/api/attacks/report` | POST | 生成并保存 HTML 攻击报告到 `./reports/` 目录 |
+| `/api/webhook/test` | POST | 向已配置的 Discord/Slack 发送测试消息 |
+
+**Webhook 配置**（`application.yml`）：
+```yaml
+serverguard:
+  webhook:
+    enabled: false                     # 设为 true 启用
+    discord-url: ${ALUER_WEBHOOK_DISCORD:}   # Discord Webhook URL
+    slack-url: ${ALUER_WEBHOOK_SLACK:}       # Slack Webhook URL
+  report:
+    dir: ./reports                     # 攻击报告输出目录
+```
+
+**环境变量**：
+```bash
+export ALUER_WEBHOOK_DISCORD="https://discord.com/api/webhooks/xxx/yyy"
+export ALUER_WEBHOOK_SLACK="https://hooks.slack.com/services/xxx/yyy/zzz"
+```
 
 ---
 

@@ -801,9 +801,11 @@ serverguard
 
 | 类 | 功能 |
 |----|------|
-| `DashboardController` | REST API（`/api/*`），提供状态查询、命令执行、备份管理等接口 |
+| `DashboardController` | REST API（`/api/*`），提供状态查询、命令执行、备份管理、健康检查、攻击报告等接口 |
 | `OperationsConsoleController` | 运营控制台 API（`/api/console/*`），总览数据、Shield 控制、快捷操作 |
 | `ConsoleStreamController` | SSE 流推送（`/api/console/stream/overview`） |
+| `HealthService` | 组件级健康检查（RCON/AI/邮件/安全/自愈），系统资源信息汇总 |
+| `RequestLoggingFilter` | HTTP 请求日志过滤器，慢请求和 500 错误自动告警 |
 
 ### 辅助功能模块
 
@@ -822,6 +824,7 @@ serverguard
 | `com.aluer.schedule` | `ScheduledTaskService` | 计划任务引擎（定时重启/备份/清 lag/公告） |
 | `com.aluer.export` | `DataExportService` | 安全数据导出（审计日志/攻击记录/性能报告） |
 | `com.aluer.command` | `AdminCommands` / `TestCommands` | Spring Shell 管理命令和测试命令 |
+| `com.aluer.notification` | `WebhookService` / `AttackReportService` | Discord/Slack Webhook 告警通知；HTML 攻击报告自动生成与导出 |
 
 ### 数据模型 (`com.aluer.model`)
 
@@ -944,6 +947,53 @@ curl -X POST "http://localhost:8080/api/security/network/quarantine" \
 3. **会话超时**：默认 30 分钟无活动自动断开
 4. **审计同步**：所有 SSH 操作自动记录到 `SecurityAuditService`
 
+### 健康检查 API
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| `GET` | `/api/health` | 完整健康报告（组件状态 + 系统资源） |
+| `GET` | `/api/health/live` | 存活探针（K8s liveness probe） |
+| `GET` | `/api/health/ready` | 就绪探针（K8s readiness probe） |
+
+**示例响应 (`/api/health`)**：
+
+```json
+{
+  "status": "HEALTHY",
+  "uptimeSeconds": 86400,
+  "components": {
+    "rcon": {"status": "UP", "host": "localhost:25575"},
+    "deepseek-ai": {"status": "UP", "model": "deepseek-chat"},
+    "email-alert": {"status": "UP"},
+    "security": {"status": "UP", "kernelEnabled": true},
+    "self-healing": {"status": "UP", "dryRun": true}
+  },
+  "system": {
+    "memory": {"usedMB": 320, "maxMB": 4096, "usagePercent": 7.8},
+    "heapUsedMB": 180,
+    "systemCpuLoad": 12.5
+  }
+}
+```
+
+### 通知与报告 API
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| `GET` | `/api/attacks/recent?limit=20` | 最近攻击记录 |
+| `POST` | `/api/attacks/report` | 生成 HTML 攻击报告 |
+| `POST` | `/api/webhook/test` | 测试 Discord/Slack Webhook |
+
+**Webhook 配置**（`application.yml`）：
+
+```yaml
+serverguard:
+  webhook:
+    enabled: false
+    discord-url: ${ALUER_WEBHOOK_DISCORD:}
+    slack-url: ${ALUER_WEBHOOK_SLACK:}
+```
+
 ### 备份管理 API
 
 | 方法 | 路径 | 说明 |
@@ -1004,15 +1054,18 @@ Aluer 内置 React 19 + Vite 6 构建的单页应用控制台（Nebula Console�
                   setInterval 轮询 /api/console/overview
 ```
 
-### 角色功能
+### 功能清单
 
 | 功能 | 说明 |
 |------|------|
 | Shield 控制 | 一键切换 FORTIFY / MIRAGE / SHELTER / RECOVERY 模式 |
+| 性能走势 | TPS / CPU / Memory / 在线玩家 SparkBar 实时可视化 |
+| 自动刷新 | 可切换开关 + 可选间隔（3s / 6s / 10s / 30s） |
+| 健康检查面板 | 可折叠，显示 RCON/AI/邮件/安全/自愈 组件 UP/DOWN 状态 |
 | SSH 远程终端 | 连接远程节点，执行命令，带命令守卫审查 |
 | 模块监控 | 9 个模块的状态、信号值实时显示 |
-| 威胁视图 | 高风险 IP 列表，score + riskLevel + 详情 |
-| 审计筛选 | 实时筛选审计事件、网络事件、Shield 状态变迁 |
+| 威胁视图 | 高风险 IP 列表，score + riskLevel + 详情（最多 10 条） |
+| 审计筛选 | 实时筛选审计事件、网络事件、Shield 状态变迁（最多 24 条） |
 
 ---
 
