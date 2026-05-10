@@ -667,7 +667,7 @@ serverguard
 
 ### Security Defense Layer (`com.aluer.security`)
 
-The largest package in the system, containing 85+ security services (with 31 Super Evolution v3.1 / v3.2 / v3.3 modules):
+The largest package in the system, containing 85+ security services (with 31 advanced extended security modules, V4.0 complete edition):
 
 | Category | Key Classes | Description |
 |----------|------------|-------------|
@@ -682,7 +682,7 @@ The largest package in the system, containing 85+ security services (with 31 Sup
 | **Security Operations** | `SIEMService`, `SecurityOrchestrationService`, `SecurityAutomationScheduler`, `SecurityBaselineHardeningService`, `BackupSecurityService` | SIEM correlation, security orchestration, baseline hardening |
 | **Command Security** | `CommandExecutionGuardService` | Dangerous command interception (rm -rf / wget \| sh / privilege escalation) |
 | **Execution Layer** | `CloudflareIntegrationService`, `DNSSecurityService`, `SessionManagementService`, `LoadBalancerService`, `TrafficShapingService`, `EncryptionService` | Cloudflare API integration, DNS security, session management, load balancing, traffic shaping |
-| **Super Evolution v3.1** | `JwtAuthService` | JWT HMAC-SHA256 auth with constant-time comparison |
+| **Advanced Extensions** | `JwtAuthService` | JWT HMAC-SHA256 auth with constant-time comparison |
 | | `BruteForceProtectionService` | Three-layer time window (60s/600s/3600s) brute force defense |
 | | `AntiBotDetectionService` | Minecraft bot detection: name patterns/join velocity/multi-account |
 | | `AntiGriefDetectionService` | Block break/place rate monitoring, dangerous block detection |
@@ -707,7 +707,7 @@ The largest package in the system, containing 85+ security services (with 31 Sup
 | | `AntiDupeDetectionService` | Item duplication detection: stack overflow, high-value item surges, 9 known methods |
 | | `CrashExploitProtectionService` | Crash exploit protection: oversized packets, NBT bombs, book/sign exploits |
 | | `LagMachineDetectionService` | Lag machine detection: observer chains, TNT stacks, entity spam, falling blocks |
-| **v3.3 New Modules** | `GeoBlockService` | Geo IP blocking: country allowlist/blocklist, high-risk Minecraft attack source interception |
+| **V4.0 Extensions** | `GeoBlockService` | Geo IP blocking: country allowlist/blocklist, high-risk Minecraft attack source interception |
 | | `PlayerSessionValidationService` | Player session validation: UUID format, offline/premium detection, session replay, multi-account |
 | | `PluginVerificationService` | Plugin integrity verification: SHA-256 hash comparison, malicious plugin name detection |
 | | `ConnectionThrottleService` | Connection rate limiting: multi-window IP tracking, progressive delay (2s/5s/15s/30s) |

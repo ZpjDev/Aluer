@@ -1012,39 +1012,327 @@ public class AITerminal {
         return "【DeepSeek 主控回答】\n" + deepSeekClient.askQuestion(question);
     }
 
-    private String getHelp() {
+    @ShellMethod(key = "help", value = "显示全部可用命令与详细帮助")
+    public String help(@ShellOption(defaultValue = "all", help = "查看分类: all/ai/status/defense/security/monitor/player/world/admin/info") String category) {
+        if (!"all".equals(category)) {
+            return getHelpCategory(category);
+        }
+        return getFullHelp();
+    }
+
+    private String getFullHelp() {
         StringBuilder sb = new StringBuilder();
-        sb.append("╔══════════════════════════════════════════════════╗\n");
-        sb.append("║            Aluer AI 终端帮助                      ║\n");
-        sb.append("╠══════════════════════════════════════════════════╣\n");
-        sb.append("║ ai <命令>         - AI智能命令                   ║\n");
-        sb.append("║ ask <问题>        - 向AI提问                    ║\n");
-        sb.append("║ status            - 服务器状态                   ║\n");
-        sb.append("║ test [类型]       - 测试服务器                   ║\n");
-        sb.append("║ defense [操作]    - 防御管理                    ║\n");
-        sb.append("║ backup [操作]     - 备份管理                    ║\n");
-        sb.append("║ security [类型]   - 安全状态                    ║\n");
-        sb.append("║ autonomy [操作]   - Aluer主控引擎               ║\n");
-        sb.append("║ kernel [操作]     - Aluer中心内核               ║\n");
-        sb.append("║ bus [操作]        - 内核任务总线                ║\n");
-        sb.append("║ heal [操作]       - 自愈编排器                  ║\n");
-        sb.append("║ network [操作]    - 网络分析                    ║\n");
-        sb.append("║ quarantine <IP>   - 隔离高风险IP                ║\n");
-        sb.append("║ unquarantine <IP> - 解除IP隔离                  ║\n");
-        sb.append("║ world [操作]      - 世界管理                    ║\n");
-        sb.append("║ alert [操作]      - 预警系统                    ║\n");
-        sb.append("║ metrics [类型]   - 性能指标                    ║\n");
-        sb.append("║ audit [操作]      - 安全审计                    ║\n");
-        sb.append("║ kick <玩家>       - 踢出玩家                    ║\n");
-        sb.append("║ ban <玩家>        - 封禁玩家                    ║\n");
-        sb.append("║ tasks [操作]      - 计划任务                    ║\n");
-        sb.append("╚══════════════════════════════════════════════════╝\n\n");
-        sb.append("【示例命令】\n");
-        sb.append("  ai 测试一下服务器\n");
-        sb.append("  ai 开启防御\n");
-        sb.append("  ai 查看安全状态\n");
-        sb.append("  ai 帮我备份\n");
+        sb.append("╔══════════════════════════════════════════════════════════════════╗\n");
+        sb.append("║                  Aluer ServerGuard - 完整命令帮助               ║\n");
+        sb.append("╠══════════════════════════════════════════════════════════════════╣\n");
+        sb.append("║  输入 help <分类> 查看分类帮助: ai/status/defense/security     ║\n");
+        sb.append("║  monitor/player/world/admin/info                                ║\n");
+        sb.append("╚══════════════════════════════════════════════════════════════════╝\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  AI 智能助手                                                     │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ ai <自然语言>    AI智能命令(测试服务器/开启防御/查看安全)         │\n");
+        sb.append("│ ask <问题>       向DeepSeek AI提问任何问题                       │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  服务器状态与测试                                                │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ status            查看服务器CPU/内存/连接/AI防御总览              │\n");
+        sb.append("│ test [类型]       测试服务器: all/cpu/memory/network/security    │\n");
+        sb.append("│ tps               显示服务器TPS (来自AdminCommands)              │\n");
+        sb.append("│ memory            显示内存使用率 (来自AdminCommands)             │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  安全防御管理                                                    │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ defense [操作]    防御管理: status/on/off/list/level [等级]      │\n");
+        sb.append("│ security summary  安全总览(态势分/威胁等级/高风险IP/DDoS等)      │\n");
+        sb.append("│ security posture  网络安全态势(建议/重点关注IP)                  │\n");
+        sb.append("│ security incidents 近期安全事件列表                              │\n");
+        sb.append("│ security ddos     DDoS防护状态(封禁IP/检测攻击数)                │\n");
+        sb.append("│ security firewall 防火墙状态(活跃规则/模式)                      │\n");
+        sb.append("│ security intrusion 入侵检测状态(告警/跟踪用户)                   │\n");
+        sb.append("│ security threats  AI威胁检测统计                                 │\n");
+        sb.append("│ security network  网络监控(流量/会话/高风险IP)                   │\n");
+        sb.append("│ security vpn      VPN/代理检测状态                               │\n");
+        sb.append("│ security chat     聊天过滤状态(违规词数量)                       │\n");
+        sb.append("│ quarantine <IP>   隔离高风险IP (参数: IP 原因)                   │\n");
+        sb.append("│ unquarantine <IP> 解除IP隔离 (参数: IP 原因)                     │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  网络分析                                                        │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ network stats     网络统计(活跃会话/入站/出站流量)               │\n");
+        sb.append("│ network geoip     IP地理位置查询 (参数: IP)                      │\n");
+        sb.append("│ network reputation IP信誉/风险等级查询 (参数: IP)                │\n");
+        sb.append("│ network ports     端口扫描检测统计                               │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  AI 主控引擎 / 内核 / 自愈                                       │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ autonomy summary  Aluer主控引擎状态(模式/循环/决策)              │\n");
+        sb.append("│ autonomy run      手动执行一次主控循环                           │\n");
+        sb.append("│ autonomy history  最近5条主控决策历史                            │\n");
+        sb.append("│ autonomy hardening 安全基线加固得分与发现项                      │\n");
+        sb.append("│ kernel summary    Aluer Kernel状态(脉冲/Echo/热度)               │\n");
+        sb.append("│ kernel pulse      手动执行一次内核脉冲                           │\n");
+        sb.append("│ kernel matrix     内核信号矩阵权重与向量                         │\n");
+        sb.append("│ kernel journal    内核日志(最近6条)                              │\n");
+        sb.append("│ kernel pulses     最近5次脉冲历史                                │\n");
+        sb.append("│ bus summary       内核任务总线(队列深度/执行任务)                │\n");
+        sb.append("│ bus queue         任务队列快照                                    │\n");
+        sb.append("│ bus history       最近任务执行历史                                │\n");
+        sb.append("│ bus dispatch      手动派发队列任务                                │\n");
+        sb.append("│ bus plugins       已注册TaskBus插件列表                           │\n");
+        sb.append("│ heal summary      Aluer自愈编排器(循环/计划/热度)                │\n");
+        sb.append("│ heal run          手动执行一次自愈循环                            │\n");
+        sb.append("│ heal history      最近5次自愈历史                                 │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  备份管理                                                        │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ backup list       查看所有备份记录                                │\n");
+        sb.append("│ backup create     创建新备份 (参数: 备份名称)                     │\n");
+        sb.append("│ backup status     备份服务状态                                    │\n");
+        sb.append("│ backup start      启动定时备份服务                                │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  玩家管理                                                        │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ kick <玩家名>     踢出指定玩家 (RCON连接需启用)                   │\n");
+        sb.append("│ ban <玩家名>      封禁玩家 (参数: 玩家名 原因)                    │\n");
+        sb.append("│ unban <玩家名>    解封玩家                                        │\n");
+        sb.append("│ player kick       踢出玩家 (来自AdminCommands)                    │\n");
+        sb.append("│ player ban        封禁玩家 (来自AdminCommands)                    │\n");
+        sb.append("│ player mute       禁言玩家 (来自AdminCommands)                    │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  世界管理                                                        │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ world list        列出所有世界(名称/区块数/实体数)                │\n");
+        sb.append("│ world load <世界> 加载世界 (如: world world_nether)               │\n");
+        sb.append("│ world unload <世界> 卸载世界                                     │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  预警系统                                                        │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ alert status      邮件预警服务状态                                │\n");
+        sb.append("│ alert test        发送测试邮件                                    │\n");
+        sb.append("│ alert send <消息> 手动发送告警邮件                                │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  性能监控与审计                                                  │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ metrics summary   性能指标摘要(计数器/计量器数量)                 │\n");
+        sb.append("│ metrics counters  查看所有计数器                                  │\n");
+        sb.append("│ metrics gauges    查看所有计量器                                  │\n");
+        sb.append("│ audit recent [N]  最近N条审计事件 (默认10条)                      │\n");
+        sb.append("│ audit summary     审计事件分类摘要                                │\n");
+        sb.append("│ tasks list        查看计划任务(备份/AI/VPN)                       │\n");
+        sb.append("│ tasks start       启动计划任务服务                                │\n");
+        sb.append("│ config reload     重新加载配置 (来自AdminCommands)                │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  系统测试 (test命令扩展)                                          │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ test all          运行全部测试 (来自TestCommands)                 │\n");
+        sb.append("│ test quick        快速测试(config/rcon/email)                     │\n");
+        sb.append("│ test config       测试配置                                        │\n");
+        sb.append("│ test rcon         测试RCON连接                                    │\n");
+        sb.append("│ test process      测试进程监控                                    │\n");
+        sb.append("│ test resource     测试资源监控                                    │\n");
+        sb.append("│ test connection   测试连接监控                                    │\n");
+        sb.append("│ test email        测试邮件服务                                    │\n");
+        sb.append("│ test email send   发送测试邮件                                    │\n");
+        sb.append("│ test deepseek     测试DeepSeek API                                │\n");
+        sb.append("│ test autoexecute  测试自动执行配置                                │\n");
+        sb.append("│ test simulate attack 模拟攻击测试                                 │\n");
+        sb.append("│ test rcon exec    执行RCON命令 (参数: 命令)                       │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  安全API端点 (HTTP GET /api/...)                                  │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ /api/status                        系统运行状态                  │\n");
+        sb.append("│ /api/performance                   TPS/CPU/内存指标              │\n");
+        sb.append("│ /api/health                        完整健康报告                  │\n");
+        sb.append("│ /api/health/live                   存活探针                      │\n");
+        sb.append("│ /api/health/ready                  就绪探针                      │\n");
+        sb.append("│ /api/security/stats                安全统计总览                  │\n");
+        sb.append("│ /api/security/network/posture      网络安全态势                  │\n");
+        sb.append("│ /api/security/network/offenders    高风险IP列表                  │\n");
+        sb.append("│ /api/security/network/incidents    安全事件列表                  │\n");
+        sb.append("│ /api/security/auth/status          JWT认证状态                   │\n");
+        sb.append("│ /api/security/brute-force/status   暴力破解防护                  │\n");
+        sb.append("│ /api/security/anti-bot/status      反机器人检测                  │\n");
+        sb.append("│ /api/security/anti-grief/status    反破坏检测                    │\n");
+        sb.append("│ /api/security/anti-xray/status     X-ray透视检测                 │\n");
+        sb.append("│ /api/security/anti-fly/status      飞行外挂检测                  │\n");
+        sb.append("│ /api/security/anti-dupe/status     物品复制检测                  │\n");
+        sb.append("│ /api/security/anti-skin-spoof/status 皮肤伪造检测                │\n");
+        sb.append("│ /api/security/crash-exploit/status 崩溃漏洞防护                  │\n");
+        sb.append("│ /api/security/lag-machine/status   卡服机检测                    │\n");
+        sb.append("│ /api/security/reverse-shell/status 反向Shell检测                 │\n");
+        sb.append("│ /api/security/arp-spoof/status     ARP欺骗检测                   │\n");
+        sb.append("│ /api/security/dns-tunnel/status    DNS隧道检测                   │\n");
+        sb.append("│ /api/security/exploit-signature/status 漏洞签名检测              │\n");
+        sb.append("│ /api/security/ssrf/status          SSRF防护                      │\n");
+        sb.append("│ /api/security/xxe/status           XXE防护                       │\n");
+        sb.append("│ /api/security/csp/status           CSP安全头                     │\n");
+        sb.append("│ /api/security/database-firewall/status 数据库防火墙              │\n");
+        sb.append("│ /api/security/dlp/status           数据防泄漏                    │\n");
+        sb.append("│ /api/security/memory/status        JVM内存保护                   │\n");
+        sb.append("│ /api/security/process-injection/status 进程注入检测              │\n");
+        sb.append("│ /api/security/secure-delete/status 安全文件删除                  │\n");
+        sb.append("│ /api/security/forensics/status     取证收集                      │\n");
+        sb.append("│ /api/security/incident-response/status 事件响应                  │\n");
+        sb.append("│ /api/security/threat-hunting/status 威胁狩猎                     │\n");
+        sb.append("│ /api/security/compliance/status    合规扫描                      │\n");
+        sb.append("│ /api/security/geo-block/status     地理IP封锁                    │\n");
+        sb.append("│ /api/security/session-validation/status 会话验证                 │\n");
+        sb.append("│ /api/security/plugin-verification/status 插件校验                │\n");
+        sb.append("│ /api/security/connection-throttle/status 连接速率限制            │\n");
+        sb.append("│ /api/security/backup-integrity/status 备份完整性                 │\n");
+        sb.append("│ /api/attacks/recent                最近攻击列表                  │\n");
+        sb.append("│ /api/backup/list                   备份列表                      │\n");
+        sb.append("│ /api/punishment/list               封禁/禁言统计                 │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("┌─────────────────────────────────────────────────────────────────┐\n");
+        sb.append("│  自然语言快捷指令 (ai 命令)                                      │\n");
+        sb.append("├─────────────────────────────────────────────────────────────────┤\n");
+        sb.append("│ ai 测试一下服务器     → 运行完整服务器测试                       │\n");
+        sb.append("│ ai 开启防御           → 打开AI自主防御模式                       │\n");
+        sb.append("│ ai 关闭防御           → 关闭AI自主防御模式                       │\n");
+        sb.append("│ ai 查看安全状态       → 显示安全总览                             │\n");
+        sb.append("│ ai 查看网络状态       → 显示网络统计                             │\n");
+        sb.append("│ ai 帮我备份           → 查看备份记录                             │\n");
+        sb.append("│ ai 查看世界           → 列出所有世界                             │\n");
+        sb.append("│ ai 发送预警           → 查看预警系统状态                         │\n");
+        sb.append("│ ai 查看主控引擎       → 显示Aluer主控引擎状态                    │\n");
+        sb.append("│ ai 查看内核           → 显示Kernel内核状态                       │\n");
+        sb.append("│ ai <其他问题>         → 通过DeepSeek AI智能回答                  │\n");
+        sb.append("└─────────────────────────────────────────────────────────────────┘\n\n");
+
+        sb.append("  💡 提示: 输入 help <分类> 查看分类命令, help all 查看全部\n");
+        sb.append("  💡 所有安全模块开关: application.yml → serverguard.security.super-evolution\n");
         return sb.toString();
+    }
+
+    private String getHelpCategory(String category) {
+        return switch (category) {
+            case "ai" -> """
+                【AI 智能助手】
+                  ai <自然语言>    使用自然语言与服务器交互
+                  ask <问题>       直接向DeepSeek AI提问
+
+                快捷指令:
+                  ai 测试一下服务器    ai 开启防御       ai 查看安全状态
+                  ai 查看网络状态      ai 帮我备份       ai 查看世界
+                  ai 发送预警          ai 查看主控引擎   ai 查看内核""";
+            case "status" -> """
+                【服务器状态与测试】
+                  status            查看服务器CPU/内存/连接/AI防御总览
+                  test all          运行全部测试
+                  test cpu          仅CPU测试
+                  test memory       仅内存测试
+                  test network      仅网络测试
+                  test security     仅安全测试
+                  tps               显示TPS
+                  memory            显示内存使用率""";
+            case "defense" -> """
+                【防御管理】
+                  defense status    查看防御状态(AI防御/等级/策略数)
+                  defense on        开启AI自主防御模式
+                  defense off       关闭AI自主防御模式
+                  defense list      列出所有可用防御策略
+                  defense level <等级> 调整防御等级""";
+            case "security" -> """
+                【安全状态查询】
+                  security summary      安全总览(态势分/威胁/高风险IP)
+                  security posture      网络安全态势(建议/重点关注)
+                  security incidents    近期安全事件
+                  security ddos         DDoS防护状态
+                  security firewall     防火墙状态
+                  security intrusion    入侵检测状态
+                  security threats      AI威胁检测
+                  security network      网络监控
+                  security vpn          VPN检测
+                  security chat         聊天过滤
+                  quarantine <IP> [原因] 隔离高风险IP
+                  unquarantine <IP> [原因] 解除IP隔离""";
+            case "monitor" -> """
+                【AI引擎/内核/自愈/性能监控】
+                  autonomy summary/run/history/hardening    主控引擎
+                  kernel summary/pulse/matrix/journal/pulses Kernel内核
+                  bus summary/queue/history/dispatch/plugins 任务总线
+                  heal summary/run/history                   自愈编排
+                  metrics summary/counters/gauges            性能指标
+                  audit recent [N]/summary                    安全审计
+                  tasks list/start                            计划任务""";
+            case "player" -> """
+                【玩家与网络管理】
+                  kick <玩家名>       踢出玩家(RCON需启用)
+                  ban <玩家名> [原因]  封禁玩家
+                  unban <玩家名>      解封玩家
+                  player kick/ban/mute AdminCommands玩家管理
+                  network stats       网络统计
+                  network geoip <IP>  IP地理位置
+                  network reputation <IP> IP信誉查询
+                  network ports       端口扫描检测""";
+            case "world" -> """
+                【世界与备份管理】
+                  world list          列出所有世界
+                  world load <世界>   加载世界
+                  world unload <世界> 卸载世界
+                  backup list         查看备份记录
+                  backup create [名称] 创建新备份
+                  backup status       备份服务状态
+                  backup start        启动定时备份""";
+            case "admin" -> """
+                【系统管理】
+                  alert status/test/send [消息]  邮件预警
+                  server status                  服务器状态(AdminCommands)
+                  config reload                  重新加载配置
+                  ai analyze <数据>              AI分析(AdminCommands)
+                  test quick/config/rcon/process/resource/connection
+                  test email/email send/deepseek/autoexecute
+                  test simulate attack/rcon exec <命令>""";
+            case "info" -> """
+                【安全API端点 (HTTP GET)】
+                  /api/status /api/performance /api/health
+                  /api/security/stats /api/security/network/*
+                  /api/security/auth/status /api/security/brute-force/status
+                  /api/security/anti-bot|anti-grief|anti-xray|anti-fly/status
+                  /api/security/anti-dupe|anti-skin-spoof|crash-exploit/status
+                  /api/security/lag-machine|reverse-shell|arp-spoof/status
+                  /api/security/dns-tunnel|exploit-signature|ssrf/status
+                  /api/security/xxe|csp|database-firewall|dlp/status
+                  /api/security/memory|process-injection|secure-delete/status
+                  /api/security/forensics|incident-response|threat-hunting/status
+                  /api/security/compliance|geo-block|session-validation/status
+                  /api/security/plugin-verification|connection-throttle/status
+                  /api/security/backup-integrity/status
+                  /api/attacks/recent /api/backup/list /api/punishment/list
+
+                完整API文档: docs/USER_MANUAL.md""";
+            default -> "未知分类: " + category + "\n可用: ai/status/defense/security/monitor/player/world/admin/info";
+        };
+    }
+
+    private String getHelp() {
+        return getFullHelp();
     }
 
     private int getCpuUsage() {

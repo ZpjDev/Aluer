@@ -85,7 +85,7 @@ cd /path/to/AluerIII
 ./apache-maven-3.9.6/bin/mvn package -DskipTests
 
 # 上传 jar 包和配置到服务器
-scp target/serverguard-1.0.0.jar user@your-server:/opt/aluer/
+scp target/AluerServerGuard-V4.0.jar user@your-server:/opt/aluer/
 scp start.sh user@your-server:/opt/aluer/
 ```
 
@@ -105,7 +105,7 @@ After=network.target
 Type=simple
 User=minecraft
 WorkingDirectory=/opt/aluer
-ExecStart=/usr/bin/java -jar /opt/aluer/serverguard-1.0.0.jar
+ExecStart=/usr/bin/java -jar /opt/aluer/AluerServerGuard-V4.0.jar
 Restart=on-failure
 RestartSec=10
 
@@ -130,7 +130,7 @@ sudo systemctl status aluer
 ### 启动系统
 ```bash
 # 方式1: 直接运行
-java -jar serverguard-1.0.0.jar
+java -jar AluerServerGuard-V4.0.jar
 
 # 方式2: 使用启动脚本
 ./start.sh
@@ -388,7 +388,7 @@ export ALUER_WEBHOOK_DISCORD="https://discord.com/api/webhooks/xxx/yyy"
 export ALUER_WEBHOOK_SLACK="https://hooks.slack.com/services/xxx/yyy/zzz"
 ```
 
-### 超进化安全模块 API（v3.1 新增）
+### 高级扩展安全模块 API（V4.0 完整版）
 
 #### 身份认证与访问控制
 
@@ -442,7 +442,7 @@ export ALUER_WEBHOOK_SLACK="https://hooks.slack.com/services/xxx/yyy/zzz"
 | `/api/security/threat-hunting/status` | GET | 威胁狩猎状态（最近狩猎结果） |
 | `/api/security/compliance/status` | GET | 合规扫描结果（评分、通过/失败项） |
 
-#### Minecraft 专属安全（v3.2 新增）
+#### Minecraft 专属安全（V4.0）
 
 | 接口路径 | 方法 | 说明 |
 |----------|------|------|
@@ -452,7 +452,7 @@ export ALUER_WEBHOOK_SLACK="https://hooks.slack.com/services/xxx/yyy/zzz"
 | `/api/security/crash-exploit/status` | GET | 崩溃漏洞防护状态（超大包、NBT炸弹、书与笔攻击） |
 | `/api/security/lag-machine/status` | GET | 卡服机检测状态（Observer链、TNT堆、红石密度） |
 
-#### v3.3 新增安全 API
+#### V4.0 新增安全 API
 
 | 接口路径 | 方法 | 说明 |
 |----------|------|------|
@@ -528,15 +528,15 @@ backup:
   backup-config: true
 ```
 
-#### 超进化安全模块开关
+#### 高级扩展安全模块开关（V4.0）
 
-所有超进化安全模块均可通过 `application.yml` 中的 `serverguard.security.super-evolution` 节点独立控制开关。设为 `false` 即可关闭该模块，不消耗任何性能。
+以下 31 个高级扩展安全模块均可通过 `application.yml` 中的 `serverguard.security.super-evolution` 节点独立控制开关。设为 `false` 即可关闭该模块，相关检测逻辑将被跳过，不消耗额外性能。
 
 ```yaml
 serverguard:
   security:
     super-evolution:
-      # === v3.1 超进化安全模块（20个）===
+      # === V4.0 高级扩展安全模块（20个） ===
       jwt-auth: true                    # JWT身份认证与令牌管理
       brute-force: true                 # 暴力破解防护（多时间窗口检测）
       anti-bot: true                    # 反机器人检测（Bot名称/加入速率/IP关联）
@@ -557,13 +557,13 @@ serverguard:
       threat-hunting: true              # 威胁狩猎（10种狩猎定义/5个类别）
       compliance: true                  # 合规扫描（7类20+检查项）
       anti-grief: true                  # 反破坏检测（方块破坏率/TNT/纵火/偷箱）
-      # === v3.2 Minecraft专属模块（5个）===
+      # === Minecraft 专属防护模块（5个） ===
       anti-xray: true                   # X-ray透视检测（钻石比/直线挖掘/暗处精准）
       anti-fly: true                    # 飞行外挂检测（垂直/水平速度/悬空时间）
       anti-dupe: true                   # 物品复制检测（堆叠异常/高价值暴涨/9种复制法）
       crash-exploit: true               # 崩溃漏洞防护（超大包/NBT炸弹/书与笔攻击）
       lag-machine: true                 # 卡服机检测（Observer链/TNT堆/红石密度）
-      # === v3.3 新模块（6个）===
+      # === V4.0 新增模块（6个） ===
       geo-block: true                   # 地理IP封锁（按国家/地区拦截）
       session-validation: true          # 玩家会话验证（UUID伪造/正版/离线检测）
       plugin-verification: true         # 插件完整性校验（Hash对比/未授权修改）
@@ -647,7 +647,7 @@ sudo systemctl stop aluer
 cp -r /opt/aluer/backups /backup/
 
 # 替换jar包
-cp target/serverguard-1.0.0.jar /opt/aluer/
+cp target/AluerServerGuard-V4.0.jar /opt/aluer/
 
 # 重启服务
 sudo systemctl start aluer

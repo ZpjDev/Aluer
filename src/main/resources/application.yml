@@ -150,7 +150,7 @@ serverguard:
       max-recovery-actions-per-hour: 8
 
       super-evolution:
-        # === v3.1 超进化安全模块开关 ===
+        # === V4.0 高级扩展安全模块开关 ===
         jwt-auth: true                    # JWT身份认证与令牌管理
         brute-force: true                 # 暴力破解防护（多时间窗口检测）
         anti-bot: true                    # 反机器人检测（Bot名称/加入速率/IP关联）
@@ -171,13 +171,13 @@ serverguard:
         threat-hunting: true              # 威胁狩猎（10种狩猎定义/5个类别）
         compliance: true                  # 合规扫描（7类20+检查项）
         anti-grief: true                  # 反破坏检测（方块破坏率/TNT/纵火/偷箱）
-        # === v3.2 Minecraft专属模块开关 ===
+        # === Minecraft 专属防护模块开关 ===
         anti-xray: true                   # X-ray透视检测（钻石比/直线挖掘/暗处精准）
         anti-fly: true                    # 飞行外挂检测（垂直/水平速度/悬空时间）
         anti-dupe: true                   # 物品复制检测（堆叠异常/高价值暴涨/9种复制法）
         crash-exploit: true               # 崩溃漏洞防护（超大包/NBT炸弹/书与笔攻击）
         lag-machine: true                 # 卡服机检测（Observer链/TNT堆/红石密度）
-        # === v3.3 新模块开关 ===
+        # === V4.0 新增模块开关 ===
         geo-block: true                   # 地理IP封锁（按国家/地区拦截）
         session-validation: true          # 玩家会话验证（UUID伪造/正版/离线检测）
         plugin-verification: true         # 插件完整性校验（Hash对比/未授权修改）

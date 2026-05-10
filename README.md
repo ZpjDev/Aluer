@@ -810,7 +810,7 @@ serverguard
 
 ### 安全防护层 (`com.aluer.security`)
 
-这是系统中规模最大的包，包含 85+ 个安全服务（含 31 个超进化 v3.1 / v3.2 / v3.3 新增模块）：
+这是系统中规模最大的包，包含 85+ 个安全服务（含 31 个高级扩展安全模块，V4.0 完整版）：
 
 | 类别 | 类 | 功能 |
 |------|-----|------|
@@ -860,7 +860,7 @@ serverguard
 | | `LoadBalancerService` | 简易负载均衡 |
 | | `TrafficShapingService` | 流量整形/QoS |
 | | `EncryptionService` | 数据加密工具 |
-| **超进化 v3.1** | `JwtAuthService` | JWT Token HMAC-SHA256 认证，常量时间签名比对 |
+| **高级扩展模块** | `JwtAuthService` | JWT Token HMAC-SHA256 认证，常量时间签名比对 |
 | | `BruteForceProtectionService` | 三层时间窗口(60s/600s/3600s)暴力破解防护，渐进延迟 |
 | | `AntiBotDetectionService` | Minecraft 机器人检测：命名模式/加入速度/多账号/客户端品牌 |
 | | `AntiGriefDetectionService` | 方块破坏/放置速率监控，危险方块识别，容器掠夺检测 |
@@ -885,7 +885,7 @@ serverguard
 | | `AntiDupeDetectionService` | 物品复制检测：堆叠溢出、高价值物品暴涨、9种已知复制方法监测 |
 | | `CrashExploitProtectionService` | 崩溃漏洞防护：超大包/负长度/NBT嵌套/书与笔/Sign炸弹/Tile Entity洪水 |
 | | `LagMachineDetectionService` | 卡服机检测：Observer链/TNT堆叠/红石密度/实体刷怪/掉落方块洪流 |
-| **v3.3 扩展** | `GeoBlockService` | 地理IP封锁：国家/地区黑白名单，高风险Minecraft攻击来源国拦截 |
+| **V4.0 扩展** | `GeoBlockService` | 地理IP封锁：国家/地区黑白名单，高风险Minecraft攻击来源国拦截 |
 | | `PlayerSessionValidationService` | 玩家会话验证：UUID格式/离线模式/正版检测/会话重放/多账号识别 |
 | | `PluginVerificationService` | 插件完整性校验：SHA-256哈希对比、恶意插件名检测、JAR结构检查 |
 | | `ConnectionThrottleService` | 连接速率限制：多时间窗口IP追踪、递增延迟(2s/5s/15s/30s)、并发上限 |
