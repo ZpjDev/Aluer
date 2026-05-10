@@ -682,6 +682,26 @@ The largest package in the system, containing 30+ security services:
 | **Security Operations** | `SIEMService`, `SecurityOrchestrationService`, `SecurityAutomationScheduler`, `SecurityBaselineHardeningService`, `BackupSecurityService` | SIEM correlation, security orchestration, baseline hardening |
 | **Command Security** | `CommandExecutionGuardService` | Dangerous command interception (rm -rf / wget \| sh / privilege escalation) |
 | **Execution Layer** | `CloudflareIntegrationService`, `DNSSecurityService`, `SessionManagementService`, `LoadBalancerService`, `TrafficShapingService`, `EncryptionService` | Cloudflare API integration, DNS security, session management, load balancing, traffic shaping |
+| **Super Evolution v3.1** | `JwtAuthService` | JWT HMAC-SHA256 auth with constant-time comparison |
+| | `BruteForceProtectionService` | Three-layer time window (60s/600s/3600s) brute force defense |
+| | `AntiBotDetectionService` | Minecraft bot detection: name patterns/join velocity/multi-account |
+| | `AntiGriefDetectionService` | Block break/place rate monitoring, dangerous block detection |
+| | `ReverseShellDetectionService` | 50+ reverse shell pattern matching + obfuscated command detection |
+| | `ARPSpoofDetectionService` | ARP table baseline diff, MAC/Gateway spoof detection |
+| | `DNSTunnelDetectionService` | Subdomain entropy analysis, Base64 encoding detection |
+| | `ExploitSignatureService` | 15+ exploit signatures (Log4Shell/SQLi/XSS/Deserialization) |
+| | `SSRFProtectionService` | Internal IP/Cloud metadata/DNS rebinding protection |
+| | `XXEProtectionService` | XML entity injection + Billion Laughs attack detection |
+| | `CSPEnforcementService` | Content-Security-Policy + 8 security headers auto-generation |
+| | `DatabaseFirewallService` | SQL injection detection (UNION/sleep/stacked queries) |
+| | `DataLossPreventionService` | 12 sensitive data patterns (email/API key/SSH key/JWT/card) |
+| | `MemoryProtectionService` | JVM heap/GC overload/memory leak pattern detection |
+| | `ProcessInjectionDetectionService` | Thread spike/memory mapping/non-standard native lib detection |
+| | `SecureFileDeletionService` | DoD multi-pass overwrite (0x00/random/0xFF/0xAA) secure delete |
+| | `ForensicsCollectorService` | 6 evidence types (process/network/files/logs) case management |
+| | `IncidentResponseService` | 5 playbooks (DDoS/brute force/intrusion/MC exploit/data breach) |
+| | `ThreatHuntingService` | 10 proactive hunt rules (persistence/lateral/privilege/crypto/webshell) |
+| | `ComplianceScannerService` | 7 categories 20+ checks, auto compliance scoring (0-100%) |
 
 ### Operations Control Layer (`com.aluer.console`)
 

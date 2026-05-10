@@ -388,6 +388,60 @@ export ALUER_WEBHOOK_DISCORD="https://discord.com/api/webhooks/xxx/yyy"
 export ALUER_WEBHOOK_SLACK="https://hooks.slack.com/services/xxx/yyy/zzz"
 ```
 
+### 超进化安全模块 API（v3.1 新增）
+
+#### 身份认证与访问控制
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/security/auth/status` | GET | JWT 认证状态（活跃Token数、已吊销Token数） |
+| `/api/security/brute-force/status` | GET | 暴力破解防护状态（锁定账号、检测统计） |
+
+#### Minecraft 专项防护
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/security/anti-bot/status` | GET | 反机器人检测状态（被拦截IP、Bot分数） |
+| `/api/security/anti-grief/status` | GET | 反破坏检测状态（被标记玩家、方块破坏率） |
+
+#### 网络攻击监控
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/security/reverse-shell/status` | GET | 反向Shell检测状态 |
+| `/api/security/arp-spoof/status` | GET | ARP欺骗检测状态（MAC变更记录） |
+| `/api/security/dns-tunnel/status` | GET | DNS隧道检测状态 |
+| `/api/security/exploit-signature/status` | GET | 漏洞签名检测统计 |
+| `/api/security/exploit-signature/scan` | POST | 扫描内容中的漏洞签名 (参数: `content`, `source`) |
+
+#### Web与应用安全
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/security/ssrf/status` | GET | SSRF防护状态 |
+| `/api/security/xxe/status` | GET | XXE防护状态 |
+| `/api/security/csp/status` | GET | CSP违规统计 |
+| `/api/security/csp/headers` | GET | 获取推荐的安全响应头 |
+| `/api/security/database-firewall/status` | GET | 数据库防火墙状态 |
+| `/api/security/dlp/status` | GET | 数据防泄漏检测统计 |
+
+#### 系统保护
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/security/memory/status` | GET | JVM内存保护状态（堆使用率、GC统计） |
+| `/api/security/process-injection/status` | GET | 进程注入检测状态 |
+| `/api/security/secure-delete/status` | GET | 安全文件删除统计 |
+
+#### 安全运维
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/security/forensics/status` | GET | 取证案件列表与证据统计 |
+| `/api/security/incident-response/status` | GET | 事件响应状态（活跃事件、剧本列表） |
+| `/api/security/threat-hunting/status` | GET | 威胁狩猎状态（最近狩猎结果） |
+| `/api/security/compliance/status` | GET | 合规扫描结果（评分、通过/失败项） |
+
 ---
 
 ## 配置说明

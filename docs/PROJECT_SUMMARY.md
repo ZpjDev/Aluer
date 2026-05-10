@@ -143,5 +143,95 @@ AluerIII 是一个专为 Minecraft (PaperMC) 服务器设计的高级安全防�
 
 ---
 
+## 9. 超进化安全模块 (`com.aluer.security`) — v3.1 新增
+以下20个安全服务模块为超级进化 (Super Evolution) 版本新增，覆盖身份认证、网络攻防、应用安全、数据保护和运维响应全维度：
+
+### 9.1 身份与访问控制
+- **`JwtAuthService`** (JWT认证服务)
+  - 基于 HMAC-SHA256 的 JWT token 创建、验证、吊销。
+  - 支持自定义 Claims、过期时间、自动清理。
+  - 常量时间签名比对防止时序攻击。
+- **`BruteForceProtectionService`** (反暴力破解服务)
+  - 三层时间窗口检测 (60s/600s/3600s)。
+  - 渐进式登录延迟 (1s-15s)，IP 全局阈值监控。
+  - 自动账号锁定 + 自动解锁。
+
+### 9.2 Minecraft 专项防护
+- **`AntiBotDetectionService`** (反机器人检测)
+  - 6种机器人命名模式识别，10+已知机器人前缀检测。
+  - 加入速度/多账号/客户端品牌/IP洪水多维度评分。
+  - Minecraft 登录和状态包频率监控。
+- **`AntiGriefDetectionService`** (反破坏检测)
+  - 方块破坏/放置速率监控 (150/min爆破, 200/min放置)。
+  - 危险方块识别 (TNT/岩浆/水晶/凋零)。
+  - 隧道挖掘模式检测，容器掠夺监控，聊天刷屏检测。
+
+### 9.3 网络攻击检测
+- **`ReverseShellDetectionService`** (反向Shell检测)
+  - 50+ 反向Shell命令模式匹配 (bash/python/perl/php/ruby/lua/powershell)。
+  - 混淆命令检测 (base64编码/eval/exec)。
+  - 进程级Shell指标监控。
+- **`ARPSpoofDetectionService`** (ARP欺骗检测)
+  - ARP表周期性扫描与基线对比。
+  - MAC地址变更/重复MAC/网关欺骗三种攻击检测。
+  - 自动识别网关IP并重点监控。
+- **`DNSTunnelDetectionService`** (DNS隧道检测)
+  - 子域名熵值分析 (Shannon Entropy > 3.8)。
+  - Base32/Base64编码子域名识别。
+  - 查询频率/类型/TLD多维度评分，可疑域名TLD黑名单。
+- **`ExploitSignatureService`** (漏洞签名检测)
+  - 15+ 已知漏洞签名 (Log4Shell/JNDI/SQL注入/XSS/路径穿越/反序列化)。
+  - Minecraft 专属漏洞 (Book Exploit/Sign Exploit/Chunk Ban/NBT Traversal)。
+  - 命令注入和服务端配置篡改检测。
+
+### 9.4 Web与API安全
+- **`SSRFProtectionService`** (SSRF防护)
+  - 内网IP/云元数据端点/危险Scheme检测。
+  - DNS Rebinding + 十进制IP绕过 + URL编码绕过防护。
+  - 云厂商元数据地址全覆盖 (AWS/GCP/Azure/阿里云/腾讯云)。
+- **`XXEProtectionService`** (XXE防护)
+  - XML实体注入 + 十亿笑 (Billion Laughs) 攻击检测。
+  - 外部实体引用 + 实体扩展炸弹检测。
+  - XML自动净化处理。
+- **`CSPEnforcementService`** (CSP强制执行)
+  - Content-Security-Policy 头自动生成。
+  - 8个安全响应头 (CSP/HSTS/X-Frame/X-XSS/Referrer-Policy等)。
+  - XSS/Clickjacking反射检测。
+- **`DatabaseFirewallService`** (数据库防火墙)
+  - SQL注入检测 (UNION/注释/永真条件/堆叠查询/时间盲注)。
+  - 危险关键字拦截 (DROP/TRUNCATE/ALTER/INTO OUTFILE)。
+
+### 9.5 数据与内存保护
+- **`DataLossPreventionService`** (数据防泄漏)
+  - 12种敏感数据模式 (邮箱/API Key/密码/SSH Key/JWT/身份证/银行卡/电话号码/数据库连接串/MC Token/RCON密码/IP地址)。
+  - 自动脱敏 (Redaction) 功能，支持日志/聊天/配置文件扫描。
+- **`MemoryProtectionService`** (内存保护)
+  - JVM堆/非堆内存实时监控，GC过载检测。
+  - 内存泄漏模式识别 (连续5次以上堆使用率上升)。
+  - 自动GC触发和告警。
+- **`ProcessInjectionDetectionService`** (进程注入检测)
+  - 进程线程数量异常尖峰检测。
+  - /proc/{pid}/maps 新内存映射监控，非标准native库检测。
+  - /proc/{pid}/fd 文件描述符异常增长检测。
+- **`SecureFileDeletionService`** (安全文件删除)
+  - DoD 5220.22-M 风格多pass覆写 (0x00/随机/0xFF/0xAA 交替)。
+  - 文件截断 + fsync + 删除，支持递归目录安全删除。
+
+### 9.6 安全运维与合规
+- **`ForensicsCollectorService`** (取证收集器)
+  - 6种取证数据采集 (进程列表/网络连接/打开文件/系统日志/MC日志/时间戳快照)。
+  - 取证案件 (Case) 管理，自动保存到 forensics/ 目录。
+- **`IncidentResponseService`** (事件响应服务)
+  - 5套预定义响应剧本 (DDoS攻击/暴力破解/入侵检测/MC漏洞利用/数据泄露)。
+  - 自动化动作执行：限流/IP封禁/取证/备份恢复/Token吊销/密钥轮换。
+- **`ThreatHuntingService`** (威胁狩猎服务)
+  - 10种主动狩猎规则 (异常登录时间/可疑命令/持久化机制/横向移动/提权/数据外泄/挖矿/WebShell/后门账号/快速世界切换)。
+  - 分类：MINECRAFT/COMMAND/HOST/NETWORK/WEB。
+- **`ComplianceScannerService`** (合规扫描服务)
+  - 7大类20+项合规检查 (文件权限/加密标准/认证要求/审计日志/网络安全/MC服务端安全/备份合规)。
+  - 自动合规评分 (0-100%) 和修复建议生成。
+
+---
+
 ### 架构总结
 AluerIII 采用 **高度解耦的插件式架构**，底层通过 Spring 的依赖注入（DI）机制紧密配合。系统形成了一套 **实时监测 -> AI 深度分析 -> 策略下发 -> 自动防御** 的完整闭环，极大地降低了 Minecraft 服务器运维人员的安全管理成本。

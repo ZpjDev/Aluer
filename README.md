@@ -810,7 +810,7 @@ serverguard
 
 ### 安全防护层 (`com.aluer.security`)
 
-这是系统中规模最大的包，包含 30+ 个安全服务：
+这是系统中规模最大的包，包含 60+ 个安全服务（含 20 个超进化 v3.1 新增模块）：
 
 | 类别 | 类 | 功能 |
 |------|-----|------|
@@ -860,6 +860,26 @@ serverguard
 | | `LoadBalancerService` | 简易负载均衡 |
 | | `TrafficShapingService` | 流量整形/QoS |
 | | `EncryptionService` | 数据加密工具 |
+| **超进化 v3.1** | `JwtAuthService` | JWT Token HMAC-SHA256 认证，常量时间签名比对 |
+| | `BruteForceProtectionService` | 三层时间窗口(60s/600s/3600s)暴力破解防护，渐进延迟 |
+| | `AntiBotDetectionService` | Minecraft 机器人检测：命名模式/加入速度/多账号/客户端品牌 |
+| | `AntiGriefDetectionService` | 方块破坏/放置速率监控，危险方块识别，容器掠夺检测 |
+| | `ReverseShellDetectionService` | 50+ 反向Shell命令模式匹配，混淆命令检测 |
+| | `ARPSpoofDetectionService` | ARP表基线对比，MAC变更/网关欺骗/重复MAC检测 |
+| | `DNSTunnelDetectionService` | 子域名熵值分析，Base64编码识别，频率/TLD评分 |
+| | `ExploitSignatureService` | 15+ 漏洞签名(Log4Shell/SQLi/XSS/反序列化/Book Exploit) |
+| | `SSRFProtectionService` | 内网IP/云元数据/危险Scheme/DNS Rebinding防护 |
+| | `XXEProtectionService` | XML实体注入 + Billion Laughs 攻击检测与净化 |
+| | `CSPEnforcementService` | Content-Security-Policy + 8项安全响应头自动生成 |
+| | `DatabaseFirewallService` | SQL注入检测(UNION/注释/堆叠查询/时间盲注) |
+| | `DataLossPreventionService` | 12种敏感数据模式(邮箱/API Key/SSH Key/JWT/银行卡) |
+| | `MemoryProtectionService` | JVM堆监控/GC过载/内存泄漏模式识别 |
+| | `ProcessInjectionDetectionService` | 进程线程尖峰/内存映射/非标准native库检测 |
+| | `SecureFileDeletionService` | DoD多pass覆写(0x00/随机/0xFF/0xAA)安全删除 |
+| | `ForensicsCollectorService` | 6种取证数据(进程/网络/文件/日志)案件管理 |
+| | `IncidentResponseService` | 5套响应剧本(DDoS/爆破/入侵/MC漏洞/数据泄露) |
+| | `ThreatHuntingService` | 10种主动狩猎规则(持久化/横向移动/提权/挖矿/WebShell) |
+| | `ComplianceScannerService` | 7大类20+项合规检查，自动评分(0-100%) |
 
 ### 运营控制层 (`com.aluer.console`)
 
