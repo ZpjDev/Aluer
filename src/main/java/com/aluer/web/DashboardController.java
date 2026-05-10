@@ -4,6 +4,8 @@ import com.aluer.ai.DeepSeekClient;
 import com.aluer.audit.SecurityAuditService;
 import com.aluer.backup.BackupService;
 import com.aluer.config.ServerGuardConfig;
+import com.aluer.notification.AttackReportService;
+import com.aluer.notification.WebhookService;
 import com.aluer.punishment.PunishmentService;
 import com.aluer.profiler.PerformanceProfiler;
 import com.aluer.security.NetworkThreatFusionService;
@@ -28,6 +30,9 @@ public class DashboardController {
     private final DeepSeekClient deepSeekClient;
     private final ServerGuardConfig config;
     private final NetworkThreatFusionService networkThreatFusionService;
+    private final HealthService healthService;
+    private final AttackReportService attackReportService;
+    private final WebhookService webhookService;
 
     public DashboardController(
             RconClient rconClient,
@@ -38,7 +43,10 @@ public class DashboardController {
             WorldManagementService worldService,
             DeepSeekClient deepSeekClient,
             ServerGuardConfig config,
-            NetworkThreatFusionService networkThreatFusionService) {
+            NetworkThreatFusionService networkThreatFusionService,
+            HealthService healthService,
+            AttackReportService attackReportService,
+            WebhookService webhookService) {
         this.rconClient = rconClient;
         this.profiler = profiler;
         this.backupService = backupService;
@@ -48,6 +56,9 @@ public class DashboardController {
         this.deepSeekClient = deepSeekClient;
         this.config = config;
         this.networkThreatFusionService = networkThreatFusionService;
+        this.healthService = healthService;
+        this.attackReportService = attackReportService;
+        this.webhookService = webhookService;
     }
 
     @GetMapping("/status")
@@ -165,5 +176,50 @@ public class DashboardController {
         Map<String, Object> status = new HashMap<>();
         status.put("enabled", true);
         return status;
+    }
+
+    @GetMapping("/health")
+    public Map<String, Object> getHealth() {
+        return healthService.getHealthReport();
+    }
+
+    @GetMapping("/health/live")
+    public Map<String, Object> getLiveness() {
+        return healthService.getLiveness();
+    }
+
+    @GetMapping("/health/ready")
+    public Map<String, Object> getReadiness() {
+        return healthService.getReadiness();
+    }
+
+    @GetMapping("/attacks/recent")
+    public Map<String, Object> getRecentAttacks(@RequestParam(defaultValue = "20") int limit) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("count", Math.min(limit, attackReportService.getRecentAttacks(Integer.MAX_VALUE).size()));
+        response.put("items", attackReportService.getRecentAttacks(limit));
+        return response;
+    }
+
+    @PostMapping("/attacks/report")
+    public Map<String, Object> generateAttackReport() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            java.io.File report = attackReportService.saveHtmlReport();
+            response.put("status", "generated");
+            response.put("path", report.getAbsolutePath());
+        } catch (Exception e) {
+            response.put("status", "failed");
+            response.put("error", e.getMessage());
+        }
+        return response;
+    }
+
+    @PostMapping("/webhook/test")
+    public Map<String, Object> testWebhook() {
+        Map<String, Object> response = new HashMap<>();
+        webhookService.sendCustomMessage("Aluer ServerGuard Test", "Webhook integration test successful.", "info");
+        response.put("status", "sent");
+        return response;
     }
 }
