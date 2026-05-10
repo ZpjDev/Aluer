@@ -1,3 +1,9 @@
+<div align="right">
+
+[**English**](README_EN.md) · **简体中文**
+
+</div>
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Java-Dark.svg" width="48" height="48" />
