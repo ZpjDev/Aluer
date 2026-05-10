@@ -55,6 +55,12 @@ public class DashboardController {
     private final ThreatHuntingService threatHuntingService;
     private final ComplianceScannerService complianceScannerService;
     private final AntiGriefDetectionService antiGriefDetectionService;
+    // Minecraft super-evolution services
+    private final AntiXrayDetectionService antiXrayDetectionService;
+    private final AntiFlyDetectionService antiFlyDetectionService;
+    private final AntiDupeDetectionService antiDupeDetectionService;
+    private final CrashExploitProtectionService crashExploitProtectionService;
+    private final LagMachineDetectionService lagMachineDetectionService;
 
     @SuppressWarnings("java:S107")
     public DashboardController(
@@ -89,7 +95,12 @@ public class DashboardController {
             IncidentResponseService incidentResponseService,
             ThreatHuntingService threatHuntingService,
             ComplianceScannerService complianceScannerService,
-            AntiGriefDetectionService antiGriefDetectionService) {
+            AntiGriefDetectionService antiGriefDetectionService,
+            AntiXrayDetectionService antiXrayDetectionService,
+            AntiFlyDetectionService antiFlyDetectionService,
+            AntiDupeDetectionService antiDupeDetectionService,
+            CrashExploitProtectionService crashExploitProtectionService,
+            LagMachineDetectionService lagMachineDetectionService) {
         this.rconClient = rconClient;
         this.profiler = profiler;
         this.backupService = backupService;
@@ -122,6 +133,11 @@ public class DashboardController {
         this.threatHuntingService = threatHuntingService;
         this.complianceScannerService = complianceScannerService;
         this.antiGriefDetectionService = antiGriefDetectionService;
+        this.antiXrayDetectionService = antiXrayDetectionService;
+        this.antiFlyDetectionService = antiFlyDetectionService;
+        this.antiDupeDetectionService = antiDupeDetectionService;
+        this.crashExploitProtectionService = crashExploitProtectionService;
+        this.lagMachineDetectionService = lagMachineDetectionService;
     }
 
     @GetMapping("/status")
@@ -423,5 +439,32 @@ public class DashboardController {
     @GetMapping("/security/anti-grief/status")
     public Map<String, Object> getAntiGriefStatus() {
         return antiGriefDetectionService.getStatus();
+    }
+
+    // --- Minecraft专项安全 API ---
+
+    @GetMapping("/security/anti-xray/status")
+    public Map<String, Object> getAntiXrayStatus() {
+        return antiXrayDetectionService.getStatus();
+    }
+
+    @GetMapping("/security/anti-fly/status")
+    public Map<String, Object> getAntiFlyStatus() {
+        return antiFlyDetectionService.getStatus();
+    }
+
+    @GetMapping("/security/anti-dupe/status")
+    public Map<String, Object> getAntiDupeStatus() {
+        return antiDupeDetectionService.getStatus();
+    }
+
+    @GetMapping("/security/crash-exploit/status")
+    public Map<String, Object> getCrashExploitStatus() {
+        return crashExploitProtectionService.getStatus();
+    }
+
+    @GetMapping("/security/lag-machine/status")
+    public Map<String, Object> getLagMachineStatus() {
+        return lagMachineDetectionService.getStatus();
     }
 }

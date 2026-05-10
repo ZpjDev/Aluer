@@ -810,7 +810,7 @@ serverguard
 
 ### 安全防护层 (`com.aluer.security`)
 
-这是系统中规模最大的包，包含 60+ 个安全服务（含 20 个超进化 v3.1 新增模块）：
+这是系统中规模最大的包，包含 65+ 个安全服务（含 25 个超进化 v3.2 新增模块）：
 
 | 类别 | 类 | 功能 |
 |------|-----|------|
@@ -880,6 +880,11 @@ serverguard
 | | `IncidentResponseService` | 5套响应剧本(DDoS/爆破/入侵/MC漏洞/数据泄露) |
 | | `ThreatHuntingService` | 10种主动狩猎规则(持久化/横向移动/提权/挖矿/WebShell) |
 | | `ComplianceScannerService` | 7大类20+项合规检查，自动评分(0-100%) |
+| **Minecraft专属** | `AntiXrayDetectionService` | X-ray透视检测：钻石/石头比率分析、直线挖掘、黑暗环境精准采矿 |
+| | `AntiFlyDetectionService` | 飞行/速度/传送外挂检测：垂直限速、水平限速、留空时间、无摔伤检测 |
+| | `AntiDupeDetectionService` | 物品复制检测：堆叠溢出、高价值物品暴涨、9种已知复制方法监测 |
+| | `CrashExploitProtectionService` | 崩溃漏洞防护：超大包/负长度/NBT嵌套/书与笔/Sign炸弹/Tile Entity洪水 |
+| | `LagMachineDetectionService` | 卡服机检测：Observer链/TNT堆叠/红石密度/实体刷怪/掉落方块洪流 |
 
 ### 运营控制层 (`com.aluer.console`)
 

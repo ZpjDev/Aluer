@@ -442,6 +442,16 @@ export ALUER_WEBHOOK_SLACK="https://hooks.slack.com/services/xxx/yyy/zzz"
 | `/api/security/threat-hunting/status` | GET | 威胁狩猎状态（最近狩猎结果） |
 | `/api/security/compliance/status` | GET | 合规扫描结果（评分、通过/失败项） |
 
+#### Minecraft 专属安全（v3.2 新增）
+
+| 接口路径 | 方法 | 说明 |
+|----------|------|------|
+| `/api/security/anti-xray/status` | GET | X-ray透视检测状态（可疑玩家、钻石/石头比） |
+| `/api/security/anti-fly/status` | GET | 飞行/速度外挂检测状态 |
+| `/api/security/anti-dupe/status` | GET | 物品复制检测状态（堆叠异常、高价值物品暴涨） |
+| `/api/security/crash-exploit/status` | GET | 崩溃漏洞防护状态（超大包、NBT炸弹、书与笔攻击） |
+| `/api/security/lag-machine/status` | GET | 卡服机检测状态（Observer链、TNT堆、红石密度） |
+
 ---
 
 ## 配置说明

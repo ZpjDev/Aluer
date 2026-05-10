@@ -667,7 +667,7 @@ serverguard
 
 ### Security Defense Layer (`com.aluer.security`)
 
-The largest package in the system, containing 30+ security services:
+The largest package in the system, containing 65+ security services (with 25 Super Evolution v3.2 modules):
 
 | Category | Key Classes | Description |
 |----------|------------|-------------|
@@ -702,6 +702,11 @@ The largest package in the system, containing 30+ security services:
 | | `IncidentResponseService` | 5 playbooks (DDoS/brute force/intrusion/MC exploit/data breach) |
 | | `ThreatHuntingService` | 10 proactive hunt rules (persistence/lateral/privilege/crypto/webshell) |
 | | `ComplianceScannerService` | 7 categories 20+ checks, auto compliance scoring (0-100%) |
+| **Minecraft-Specific** | `AntiXrayDetectionService` | X-ray detection: diamond/stone ratio, straight-line mining, dark precision |
+| | `AntiFlyDetectionService` | Fly/speed/teleport hack detection: vertical/horizontal limits, air time |
+| | `AntiDupeDetectionService` | Item duplication detection: stack overflow, high-value item surges, 9 known methods |
+| | `CrashExploitProtectionService` | Crash exploit protection: oversized packets, NBT bombs, book/sign exploits |
+| | `LagMachineDetectionService` | Lag machine detection: observer chains, TNT stacks, entity spam, falling blocks |
 
 ### Operations Control Layer (`com.aluer.console`)
 
