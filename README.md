@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/react-19.1-61dafb?logo=react" alt="React 19">
   <img src="https://img.shields.io/badge/vite-6.3-purple?logo=vite" alt="Vite 6">
   <img src="https://img.shields.io/badge/deepseek-ai-536DFE?logo=openai" alt="DeepSeek AI">
-  <img src="https://img.shields.io/badge/license-custom-red" alt="License">
+  <img src="https://img.shields.io/badge/license-apache-2.0-red" alt="License">
 </p>
 
 <h1 align="center">Aluer ServerGuard</h1>
