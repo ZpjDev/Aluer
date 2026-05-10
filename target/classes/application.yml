@@ -165,6 +165,14 @@ serverguard:
       require-engine-handshake: true
       handshake-ttl-seconds: 30
 
+  webhook:
+    enabled: false
+    discord-url: ${ALUER_WEBHOOK_DISCORD:}
+    slack-url: ${ALUER_WEBHOOK_SLACK:}
+
+  report:
+    dir: ./reports
+
 server:
   port: 8080
 

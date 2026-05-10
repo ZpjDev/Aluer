@@ -153,14 +153,68 @@
   "hotPaths": [
     {
       "path": "README.md",
+      "accessCount": 25,
+      "lastAccessed": 1778401451820,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\java\\com\\aluer\\service\\ServerGuardService.java",
+      "accessCount": 8,
+      "lastAccessed": 1778399401322,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\java\\com\\aluer\\web\\DashboardController.java",
       "accessCount": 4,
-      "lastAccessed": 1778397739918,
+      "lastAccessed": 1778399547099,
+      "type": "file"
+    },
+    {
+      "path": "docs\\USER_MANUAL.md",
+      "accessCount": 4,
+      "lastAccessed": 1778401219639,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\resources\\application.yml",
+      "accessCount": 3,
+      "lastAccessed": 1778399573979,
+      "type": "file"
+    },
+    {
+      "path": "docs\\PROJECT_SUMMARY.md",
+      "accessCount": 3,
+      "lastAccessed": 1778400732599,
       "type": "file"
     },
     {
       "path": "pom.xml",
       "accessCount": 2,
       "lastAccessed": 1778398246314,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\java\\com\\aluer\\notification\\AttackReportService.java",
+      "accessCount": 2,
+      "lastAccessed": 1778399407185,
+      "type": "file"
+    },
+    {
+      "path": "frontend\\src\\App.jsx",
+      "accessCount": 2,
+      "lastAccessed": 1778399936325,
+      "type": "file"
+    },
+    {
+      "path": "frontend\\src\\styles.css",
+      "accessCount": 2,
+      "lastAccessed": 1778400093962,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\java\\com\\aluer\\ServerGuardApplication.java",
+      "accessCount": 2,
+      "lastAccessed": 1778400191190,
       "type": "file"
     },
     {
@@ -218,33 +272,9 @@
       "type": "file"
     },
     {
-      "path": "src\\main\\java\\com\\aluer\\ServerGuardApplication.java",
-      "accessCount": 1,
-      "lastAccessed": 1778397739772,
-      "type": "file"
-    },
-    {
-      "path": "docs\\PROJECT_SUMMARY.md",
-      "accessCount": 1,
-      "lastAccessed": 1778397739824,
-      "type": "file"
-    },
-    {
       "path": "frontend\\package.json",
       "accessCount": 1,
       "lastAccessed": 1778397740005,
-      "type": "file"
-    },
-    {
-      "path": "src\\main\\resources\\application.yml",
-      "accessCount": 1,
-      "lastAccessed": 1778397740118,
-      "type": "file"
-    },
-    {
-      "path": "frontend\\src\\App.jsx",
-      "accessCount": 1,
-      "lastAccessed": 1778397767139,
       "type": "file"
     },
     {
@@ -260,12 +290,6 @@
       "type": "file"
     },
     {
-      "path": "src\\main\\java\\com\\aluer\\service\\ServerGuardService.java",
-      "accessCount": 1,
-      "lastAccessed": 1778397767677,
-      "type": "file"
-    },
-    {
       "path": "src\\main\\java\\com\\aluer\\kernel\\AluerKernelEngine.java",
       "accessCount": 1,
       "lastAccessed": 1778397767770,
@@ -275,12 +299,6 @@
       "path": "frontend\\vite.config.js",
       "accessCount": 1,
       "lastAccessed": 1778397767867,
-      "type": "file"
-    },
-    {
-      "path": "frontend\\src\\styles.css",
-      "accessCount": 1,
-      "lastAccessed": 1778397792638,
       "type": "file"
     },
     {
@@ -311,6 +329,48 @@
       "path": "src\\main\\java\\com\\aluer\\security\\NetworkThreatFusionService.java",
       "accessCount": 1,
       "lastAccessed": 1778397794216,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\java\\com\\aluer\\web\\HealthService.java",
+      "accessCount": 1,
+      "lastAccessed": 1778399317763,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\java\\com\\aluer\\web\\RequestLoggingFilter.java",
+      "accessCount": 1,
+      "lastAccessed": 1778399319971,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\java\\com\\aluer\\config\\CorsConfig.java",
+      "accessCount": 1,
+      "lastAccessed": 1778399321707,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\java\\com\\aluer\\notification\\WebhookService.java",
+      "accessCount": 1,
+      "lastAccessed": 1778399323386,
+      "type": "file"
+    },
+    {
+      "path": "src\\main\\resources\\banner.txt",
+      "accessCount": 1,
+      "lastAccessed": 1778400185516,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1778401199882,
+      "type": "directory"
+    },
+    {
+      "path": "README_EN.md",
+      "accessCount": 1,
+      "lastAccessed": 1778401892952,
       "type": "file"
     }
   ],

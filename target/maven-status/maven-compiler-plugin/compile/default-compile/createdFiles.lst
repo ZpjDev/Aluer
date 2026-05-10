@@ -2,6 +2,7 @@ com\aluer\ai\DeepSeekClient$AutonomyDirective.class
 com\aluer\console\RemoteSshGatewayService$ConnectRequest.class
 com\aluer\security\DDoSProtectionService$TrafficRecord.class
 com\aluer\security\GeoIPService$GeoLocation.class
+com\aluer\web\RequestLoggingFilter.class
 com\aluer\security\WebApplicationFirewall$WAFResult.class
 com\aluer\config\ServerGuardConfig$KernelConfig.class
 com\aluer\security\RateLimitService$RateLimitRule.class
@@ -158,6 +159,7 @@ com\aluer\config\ServerGuardConfig$DashboardConfig.class
 com\aluer\security\TrafficAnalysisService$TrafficSession.class
 com\aluer\kernel\AluerKernelEngine$KernelModule.class
 com\aluer\security\DistributedAttackMitigationService$MitigationRule.class
+com\aluer\web\HealthService.class
 com\aluer\security\SecurityBaselineHardeningService$HardeningReport.class
 com\aluer\console\AluerMirageShieldService$ShieldMode.class
 com\aluer\security\TrafficShapingService.class
@@ -201,6 +203,7 @@ com\aluer\security\IntrusionDetectionService$SuspiciousActivity.class
 com\aluer\security\BackupSecurityService$BackupJob.class
 com\aluer\security\NetworkThreatFusionService.class
 com\aluer\security\TrafficAnalysisService$TrafficSample.class
+com\aluer\config\CorsConfig.class
 com\aluer\security\DistributedAttackMitigationService$MitigationEvent.class
 com\aluer\ai\AttackDetector$LoginAttemptRecord.class
 com\aluer\security\NetworkMonitorService.class
@@ -216,6 +219,7 @@ com\aluer\kernel\AluerKernelTaskBus$KernelTask.class
 com\aluer\security\FlowAnalyzerService.class
 com\aluer\config\ServerGuardConfig$AutoExecuteConfig.class
 com\aluer\config\ServerGuardConfig$ChatFilterConfig.class
+com\aluer\notification\WebhookService.class
 com\aluer\security\CloudflareIntegrationService$EdgeActionResult.class
 com\aluer\security\CommandExecutionGuardService$AntiIntrusionIncident.class
 com\aluer\backup\BackupService$BackupTask.class
@@ -380,5 +384,6 @@ com\aluer\config\ServerGuardConfig$AiConfig.class
 com\aluer\security\PortScanDetectionService$ScanEvent.class
 com\aluer\console\AluerEngineHandshakeService$HandshakeRecord.class
 com\aluer\security\SecurityBaselineHardeningService$HardeningFinding.class
+com\aluer\notification\AttackReportService.class
 com\aluer\console\AluerEngineHandshakeService$HandshakeResult.class
 com\aluer\config\ServerGuardConfig$AutonomyConfig.class
