@@ -1,0 +1,18 @@
+
+${AnsiColor.BRIGHT_CYAN}    ╔════════════════════════════════════════════════════════════╗
+    ║                                                            ║
+    ║       █████╗ ██╗     ██╗   ██╗███████╗██████╗             ║
+    ║      ██╔══██╗██║     ██║   ██║██╔════╝██╔══██╗            ║
+    ║      ███████║██║     ██║   ██║█████╗  ██████╔╝            ║
+    ║      ██╔══██║██║     ██║   ██║██╔══╝  ██╔══██╗            ║
+    ║      ██║  ██║███████╗╚██████╔╝███████╗██║  ██║            ║
+    ║      ╚═╝  ╚═╝╚══════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝            ║
+    ║                                                            ║
+    ║         ServerGuard v1.0.0                                 ║
+    ║         AI-Powered Minecraft Server Protection             ║
+    ║                                                            ║
+    ╚════════════════════════════════════════════════════════════╝${AnsiStyle.NORMAL}
+
+  ${AnsiColor.BRIGHT_GREEN}:: DeepSeek AI Powered ::${AnsiStyle.NORMAL} ${AnsiColor.BRIGHT_WHITE}Autonomous Defense Engine${AnsiStyle.NORMAL}
+  ${AnsiColor.BRIGHT_GREEN}:: Multi-Layer Kernel ::${AnsiStyle.NORMAL} ${AnsiColor.BRIGHT_WHITE}Signal Fusion + Threat Mesh${AnsiStyle.NORMAL}
+  ${AnsiColor.BRIGHT_GREEN}:: Mirage Shield ::${AnsiStyle.NORMAL} ${AnsiColor.BRIGHT_WHITE}4-Mode Adaptive Protection${AnsiStyle.NORMAL}

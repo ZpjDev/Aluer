@@ -12,7 +12,8 @@
       "Bash(echo \"INSTALLED: $\\(omc --version)",
       "Bash(npm install *)",
       "Bash(claude mcp *)",
-      "Bash(gh auth *)"
+      "Bash(gh auth *)",
+      "Bash(gh release create v3.0 target/serverguard.jar --title 'Aluer ServerGuard v3.0' --notes ' *)"
     ]
   },
   "enabledPlugins": {
