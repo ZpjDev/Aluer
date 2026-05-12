@@ -1,0 +1,28 @@
+# IDE
+.vscode/
+*.iml
+
+# .idea/ is intentionally tracked — shared IDE config
+
+# Claude / OMC
+.claude/
+.omc/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+target/
+*.class
+
+# Logs
+spring-shell.log
+*.log
+
+# Forensics output
+forensics/
+
+# Frontend node_modules
+frontend/node_modules/
+frontend/dist/
