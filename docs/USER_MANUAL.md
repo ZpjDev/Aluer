@@ -1,665 +1,607 @@
-# Aluer 服务器安全防护系统 - 用户手册
+# Aluer ServerGuard V5.0 -- 用户手册
 
 ## 目录
+
 1. [系统简介](#系统简介)
-2. [功能特性](#功能特性)
+2. [功能特性概览](#功能特性概览)
 3. [安装部署](#安装部署)
-4. [快速开始](#快速开始)
-5. [AI协作终端](#ai协作终端)
-6. [命令参考](#命令参考)
-7. [配置说明](#配置说明)
-8. [预警系统](#预警系统)
-9. [常见问题](#常见问题)
+4. [配置说明](#配置说明)
+5. [命令参考](#命令参考)
+6. [Web 控制台使用](#web-控制台使用)
+7. [告警与通知](#告警与通知)
+8. [故障排查](#故障排查)
+9. [性能调优](#性能调优)
+10. [常见问题](#常见问题)
 
 ---
 
 ## 系统简介
 
-Aluer 是一款专为 Minecraft PaperMC 服务器设计的安全防护系统，集成了 AI 智能决策、DDoS 防护、入侵检测等多种安全功能。系统采用 Java + Spring Boot 开发，支持通过终端命令行或自然语言与系统交互。
+Aluer ServerGuard 是一款 AI 驱动的 Minecraft PaperMC 服务器全方位安全防护系统。它提供两种运行模式：
 
-### 核心特性
-- 🤖 **AI 智能决策** - 基于 DeepSeek API 的智能威胁分析
-- 🛡️ **多层防御** - DDoS防护、防火墙、入侵检测、VPN检测
-- 📧 **邮件预警** - 实时告警通知管理员
-- 🔄 **自动备份** - 定时自动备份服务器数据
-- 💬 **聊天过滤** - 智能过滤违规内容和广告
-- 🔔 **Webhook 通知** - Discord / Slack 实时推送安全告警
-- 📊 **攻击报告** - 自动生成 HTML 安全事件报告
-- ❤️ **健康检查** - 组件级健康探针，兼容 K8s 部署
+- **Plugin 内嵌模式（推荐）**：以 Paper 插件形式直接在 Minecraft 进程内运行，通过 WebSocket 与外部分析引擎通信。延迟 < 1ms，性能最高。
+- **External 外部监控模式**：以独立进程运行，通过 RCON 和日志监控进行外部防护。
+
+本系统包含 135+ 安全模块，覆盖反作弊、DDoS 防御、入侵检测、漏洞防护、聊天安全、主机安全、ML/AI 行为分析等领域。
 
 ---
 
-## 功能特性
+## 功能特性概览
 
-### 安全防护模块
-| 模块 | 功能说明 |
-|------|----------|
-| DDoS防护 | 流量清洗、IP封禁、连接限制 |
-| 防火墙 | 灵活规则配置、黑白名单 |
-| 入侵检测 (IDS/IPS) | 异常行为识别、自动防御拦截 |
-| 端口扫描检测 | 防护恶意扫描 |
-| IP信誉查询 | 评估IP风险等级 |
-| VPN/代理检测 | 识别并封禁VPN用户 |
-| 流量分析 | 实时监控网络流量 |
-| 数据包检查 (DPI) | 深度包检测与特征匹配 |
+### 核心功能
 
-### 高级进阶防护
-| 模块 | 功能说明 |
-|------|----------|
-| WAF防火墙 | 针对Web面板和API的恶意请求防护 |
-| 蜜罐系统 (Honeypot) | 诱导并捕获恶意攻击者 |
-| 零信任架构 (ZTA) | 强制身份验证、严格的权限控制 |
-| Cloudflare 集成 | 自动同步真实玩家IP，联动CDN防御 |
-| 反作弊集成 | 自动联动服务端反作弊插件，智能判定 |
-| 威胁情报中心 | 全局恶意IP库共享与实时更新 |
-
-### AI 自主防御
-- 自动威胁检测与分类
-- 智能防御策略选择
-- 预测性维护建议
-- 自动执行防御动作
-
-### 服务器管理
-- 定时自动备份（世界、插件、配置）
-- 玩家管理（踢出、封禁、解封）
-- 世界管理（动态加载、卸载）
-- 高级性能监控与分析 (Profiler)
-- 安全审计与数据导出 (Data Export)
+| 功能 | 说明 |
+|------|------|
+| AI 行为分析 | 基于 Isolation Forest 的异常检测，自动识别异常玩家行为 |
+| DeepSeek 集成 | 大模型自动分析安全告警，生成防御策略并自主执行 |
+| 全量反作弊 | 100% 覆盖 Meteor Client 全部 50 个 hack 模块 |
+| DDoS 防御 | 多层协同防御（SYN/UDP/ICMP/HTTP/Minecraft 专属） |
+| 自愈系统 | TPS/CPU/内存异常自动恢复，自动白名单、自动备份 |
+| Web 控制台 | Nebula Console 实时仪表盘，SSH 远程管理 |
+| 邮件告警 | SMTP 邮件通知，支持速率限制和多收件人 |
+| 备份管理 | 定时全量/增量备份，完整性校验（SHA-256） |
+| 定时任务 | 每日重启/清 lag/周备份，全自动调度 |
+| 聊天过滤 | 广告/钓鱼/洪水/敏感词检测，自动禁言/踢出 |
 
 ---
 
 ## 安装部署
 
 ### 环境要求
-- Java 17 或更高版本
-- Ubuntu/Debian 服务器
-- 2GB+ 可用内存
-- 10GB+ 可用磁盘空间
 
-### 安装步骤
+| 依赖 | 最低版本 | 说明 |
+|------|---------|------|
+| Java JDK | 21 | 编译和运行 |
+| PaperMC | 1.21.1 | Minecraft 服务端（Plugin 模式） |
+| 操作系统 | Linux (推荐) / Windows | 64 位 |
+| 内存 | 512 MB 可用 | 引擎占用 ~200MB |
+| 磁盘 | 100 MB | 不含日志和备份 |
 
-#### 1. 上传文件到服务器
+### 方式一：Plugin 内嵌模式（推荐）
+
+**步骤 1：编译项目**
+
 ```bash
-# 在本地打包
-cd /path/to/AluerIII
+cd /opt/AluerIII
 ./apache-maven-3.9.6/bin/mvn package -DskipTests
-
-# 上传 jar 包和配置到服务器
-scp target/AluerServerGuard-V4.0.jar user@your-server:/opt/aluer/
-scp start.sh user@your-server:/opt/aluer/
 ```
 
-#### 2. 配置系统服务
+**步骤 2：安装插件**
+
 ```bash
-# 创建 systemd 服务文件
-sudo nano /etc/systemd/system/aluer.service
+cp target/serverguard-4.0.0.jar /opt/minecraft/plugins/AluerServerGuard.jar
 ```
 
-写入以下内容：
-```ini
-[Unit]
-Description=Aluer ServerGuard
-After=network.target
+**步骤 3：创建插件配置** `/opt/minecraft/plugins/AluerServerGuard/config.yml`：
 
-[Service]
-Type=simple
-User=minecraft
-WorkingDirectory=/opt/aluer
-ExecStart=/usr/bin/java -jar /opt/aluer/AluerServerGuard-V4.0.jar
-Restart=on-failure
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
+```yaml
+server-url: ws://localhost:8080/agent
 ```
 
-#### 3. 启动服务
+**步骤 4：配置环境变量（可选但推荐）**
+
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl enable aluer
-sudo systemctl start aluer
-
-# 查看状态
-sudo systemctl status aluer
+export DEEPSEEK_API_KEY="sk-your-api-key"
+export ALUER_ALERT_SMTP_USERNAME="your-email@qq.com"
+export ALUER_ALERT_SMTP_PASSWORD="your-smtp-password"
+export ALUER_ALERT_EMAIL_PRIMARY="admin@example.com"
+export RCON_PASSWORD="your-rcon-password"
 ```
 
----
+**步骤 5：启动 ServerGuard 引擎**
 
-## 快速开始
-
-### 启动系统
 ```bash
-# 方式1: 直接运行
-java -jar AluerServerGuard-V4.0.jar
-
-# 方式2: 使用启动脚本
-./start.sh
-
-# 方式3: 使用系统服务
-sudo systemctl start aluer
+java -jar target/serverguard-4.0.0.jar
 ```
 
-### 首次使用
-系统启动后会进入交互式终端：
+**步骤 6：启动 Minecraft 服务器**
 
-```
-╔══════════════════════════════════════════════════╗
-║       欢迎使用 Aluer 服务器安全防护系统          ║
-╠══════════════════════════════════════════════════╣
-║  输入 help 查看可用命令                          ║
-║  输入 ai <命令> 使用AI智能助手                   ║
-╚══════════════════════════════════════════════════╝
-aluer>
+```bash
+cd /opt/minecraft
+java -Xms4G -Xmx4G -jar paper-1.21.11.jar
 ```
 
----
+**验证安装成功：**
 
-## AI协作终端
-
-Aluer 的核心特性是可以用自然语言与系统对话。
-
-### 使用方式
-在终端输入 `ai` 后跟你的需求：
-
+查看 Minecraft 控制台输出，应该看到：
 ```
-aluer> ai 测试一下服务器
-```
-系统会自动执行完整服务器测试。
-
-```
-aluer> ai 开启防御
-```
-系统会开启AI自主防御模式。
-
-### 常用对话示例
-| 你说 | 系统执行 |
-|------|----------|
-| 测试一下服务器 | 执行完整测试 |
-| 开启防御 | 开启AI防御 |
-| 查看安全状态 | 显示安全概览 |
-| 帮我备份 | 查看备份记录 |
-| 查看世界 | 列出所有世界 |
-| 发送预警邮件 | 手动触发预警 |
-
----
-
-## 命令参考
-
-### 基础命令
-
-#### help - 帮助
-```
-aluer> help
-```
-显示所有可用命令。
-
-#### status - 服务器状态
-```
-aluer> status
-```
-显示服务器整体状态，包括CPU、内存、连接数等。
-
-#### test - 测试服务器
-```
-aluer> test                    # 完整测试
-aluer> test cpu               # 仅CPU测试
-aluer> test memory            # 仅内存测试
-aluer> test network           # 仅网络测试
-aluer> test security          # 仅安全测试
+[AluerServerGuard] Aluer ServerGuard Agent v5.0.0
+[AluerServerGuard] 轻量数据采集前端 - 连接外部 ServerGuard 引擎
+[AluerServerGuard] WebSocket connected to ws://localhost:8080/agent
 ```
 
-### 安全命令
-
-#### security - 安全状态
+查看 ServerGuard 控制台输出，应该看到：
 ```
-aluer> security               # 安全总览
-aluer> security ddos         # DDoS防护状态
-aluer> security firewall      # 防火墙状态
-aluer> security intrusion    # 入侵检测状态
-aluer> security threats      # AI威胁检测
-aluer> security vpn          # VPN检测状态
-aluer> security chat         # 聊天过滤状态
+Agent connected: agent-xxxx
+Agent handshake completed: agent-xxxx
 ```
 
-#### defense - 防御管理
-```
-aluer> defense                # 查看防御状态
-aluer> defense on            # 开启AI防御
-aluer> defense off           # 关闭AI防御
-aluer> defense list          # 查看防御策略
-aluer> defense level high     # 设置防御等级
-```
+### 方式二：External 外部监控模式
 
-### 管理命令
+**步骤 1：编译**
 
-#### backup - 备份管理
-```
-aluer> backup                 # 查看备份记录
-aluer> backup create         # 创建新备份
-aluer> backup status         # 备份服务状态
-aluer> backup start          # 启动定时备份
+```bash
+./apache-maven-3.9.6/bin/mvn package -DskipTests
 ```
 
-#### kick - 踢出玩家
-```
-aluer> kick PlayerName
-```
+**步骤 2：配置 `application.yml`**
 
-#### ban - 封禁玩家
-```
-aluer> ban PlayerName        # 封禁玩家
-aluer> ban PlayerName 作弊原因  # 带原因封禁
-```
-
-#### unban - 解封玩家
-```
-aluer> unban PlayerName
-```
-
-### 世界管理
-
-#### world - 世界管理
-```
-aluer> world                 # 查看世界列表
-aluer> world load world_nether  # 加载世界
-aluer> world unload world_nether # 卸载世界
-```
-
-### 网络分析
-
-#### network - 网络分析
-```
-aluer> network               # 网络统计
-aluer> network geoip 1.2.3.4  # IP地理位置
-aluer> network reputation 1.2.3.4  # IP信誉查询
-aluer> network ports         # 端口扫描检测
-```
-
-### 预警系统
-
-#### alert - 邮件预警
-```
-aluer> alert                 # 查看预警状态
-aluer> alert test            # 发送测试邮件
-aluer> alert send 服务器异常   # 手动发送告警
-```
-
-### 监控命令
-
-#### metrics - 性能指标
-```
-aluer> metrics               # 指标摘要
-aluer> metrics counters      # 查看计数器
-aluer> metrics gauges       # 查看计量器
-```
-
-#### audit - 安全审计
-```
-aluer> audit                 # 最近审计事件
-aluer> audit recent 20       # 查看最近20条
-aluer> audit summary         # 审计摘要
-```
-
-#### tasks - 计划任务
-```
-aluer> tasks                 # 查看任务列表
-aluer> tasks start           # 启动任务服务
-```
-
-### AI 命令
-
-#### ask - 向AI提问
-```
-aluer> ask 如何提高服务器安全性?
-```
-
----
-
-## Web 控制面板与 API
-
-Aluer 内置了轻量级的 Web Dashboard 和 RESTful API，方便与 Pterodactyl 等第三方服务器面板集成，或通过网页端实时查看状态。
-
-### 访问方式
-启动系统后，可通过 HTTP 协议访问系统 API 服务。
-
-### 常用 API 接口
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/status` | GET | 获取系统运行状态及时间戳 |
-| `/api/server/info` | GET | 获取 Minecraft 服务器名称与版本信息 |
-| `/api/performance` | GET | 获取性能指标（TPS, CPU, 内存） |
-| `/api/command/execute` | POST | 远程执行 RCON 命令 (参数: `command`) |
-| `/api/backup/list` | GET | 获取所有服务器备份列表 |
-| `/api/backup/create` | POST | 触发创建新备份 (参数: `name`) |
-| `/api/punishment/list` | GET | 获取封禁与禁言记录统计 |
-
-*(提示：在生产环境中，请务必通过反向代理并配置鉴权，以保护 API 接口安全)*
-
-### 系统健康检查 API（新增）
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/health` | GET | 完整健康报告（组件状态 + JVM 内存 + CPU 负载） |
-| `/api/health/live` | GET | 存活探针，返回 `{"status":"UP"}` |
-| `/api/health/ready` | GET | 就绪探针，检查 RCON 可用性 |
-
-**健康检查响应示例**：
-```json
-{
-  "status": "HEALTHY",
-  "uptimeSeconds": 86400,
-  "components": {
-    "rcon": {"status": "UP"},
-    "deepseek-ai": {"status": "UP", "model": "deepseek-chat"},
-    "email-alert": {"status": "UP"},
-    "security": {"status": "UP", "kernelEnabled": true},
-    "self-healing": {"status": "UP", "dryRun": true}
-  },
-  "system": {
-    "memory": {"usedMB": 320, "maxMB": 4096},
-    "heapUsedMB": 180,
-    "systemCpuLoad": 12.5
-  }
-}
-```
-
-### 通知与攻击报告 API（新增）
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/attacks/recent?limit=20` | GET | 最近攻击记录列表 |
-| `/api/attacks/report` | POST | 生成并保存 HTML 攻击报告到 `./reports/` 目录 |
-| `/api/webhook/test` | POST | 向已配置的 Discord/Slack 发送测试消息 |
-
-**Webhook 配置**（`application.yml`）：
 ```yaml
 serverguard:
-  webhook:
-    enabled: false                     # 设为 true 启用
-    discord-url: ${ALUER_WEBHOOK_DISCORD:}   # Discord Webhook URL
-    slack-url: ${ALUER_WEBHOOK_SLACK:}       # Slack Webhook URL
-  report:
-    dir: ./reports                     # 攻击报告输出目录
+  mode: external
+  minecraft:
+    working-dir: /opt/minecraft
+    rcon:
+      enabled: true
+      host: localhost
+      port: 25575
+      password: "${RCON_PASSWORD}"
+    process-name: paper-1.21.11.jar
 ```
 
-**环境变量**：
+**步骤 3：在 Minecraft `server.properties` 中启用 RCON**
+
+```properties
+enable-rcon=true
+rcon.port=25575
+rcon.password=your-rcon-password-here
+```
+
+**步骤 4：启动 ServerGuard**
+
 ```bash
-export ALUER_WEBHOOK_DISCORD="https://discord.com/api/webhooks/xxx/yyy"
-export ALUER_WEBHOOK_SLACK="https://hooks.slack.com/services/xxx/yyy/zzz"
+java -jar target/serverguard-4.0.0.jar
 ```
-
-### 高级扩展安全模块 API（V4.0 完整版）
-
-#### 身份认证与访问控制
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/security/auth/status` | GET | JWT 认证状态（活跃Token数、已吊销Token数） |
-| `/api/security/brute-force/status` | GET | 暴力破解防护状态（锁定账号、检测统计） |
-
-#### Minecraft 专项防护
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/security/anti-bot/status` | GET | 反机器人检测状态（被拦截IP、Bot分数） |
-| `/api/security/anti-grief/status` | GET | 反破坏检测状态（被标记玩家、方块破坏率） |
-
-#### 网络攻击监控
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/security/reverse-shell/status` | GET | 反向Shell检测状态 |
-| `/api/security/arp-spoof/status` | GET | ARP欺骗检测状态（MAC变更记录） |
-| `/api/security/dns-tunnel/status` | GET | DNS隧道检测状态 |
-| `/api/security/exploit-signature/status` | GET | 漏洞签名检测统计 |
-| `/api/security/exploit-signature/scan` | POST | 扫描内容中的漏洞签名 (参数: `content`, `source`) |
-
-#### Web与应用安全
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/security/ssrf/status` | GET | SSRF防护状态 |
-| `/api/security/xxe/status` | GET | XXE防护状态 |
-| `/api/security/csp/status` | GET | CSP违规统计 |
-| `/api/security/csp/headers` | GET | 获取推荐的安全响应头 |
-| `/api/security/database-firewall/status` | GET | 数据库防火墙状态 |
-| `/api/security/dlp/status` | GET | 数据防泄漏检测统计 |
-
-#### 系统保护
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/security/memory/status` | GET | JVM内存保护状态（堆使用率、GC统计） |
-| `/api/security/process-injection/status` | GET | 进程注入检测状态 |
-| `/api/security/secure-delete/status` | GET | 安全文件删除统计 |
-
-#### 安全运维
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/security/forensics/status` | GET | 取证案件列表与证据统计 |
-| `/api/security/incident-response/status` | GET | 事件响应状态（活跃事件、剧本列表） |
-| `/api/security/threat-hunting/status` | GET | 威胁狩猎状态（最近狩猎结果） |
-| `/api/security/compliance/status` | GET | 合规扫描结果（评分、通过/失败项） |
-
-#### Minecraft 专属安全（V4.0）
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/security/anti-xray/status` | GET | X-ray透视检测状态（可疑玩家、钻石/石头比） |
-| `/api/security/anti-fly/status` | GET | 飞行/速度外挂检测状态 |
-| `/api/security/anti-dupe/status` | GET | 物品复制检测状态（堆叠异常、高价值物品暴涨） |
-| `/api/security/crash-exploit/status` | GET | 崩溃漏洞防护状态（超大包、NBT炸弹、书与笔攻击） |
-| `/api/security/lag-machine/status` | GET | 卡服机检测状态（Observer链、TNT堆、红石密度） |
-
-#### V4.0 新增安全 API
-
-| 接口路径 | 方法 | 说明 |
-|----------|------|------|
-| `/api/security/geo-block/status` | GET | 地理IP封锁状态（拦截计数、黑白名单大小） |
-| `/api/security/session-validation/status` | GET | 玩家会话验证状态（UUID检测、重放攻击计数） |
-| `/api/security/plugin-verification/status` | GET | 插件完整性校验状态（已验证、失败、恶意检测） |
-| `/api/security/connection-throttle/status` | GET | 连接速率限制状态（活跃IP、已拦截、已延迟） |
-| `/api/security/backup-integrity/status` | GET | 备份完整性验证状态（通过/失败/损坏计数） |
-| `/api/security/anti-skin-spoof/status` | GET | 皮肤伪造检测状态（冒充者、可疑URL、变更频率） |
 
 ---
 
 ## 配置说明
 
 ### 配置文件位置
-主配置文件: `src/main/resources/application.yml`
 
-### 核心配置项
+- **ServerGuard 引擎配置**：`application.yml`（与 JAR 同目录或 classpath）
+- **Plugin 插件配置**：`plugins/AluerServerGuard/config.yml`
+- **环境变量**：通过 `${ENV_VAR:default}` 语法覆盖
 
-#### DeepSeek AI 配置
-```yaml
-deepseek:
-  api-key: sk-your-api-key    # API密钥
-  enabled: true               # 是否启用
-  model: deepseek-chat        # 模型名称
-```
+### 配置节导航
 
-#### RCON 配置（用于连接Minecraft服务器）
-```yaml
-rcon:
-  enabled: true
-  host: localhost
-  port: 25575
-  password: your-password
-```
+`application.yml` 包含以下顶配配置节：
 
-#### 邮件预警配置
-```yaml
-alert:
-  email:
-    enabled: true
-    smtp-host: smtp.qq.com
-    smtp-port: 587
-    username: your-email@qq.com
-    password: your-auth-code
-    from: your-email@qq.com
-    to:
-      - admin@example.com
-      - backup@example.com
-```
+| 配置节 | 说明 | 关键参数 |
+|--------|------|---------|
+| `serverguard.mode` | 运行模式 | `plugin` / `external` |
+| `serverguard.minecraft` | Minecraft 进程管理 | working-dir, process-name, rcon |
+| `serverguard.monitor` | 监控阈值 | tps-threshold, cpu-threshold, memory-threshold |
+| `serverguard.alert` | 邮件告警 | smtp 配置, 收件人, 速率限制 |
+| `serverguard.ai` | AI/ML + DeepSeek | 隔离森林, 预测, 自动执行 |
+| `serverguard.security` | 安全防御总配置 | 含 15 个子配置节 |
+| `serverguard.dashboard` | Web 控制台 | SSH 网关, 刷新间隔 |
+| `serverguard.backup` | 自动备份 | 备份目录, 压缩, 保留数量 |
+| `serverguard.schedule` | 定时任务 | 每日重启, 周备份, 清 lag |
+| `serverguard.chat-filter` | 聊天过滤 | 广告/钓鱼/洪水/禁言 |
+| `serverguard.afk` | AFK 管理 | 超时时间, AFK 区域, 自动踢出 |
 
-#### 安全模块配置
-```yaml
-security:
-  ddos:
-    enabled: true
-    threshold: 1000      # 连接数阈值
-  firewall:
-    enabled: true
-  intrusion:
-    enabled: true
-    alert-level: MEDIUM
-```
+### 快速配置示例
 
-#### 备份配置
-```yaml
-backup:
-  enabled: true
-  interval-hours: 6      # 备份间隔（小时）
-  backup-dir: ./backups
-  world-dir: /path/to/server/world
-  backup-plugins: true
-  backup-config: true
-```
-
-#### 高级扩展安全模块开关（V4.0）
-
-以下 31 个高级扩展安全模块均可通过 `application.yml` 中的 `serverguard.security.super-evolution` 节点独立控制开关。设为 `false` 即可关闭该模块，相关检测逻辑将被跳过，不消耗额外性能。
+**最小化生产配置：**
 
 ```yaml
 serverguard:
+  mode: plugin
+  minecraft:
+    working-dir: /opt/minecraft
+    rcon:
+      password: "${RCON_PASSWORD}"
+  monitor:
+    tps-threshold: 15
+    cpu-threshold: 80.0
+    memory-threshold: 85.0
   security:
+    enabled: true
     super-evolution:
-      # === V4.0 高级扩展安全模块（20个） ===
-      jwt-auth: true                    # JWT身份认证与令牌管理
-      brute-force: true                 # 暴力破解防护（多时间窗口检测）
-      anti-bot: true                    # 反机器人检测（Bot名称/加入速率/IP关联）
-      reverse-shell: true               # 反向Shell检测（50+ shell模式匹配）
-      arp-spoof: true                   # ARP欺骗检测（MAC变更/网关伪造）
-      dns-tunnel: true                  # DNS隧道检测（熵值/Base32编码/可疑TLD）
-      exploit-signature: true           # 漏洞签名检测（Log4Shell/SQLi/RCE等15种）
-      ssrf: true                        # SSRF防护（内网IP/云元数据/协议限制）
-      xxe: true                         # XXE防护（实体注入/Billion Laughs检测）
-      csp: true                         # CSP安全头强制执行（8种响应头）
-      database-firewall: true           # 数据库防火墙（SQL注入/联合查询/时间盲注）
-      dlp: true                         # 数据防泄漏（12种敏感信息规则+自动脱敏）
-      memory-protection: true           # JVM内存保护（堆/GC/内存泄漏检测）
-      process-injection: true           # 进程注入检测（/proc扫描/线程异常）
-      secure-delete: true               # 安全文件删除（多道覆写DoD标准）
-      forensics: true                   # 取证收集（进程/网络/日志快照）
-      incident-response: true           # 事件响应（5种预定义响应剧本）
-      threat-hunting: true              # 威胁狩猎（10种狩猎定义/5个类别）
-      compliance: true                  # 合规扫描（7类20+检查项）
-      anti-grief: true                  # 反破坏检测（方块破坏率/TNT/纵火/偷箱）
-      # === Minecraft 专属防护模块（5个） ===
-      anti-xray: true                   # X-ray透视检测（钻石比/直线挖掘/暗处精准）
-      anti-fly: true                    # 飞行外挂检测（垂直/水平速度/悬空时间）
-      anti-dupe: true                   # 物品复制检测（堆叠异常/高价值暴涨/9种复制法）
-      crash-exploit: true               # 崩溃漏洞防护（超大包/NBT炸弹/书与笔攻击）
-      lag-machine: true                 # 卡服机检测（Observer链/TNT堆/红石密度）
-      # === V4.0 新增模块（6个） ===
-      geo-block: true                   # 地理IP封锁（按国家/地区拦截）
-      session-validation: true          # 玩家会话验证（UUID伪造/正版/离线检测）
-      plugin-verification: true         # 插件完整性校验（Hash对比/未授权修改）
-      connection-throttle: true         # 连接速率限制（IP/时间窗口/递增延迟）
-      backup-integrity: true            # 备份完整性校验（SHA-256/文件计数/大小对比）
-      anti-skin-spoof: true             # 皮肤伪造检测（模型数据异常/皮肤URL检测）
+      anti-kill-aura: true
+      anti-reach: true
+      anti-speed: true
+      anti-fly: true
+      anti-xray: true
+      anti-dupe: true
+      # ... 按需启用其他模块
 ```
 
-**开关说明：**
-- 所有模块默认 `true`（开启），可根据需要设为 `false` 关闭
-- 关闭模块后，对应的 API 端点仍可访问但返回空数据
-- 关闭不需要的模块可以降低 CPU/内存开销
-- 修改配置后需重启服务生效
+**启用全部反作弊模块：**
+
+在 `super-evolution` 节中将所有 `anti-*` 开关设置为 `true`。默认配置中全部模块已默认启用。
+
+### 环境变量参考
+
+| 变量名 | 说明 | 必需 |
+|--------|------|------|
+| `SERVERGUARD_MODE` | 运行模式（覆盖 mode 配置） | 否 |
+| `DEEPSEEK_API_KEY` | DeepSeek API 密钥 | 建议（AI 功能） |
+| `DEEPSEEK_BASE_URL` | DeepSeek API 地址 | 否 |
+| `DEEPSEEK_MODEL` | 模型名称 | 否 |
+| `RCON_PASSWORD` | Minecraft RCON 密码 | 是（External 模式） |
+| `ALUER_ALERT_SMTP_USERNAME` | SMTP 发件邮箱 | 建议（告警功能） |
+| `ALUER_ALERT_SMTP_PASSWORD` | SMTP 密码/授权码 | 建议（告警功能） |
+| `ALUER_ALERT_EMAIL_PRIMARY` | 主告警接收邮箱 | 建议（告警功能） |
+| `ALUER_ALERT_EMAIL_SECONDARY` | 备用告警接收邮箱 | 否 |
+| `ALUER_CLOUDFLARE_ZONE_ID` | Cloudflare Zone ID | 否 |
+| `ALUER_CLOUDFLARE_API_KEY` | Cloudflare API Key | 否 |
+| `ALUER_CLOUDFLARE_EMAIL` | Cloudflare 账号邮箱 | 否 |
+| `ALUER_WEBHOOK_DISCORD` | Discord Webhook URL | 否 |
+| `ALUER_WEBHOOK_SLACK` | Slack Webhook URL | 否 |
 
 ---
 
-## 预警系统
+## 命令参考
 
-### 预警类型
-系统会自动检测并发送预警：
-- ⚠️ 服务器进程停止
-- ⚠️ TPS过低
-- ⚠️ CPU使用率过高
-- ⚠️ 内存使用率过高
-- ⚠️ 连接数异常（DDoS攻击）
-- ⚠️ 日志中发现攻击行为
-- ⚠️ 备份失败
+### Spring Shell CLI 命令
 
-### 手动触发预警
-```bash
-aluer> alert send 服务器可能遭受攻击
+ServerGuard 引擎启动后提供交互式命令行（Spring Shell），支持以下命令：
+
+#### 系统状态
+
+| 命令 | 说明 |
+|------|------|
+| `status` | 显示系统运行状态（运行时间、内存、活跃线程） |
+| `tps` | 显示当前 TPS 和 MSPT |
+| `players` | 列出在线玩家 |
+| `metrics` | 显示完整性能指标 |
+
+#### 安全管理
+
+| 命令 | 说明 |
+|------|------|
+| `ban <player>` | 封禁玩家 |
+| `ban-ip <ip>` | 封禁 IP |
+| `kick <player> [reason]` | 踢出玩家 |
+| `unban <player>` | 解封玩家 |
+| `whitelist on\|off` | 启用/关闭白名单 |
+| `whitelist add <player>` | 添加白名单 |
+| `whitelist remove <player>` | 移除白名单 |
+
+#### 模块管理
+
+| 命令 | 说明 |
+|------|------|
+| `modules list` | 列出所有安全模块及状态 |
+| `modules enable <name>` | 启用指定模块 |
+| `modules disable <name>` | 禁用指定模块 |
+| `modules status <name>` | 查看模块详细状态 |
+
+#### AI 控制
+
+| 命令 | 说明 |
+|------|------|
+| `ai status` | 查看 AI 引擎状态 |
+| `ai analyze <player>` | 对指定玩家进行 AI 行为分析 |
+| `ai report` | 生成当前安全态势报告 |
+
+#### 系统控制
+
+| 命令 | 说明 |
+|------|------|
+| `save-all` | 强制保存所有世界 |
+| `clear-lag` | 清理所有非玩家实体 |
+| `backup now` | 立即执行一次备份 |
+| `restart [delay]` | 计划重启服务器 |
+| `reload-config` | 重新加载配置文件 |
+
+### Minecraft 游戏内命令（Plugin 模式）
+
+当使用 Plugin 模式时，具有 OP 权限的玩家可以在游戏内使用以下命令：
+
+| 命令 | 权限 | 说明 |
+|------|------|------|
+| `/aluer status` | aluer.status | 显示防护状态 |
+| `/aluer tps` | aluer.status | 显示 TPS 信息 |
+| `/aluer alerts` | aluer.alerts | 查看最近告警 |
+| `/aluer check <player>` | aluer.check | 对玩家执行安全检查 |
+| `/aluer report <player>` | aluer.report | 举报可疑玩家 |
+| `/aluer reload` | aluer.admin | 重新加载配置 |
+
+---
+
+## Web 控制台使用
+
+### Nebula Console
+
+ServerGuard 内置 Web 控制台（Nebula Console），提供实时仪表盘和远程管理功能。
+
+**访问地址**：`http://<host>:8080`
+
+**主要功能：**
+
+1. **实时仪表盘** — TPS、CPU、内存、在线玩家、告警数实时图表
+2. **玩家列表** — 在线玩家详情、威胁评分、行为日志
+3. **告警中心** — 历史告警查询、筛选、DeepSeek 分析结果
+4. **模块管理** — 查看/启用/禁用各安全模块
+5. **SSH 网关** — 通过 Web 终端直接操作服务器
+6. **配置管理** — 在线修改配置（需重启生效）
+
+### SSH 网关配置
+
+```yaml
+serverguard:
+  dashboard:
+    ssh-gateway:
+      enabled: true
+      session-timeout-minutes: 30
+      max-sessions: 6
+      command-timeout-seconds: 25
+      strict-host-key-checking: false
+      allow-private-key-paste: true
+      require-engine-handshake: true
+      handshake-ttl-seconds: 30
 ```
 
-### 测试邮件系统
-```bash
-aluer> alert test
+**使用 SSH 网关：**
+
+1. 打开 Nebula Console
+2. 点击 "SSH Terminal"
+3. 输入目标主机、端口、用户名
+4. 粘贴 SSH 私钥或输入密码
+5. 执行引擎握手验证
+6. 获得交互式 Shell
+
+---
+
+## 告警与通知
+
+### 告警渠道
+
+| 渠道 | 配置 | 说明 |
+|------|------|------|
+| 邮件 | `serverguard.alert.email.*` | SMTP 邮件通知 |
+| Discord | `serverguard.webhook.discord-url` | Discord Webhook |
+| Slack | `serverguard.webhook.slack-url` | Slack Webhook |
+| 控制台 | 默认启用 | Spring Shell/日志输出 |
+| Web 控制台 | `serverguard.dashboard.enabled` | Nebula Console 实时推送 |
+
+### 告警级别
+
+| 级别 | 说明 | 自动响应 |
+|------|------|---------|
+| INFO | 信息性通知 | 无 |
+| WARNING | 潜在威胁 | 记录日志 |
+| CRITICAL | 严重威胁 | 自动防御（如配置） |
+| EMERGENCY | 紧急情况 | 全自动响应 + 通知 |
+
+### 邮件告警配置
+
+```yaml
+serverguard:
+  alert:
+    enabled: true
+    email:
+      smtp-host: smtp.qq.com        # QQ邮箱
+      smtp-port: 587
+      username: "your-email@qq.com"
+      password: "授权码（非密码）"
+      to:
+        - "admin@example.com"
+        - "backup-admin@example.com"
+      rate-limit:
+        per-type-seconds: 300       # 同类型告警 5 分钟内只发一次
+        max-emails-per-minute: 10   # 每分钟最多 10 封
+```
+
+**QQ 邮箱 SMTP 配置步骤：**
+1. 登录 QQ 邮箱
+2. 设置 -> 账户 -> POP3/IMAP/SMTP 服务
+3. 开启 SMTP 服务
+4. 获取授权码（不是 QQ 密码）
+5. 将授权码填入 `password` 字段
+
+---
+
+## 故障排查
+
+### 常见问题与解决方案
+
+#### 1. Plugin 无法连接到 ServerGuard
+
+**症状**：Minecraft 控制台显示 "Failed to connect to ServerGuard"
+
+**排查步骤**：
+1. 确认 ServerGuard 引擎已启动：`ps aux | grep serverguard`
+2. 确认端口 8080 未被占用：`netstat -tlnp | grep 8080`
+3. 检查 `config.yml` 中的 `server-url` 是否正确
+4. 检查防火墙是否阻止了 localhost 连接
+5. 查看 ServerGuard 日志：`tail -f /var/log/serverguard.log`
+
+#### 2. DeepSeek API 连接失败
+
+**症状**：日志显示 "DeepSeek API error"
+
+**排查步骤**：
+1. 确认 API Key 正确设置：`echo $DEEPSEEK_API_KEY`
+2. 测试 API 连通性：`curl -H "Authorization: Bearer $DEEPSEEK_API_KEY" https://api.deepseek.com/v1/models`
+3. 检查 API 额度是否用尽
+4. 检查网络是否需要代理
+
+#### 3. TPS 持续偏低
+
+**症状**：告警 "Low TPS" 频繁触发
+
+**排查步骤**：
+1. 使用 `/aluer tps` 查看实时 TPS
+2. 检查实体数量：`/aluer status` 中的 Entity Count
+3. 手动清理实体：`clear-lag` 命令
+4. 调整 `entity-count-enforcer` 阈值
+5. 检查 `redstone-update-limiter` 是否启用
+
+#### 4. 误判/误封
+
+**症状**：正常玩家被标记为作弊
+
+**排查步骤**：
+1. 使用 `ai analyze <player>` 查看 AI 分析结果
+2. 检查该玩家触发了哪些检测模块
+3. 调整对应模块的检测阈值
+4. 将玩家加入白名单（临时方案）
+5. 查看 DeepSeek 告警分析以了解误判原因
+
+#### 5. 构建失败
+
+**症状**：`mvn compile` 或 `mvn test` 失败
+
+**排查步骤**：
+1. 确认 Java 版本：`java -version`（需要 Java 21）
+2. 清理构建缓存：`./apache-maven-3.9.6/bin/mvn clean`
+3. 检查 PaperMC API 仓库是否可访问
+4. 查看完整错误日志：`./apache-maven-3.9.6/bin/mvn compile -e`
+
+---
+
+## 性能调优
+
+### TPS 优化
+
+```yaml
+serverguard:
+  monitor:
+    tps-threshold: 15          # 根据服务器性能调整
+
+  security:
+    super-evolution:
+      # 在低性能服务器上可选择性禁用高开销模块
+      entity-count-enforcer: true     # 自动清理过多实体
+      redstone-update-limiter: true   # 限制红石更新
+      chunk-load-rate-limiter: true   # 限制区块加载
+```
+
+### 内存优化
+
+```yaml
+serverguard:
+  minecraft:
+    java-opts: -Xms4G -Xmx4G  # 根据实际内存调整
+
+  monitor:
+    memory-threshold: 85.0     # 内存告警阈值
+
+  ai:
+    sliding-window-size: 100   # 减小窗口降低内存占用
+```
+
+### AI 性能调优
+
+```yaml
+serverguard:
+  ai:
+    use-isolation-forest: true   # 隔离森林（轻量）
+    use-prediction: false         # 在低配服务器上关闭预测
+    sliding-window-size: 50       # 减小窗口提高响应速度
+    anomaly-threshold: 0.8        # 提高阈值减少误报
+
+  security:
+    autonomy:
+      loop-interval-seconds: 60   # 增大间隔降低 CPU 占用
+      max-actions-per-hour: 5     # 限制自动操作频率
+```
+
+### 大型服务器推荐配置（100+ 玩家）
+
+```yaml
+serverguard:
+  monitor:
+    tps-threshold: 18            # 更严格的 TPS 阈值
+    connection-threshold: 200    # 更高的连接阈值
+
+  security:
+    minecraft-defense:
+      login-burst-threshold: 30   # 允许更高的登录突发
+      bot-swarm-threshold: 30
+    ddos-defense:
+      syn-flood-threshold: 300
+      minecraft-status-threshold: 50
+
+  ai:
+    sliding-window-size: 200     # 更大的分析窗口
+    deepseek:
+      analysis-interval-seconds: 120  # 降低分析频率
+
+  self-healing:
+    tps-emergency-threshold: 15  # 更早触发自动恢复
+```
+
+### 小型服务器推荐配置（< 20 玩家）
+
+```yaml
+serverguard:
+  monitor:
+    tps-threshold: 12
+    cpu-threshold: 90.0
+
+  ai:
+    use-prediction: false        # 关闭预测功能节省资源
+    sliding-window-size: 50
+
+  security:
+    super-evolution:
+      # 低资源消耗模块全部启用
+      anti-kill-aura: true
+      anti-reach: true
+      anti-speed: true
+      anti-fly: true
+      anti-xray: true
+      # ... 按需开启
 ```
 
 ---
 
 ## 常见问题
 
-### Q: 如何查看AI是否正常工作？
-```bash
-aluer> ask 你好
-```
-如果返回AI回答，说明配置正确。
+### Q1: Plugin 模式和 External 模式如何选择？
 
-### Q: 收不到邮件预警怎么办？
-1. 检查 `application.yml` 中的邮箱配置
-2. 确保使用的是授权码而非登录密码
-3. 检查垃圾邮件文件夹
+**A**: 如果服务器的 PaperMC 版本 >= 1.21.1 且你可以安装插件，强烈推荐 Plugin 模式。Plugin 模式延迟 < 1ms，能够获取完整的 Bukkit 事件数据，检测精度和实时性远超 External 模式。External 模式适用于你无法安装插件或仅需要基础监控的场景。
 
-### Q: 如何完全停止系统？
-```bash
-sudo systemctl stop aluer
-```
+### Q2: DeepSeek API 是必需的吗？
 
-### Q: 如何查看运行日志？
-```bash
-# Systemd 日志
-sudo journalctl -u aluer -f
+**A**: 不是必需的，但强烈推荐。没有 DeepSeek，AI 自主分析和自动防御功能将不可用，但所有 135+ 安全模块仍然正常工作。你可以在 `ai.deepseek.enabled: false` 关闭。
 
-# 应用日志
-tail -f logs/aluer.log
-```
+### Q3: 如何只启用反作弊功能？
 
-### Q: AI防御模式有什么用？
-AI防御模式开启后，系统会自动：
-- 分析日志中的威胁
-- 检测异常流量
-- 预测服务器问题
-- 自动执行防御动作
+**A**: 在 `application.yml` 的 `super-evolution` 节中，将不需要的模块开关设置为 `false`，仅保留 `anti-*` 相关的反作弊开关。
 
-### Q: 如何更新系统？
-```bash
-# 停止服务
-sudo systemctl stop aluer
+### Q4: 误封了玩家怎么办？
 
-# 备份数据
-cp -r /opt/aluer/backups /backup/
+**A**: 
+1. 使用 `unban <player>` 命令立即解封
+2. 使用 `ai analyze <player>` 查看 AI 分析结果
+3. 调整对应模块的检测阈值或暂时禁用
+4. 确保 `self-healing.dry-run: true` 在测试阶段启用（干燥运行不会实际执行封锁）
 
-# 替换jar包
-cp target/AluerServerGuard-V4.0.jar /opt/aluer/
+### Q5: 系统对服务器性能影响有多大？
 
-# 重启服务
-sudo systemctl start aluer
-```
+**A**: 在 Plugin 模式下，插件部分内存占用约 50MB，外部引擎约 200MB。在 50 人服务器上，CPU 额外开销约 5-10%。External 模式下对 Minecraft 进程零影响，但检测能力有限。
+
+### Q6: 如何更新到最新版本？
+
+**A**:
+1. 备份当前配置 `cp application.yml application.yml.bak`
+2. 拉取最新代码 `git pull`
+3. 重新编译 `./apache-maven-3.9.6/bin/mvn package -DskipTests`
+4. 重新部署 JAR
+5. 对比新旧 `application.yml` 合并新增配置项
+
+### Q7: 日志文件在哪里？
+
+**A**:
+- ServerGuard 引擎日志：`/var/log/serverguard.log`（可在 `logging.file.name` 配置）
+- Minecraft 服务器日志：`/opt/minecraft/logs/latest.log`
+- 告警报告：`./reports/`（可在 `serverguard.report.dir` 配置）
+
+### Q8: 支持哪些 Minecraft 版本？
+
+**A**: 当前基于 PaperMC API 1.21.1-R0.1-SNAPSHOT，理论上兼容 PaperMC 1.21.x 全系列。其他版本需要调整 API 依赖。
 
 ---
 
 ## 技术支持
 
-- 问题反馈: https://github.com/ZpjDev/Aluer/issues
-- 文档更新: https://docs.aluer.com
-
----
-
-*Aluer v1.0.0 - 保护您的 Minecraft 服务器*
+- 项目文档：`docs/` 目录
+- 开发规范：`CLAUDE.md`
+- 项目结构：`README.md`
+- API 协议：见 `AgentMessage.java` 源码注释

@@ -1,773 +1,1022 @@
-# Aluer ServerGuard V4.0 — 开发参考手册
+# Aluer ServerGuard V5.0 -- 开发者参考手册
 
 ## 版本信息
 
 | 项目 | 内容 |
 |------|------|
-| 版本号 | V4.0 |
-| 发布日期 | 2026-05-10 |
+| 版本号 | V5.0 (含 V5.1/V5.2/V5.3 子版本) |
+| 更新日期 | 2026-05-16 |
+| Java 版本 | 21 |
+| Spring Boot | 3.2.0 |
 | 构建工具 | Apache Maven 3.9.6 (bundled) |
-| 运行环境 | Java 17+, Spring Boot 3.2.0 |
-| 许可证 | Apache 2.0 |
+| PaperMC API | 1.21.1-R0.1-SNAPSHOT |
 
 ---
 
 ## 目录
 
-1. [技术架构](#1-技术架构)
-2. [项目结构](#2-项目结构)
-3. [模块详解](#3-模块详解)
-4. [核心设计模式](#4-核心设计模式)
-5. [配置体系](#5-配置体系)
-6. [API 参考](#6-api-参考)
-7. [CLI 命令系统](#7-cli-命令系统)
-8. [测试策略](#8-测试策略)
-9. [构建与部署](#9-构建与部署)
-10. [安全机制层次](#10-安全机制层次)
-11. [扩展开发指南](#11-扩展开发指南)
+1. [系统架构](#系统架构)
+2. [项目结构](#项目结构)
+3. [核心设计模式](#核心设计模式)
+4. [添加新反作弊模块](#添加新反作弊模块)
+5. [事件监听器模式](#事件监听器模式)
+6. [Agent 通信协议详解](#agent-通信协议详解)
+7. [配置系统](#配置系统)
+8. [ML/AI 集成](#mlai-集成)
+9. [测试规范](#测试规范)
+10. [代码风格指南](#代码风格指南)
+11. [构建系统](#构建系统)
 
 ---
 
-## 1. 技术架构
+## 系统架构
 
-### 1.1 总体架构
-
-Aluer ServerGuard 采用分层架构设计，自底向上分为基础层、安全层、AI 决策层与交互层：
+### 整体架构
 
 ```
-┌──────────────────────────────────────────────────────┐
-│                   交互层 (Interaction)                  │
-│  AITerminal (Spring Shell)  │  Dashboard (REST API)   │
-├──────────────────────────────────────────────────────┤
-│                   AI 决策层 (Intelligence)              │
-│  DeepSeekClient  │  AnomalyDetector  │  StrategyEngine│
-├──────────────────────────────────────────────────────┤
-│                   安全层 (Security)                      │
-│  ┌──────────┬──────────┬──────────┬──────────┐       │
-│  │ 网络防御  │ 主机安全  │ 应用防护  │ 合规审计  │       │
-│  │ DDoS/IDS  │ 进程/内存 │ WAF/CSP  │ 取证/报告 │       │
-│  └──────────┴──────────┴──────────┴──────────┘       │
-├──────────────────────────────────────────────────────┤
-│                   基础层 (Foundation)                    │
-│  KernelEngine  │  TaskBus  │  SelfHealing  │  Config  │
-└──────────────────────────────────────────────────────┘
++------------------------------------------------------------------+
+|                     Aluer ServerGuard V5.0                        |
+|                                                                   |
+|  部署模式一：Plugin 内嵌模式（推荐）                                |
+|  ┌─────────────────────────────────────────────────────────────┐  |
+|  │  Minecraft PaperMC JVM                                       │  |
+|  │  ┌──────────────┐     WebSocket      ┌──────────────────┐   │  |
+|  │  │ AluerPlugin   │ ◄═══════════════► │ ServerGuard      │   │  |
+|  │  │ (Paper插件)   │  ws://:8080/agent │ Spring Boot App  │   │  |
+|  │  │              │                    │                  │   │  |
+|  │  │ Bukkit事件 →  │ ──EVENT/METRICS──► │ 安全分析引擎     │   │  |
+|  │  │ 监听器       │                    │ ML/AI模块        │   │  |
+|  │  │              │ ◄──COMMAND/CONFIG─ │ DeepSeek集成     │   │  |
+|  │  │ 命令执行器 ←  │                    │ Web Dashboard    │   │  |
+|  │  └──────────────┘                    └──────────────────┘   │  |
+|  └─────────────────────────────────────────────────────────────┘  |
+|                                                                   |
+|  部署模式二：External 外部监控模式                                  |
+|  ┌──────────────────┐     RCON + 日志监控    ┌──────────────┐    |
+|  │  PaperMC Server  │ ◄═══════════════════► │ ServerGuard  │    |
+|  │  (独立JVM)       │                       │ (独立JVM)    │    |
+|  └──────────────────┘                       └──────────────┘    |
++------------------------------------------------------------------+
 ```
 
-### 1.2 技术栈
-
-| 层次 | 技术 | 用途 |
-|------|------|------|
-| 运行时 | Java 17 | 核心语言 |
-| 框架 | Spring Boot 3.2.0 | 应用容器、依赖注入、配置管理 |
-| CLI | Spring Shell 3.1.3 | 交互式命令行终端 |
-| Web | Spring Boot Web (Tomcat) | REST API 服务 |
-| 构建 | Maven 3.9.6 | 依赖管理、打包 |
-| AI | DeepSeek API | 威胁分析、根因诊断 |
-| 数学 | Commons Math 3.6.1 | 孤立森林、统计计算 |
-| SSH | JSch 0.2.20 | 远程 SSH 连接 |
-| 序列化 | Gson 2.10.1 | JSON 处理 |
-| 邮件 | javax.mail 1.6.2 | 告警通知 |
-| 前端 | React 19.1 + Vite 6.3 | Web 控制台 |
-
-### 1.3 数据流
+### 数据流向
 
 ```
-Minecraft Server ──> ProcessMonitor ──> MetricsService ──> AnomalyDetector
-       │                    │                   │                │
-       │              LogMonitor              │          DeepSeekClient
-       │                    │                   │                │
-       └── RconClient ──> AutoExecutor <── AIStrategyEngine <──┘
-                                │
-                          Dashboard API ──> Web Console
-```
-
----
-
-## 2. 项目结构
-
-```
-AluerIII/
-├── pom.xml                          # Maven 项目配置
-├── apache-maven-3.9.6/              # 内置 Maven（无需系统安装）
-├── src/
-│   ├── main/java/com/aluer/
-│   │   ├── ServerGuardApplication.java    # Spring Boot 启动入口
-│   │   ├── ai/                            # AI 智能分析模块 (7 files)
-│   │   ├── alert/                         # 邮件告警 (1 file)
-│   │   ├── anticheat/                     # 反作弊集成 (1 file)
-│   │   ├── audit/                         # 安全审计 (1 file)
-│   │   ├── backup/                        # 自动备份 (1 file)
-│   │   ├── chat/                          # 聊天过滤 (1 file)
-│   │   ├── command/                       # Shell 命令 (2 files)
-│   │   ├── config/                        # 配置管理 (2 files)
-│   │   ├── console/                       # 运维控制台 (4 files)
-│   │   ├── controller/                    # 测试端点 (1 file)
-│   │   ├── export/                        # 数据导出 (1 file)
-│   │   ├── kernel/                        # 内核引擎 (3 files)
-│   │   ├── metrics/                       # 指标采集 (1 file)
-│   │   ├── model/                         # 数据模型 (3 files)
-│   │   ├── monitor/                       # 系统监控 (4 files)
-│   │   ├── notification/                  # Webhook/报告 (2 files)
-│   │   ├── profiler/                      # 性能分析 (1 file)
-│   │   ├── punishment/                    # 玩家处罚 (1 file)
-│   │   ├── schedule/                      # 定时任务 (1 file)
-│   │   ├── security/                      # 安全引擎 (85 files)
-│   │   ├── service/                       # 核心服务 (4 files)
-│   │   ├── terminal/                      # AI 终端 (1 file)
-│   │   ├── vpn/                           # VPN 检测 (1 file)
-│   │   ├── web/                           # Web 控制台 (5 files)
-│   │   └── world/                         # 世界管理 (1 file)
-│   ├── main/resources/
-│   │   └── application.yml               # 全局配置
-│   └── test/java/com/aluer/              # 测试 (12 files, 114 cases)
-├── docs/
-│   ├── DEVELOPER.md                      # 本文档
-│   ├── USER_MANUAL.md                    # 用户手册
-│   └── PROJECT_SUMMARY.md               # 功能拆解
-├── frontend/                             # React Web 控制台源码
-├── forensics/                            # 取证输出目录
-├── release/                              # 发布产物
-└── README.md                             # 项目概览
+Bukkit Events
+     │
+     ▼
+┌─────────────┐    AgentMessage.buildMessage()    ┌──────────────┐
+│ Event       │ ─────────────────────────────────► │ Security     │
+│ Listeners   │       JSON via WebSocket           │ Modules      │
+│ (9个监听器) │                                     │ (123个模块)  │
+└─────────────┘                                    │               │
+                                                   │ ┌─────────┐  │
+                                                   │ │ ML/AI   │  │
+                                                   │ │ Engine  │  │
+                                                   │ └────┬────┘  │
+                                                   │      │       │
+                                                   │ ┌────▼────┐  │
+                                                   │ │DeepSeek │  │
+                                                   │ │Analysis │  │
+                                                   │ └────┬────┘  │
+                                                   │      │       │
+                                                   │ ┌────▼────┐  │
+                                                   │ │Autonomy │  │
+                                                   │ │/Shield  │  │
+                                                   │ └────┬────┘  │
+                                                   └──────│───────┘
+                                                          │
+                                    AgentMessage.buildCommand()
+                                                          │
+                                                          ▼
+                                                   ┌──────────────┐
+                                                   │ AluerPlugin   │
+                                                   │ Command       │
+                                                   │ Executor      │
+                                                   │ (Bukkit API)  │
+                                                   └──────────────┘
 ```
 
 ---
 
-## 3. 模块详解
+## 项目结构
 
-### 3.1 AI 智能分析模块 (`com.aluer.ai`)
-
-负责威胁感知、异常检测、趋势预测与智能决策。
-
-| 类名 | 功能 | 核心算法 |
-|------|------|----------|
-| `AIAutonomousService` | 自主威胁感知与自动防御触发 | 正则模式匹配、流量时序分析 |
-| `AIStrategyEngine` | 根据威胁严重程度匹配防御策略 | 规则引擎 |
-| `DeepSeekClient` | DeepSeek API 集成，深度威胁分析 | LLM 推理 |
-| `AnomalyDetector` | 多指标异常检测 | 孤立森林 (Isolation Forest) |
-| `AttackDetector` | 协同攻击检测 | 关联分析 |
-| `TimeSeriesPredictor` | TPS/内存趋势预测 | 滑动窗口 + 线性回归 |
-| `AdaptiveThreshold` | 动态告警阈值调整 | 历史基线学习 |
-| `AluerSovereignEngine` | 自主决策总控引擎 | 多信号融合 |
-
-### 3.2 Kernel 内核模块 (`com.aluer.kernel`)
-
-系统级信号处理与任务调度核心。
-
-| 类名 | 功能 |
-|------|------|
-| `AluerKernelEngine` | 内核脉冲引擎，周期性采集系统信号，维护信号日志与回响队列 |
-| `AluerKernelTaskBus` | 异步任务总线，支持任务排队、分发与历史记录 |
-| `AluerSelfHealingOrchestrator` | 自愈编排器，检测异常后自动执行恢复剧本（重启/备份/白名单） |
-
-### 3.3 安全引擎 (`com.aluer.security`)
-
-85 个安全服务类，分为以下子类：
-
-#### 3.3.1 网络安全防御
-
-| 服务类 | 防护目标 | 关键技术 |
-|--------|----------|----------|
-| `DDoSProtectionService` | DDoS 攻击 | SYN/HTTP/UDP/ICMP Flood 检测 |
-| `DDoSDefenseCoordinator` | 多层 DDoS 协同防御 | 流量清洗调度 |
-| `IntrusionDetectionService` | 入侵检测 | 行为基线偏离 |
-| `IntrusionPreventionSystem` | 入侵阻断 | 实时封禁 |
-| `FirewallService` | 主机防火墙 | iptables/ufw 规则管理 |
-| `NetworkMonitorService` | 网络流量监控 | 带宽统计、连接追踪 |
-| `PortScanDetectionService` | 端口扫描检测 | 连接频率 + 端口序列分析 |
-| `IPReputationService` | IP 信誉评估 | 黑名单 + 行为评分 |
-| `GeoIPService` | IP 地理定位 | GeoIP 数据库查询 |
-| `GeoBlockService` | 地理区域封锁 | 国家/地区级拦截 (v3.3) |
-| `ConnectionThrottleService` | 连接速率限制 | 多时间窗口 + 递增延迟 (v3.3) |
-| `TrafficAnalysisService` | 流量深度分析 | 协议识别、异常流量模式 |
-| `TrafficShapingService` | 流量整形 | 带宽限制、优先级队列 |
-| `LoadBalancerService` | 负载均衡 | 连接分发 |
-| `NetworkThreatFusionService` | 威胁信号融合 | 多源威胁情报合并 |
-| `NetworkSegmentationService` | 网络隔离 | 微隔离策略 |
-| `NetworkSnifferService` | 网络嗅探 | 原始数据包捕获 |
-| `PacketInspectionService` | 深度包检测 | 载荷特征匹配 |
-| `ProtocolAnalysisService` | 协议分析 | Minecraft 协议异常 |
-| `FlowAnalyzerService` | 流量分析器 | NetFlow/sFlow 分析 |
-| `DistributedAttackMitigationService` | 分布式攻击缓解 | 多节点协同防御 |
-| `ContainerSecurityService` | 容器安全 | Docker/K8s 安全策略 |
-
-#### 3.3.2 应用层安全
-
-| 服务类 | 防护目标 | 关键技术 |
-|--------|----------|----------|
-| `WebApplicationFirewall` | Web 应用攻击 | SQLi/XSS/路径遍历过滤 |
-| `WafRequestFilter` | HTTP 请求过滤 | Servlet Filter 拦截 |
-| `JwtAuthService` | API 身份认证 | JWT 令牌签发/验证 |
-| `BruteForceProtectionService` | 暴力破解防护 | 多时间窗口登录失败计数 |
-| `AntiBotDetectionService` | 机器人检测 | 名称模式/加入速率/IP 关联 |
-| `CSPEnforcementService` | 内容安全策略 | 8 种 HTTP 安全响应头 |
-| `XXEProtectionService` | XML 外部实体防护 | Entity 注入检测 |
-| `SSRFProtectionService` | 服务端请求伪造防护 | 内网 IP/云元数据/编码绕过 |
-| `SessionManagementService` | 会话管理 | 超时/并发/固定 |
-| `APIRateLimitService` | API 速率限制 | 令牌桶算法 |
-| `RateLimitService` | 通用速率限制 | 滑动窗口 |
-| `CommandExecutionGuardService` | 命令执行防护 | 注入检测 |
-
-#### 3.3.3 主机与端点安全
-
-| 服务类 | 防护目标 | 关键技术 |
-|--------|----------|----------|
-| `ReverseShellDetectionService` | 反向 Shell 检测 | 50+ Shell 模式匹配 |
-| `ARPSpoofDetectionService` | ARP 欺骗检测 | MAC 变更/网关伪造监测 |
-| `DNSTunnelDetectionService` | DNS 隧道检测 | 香农熵/Base32 编码/可疑 TLD |
-| `ExploitSignatureService` | 漏洞特征检测 | 15 种已知漏洞模式匹配 |
-| `DatabaseFirewallService` | 数据库防火墙 | SQL 注入/联合查询/时间盲注 |
-| `DataLossPreventionService` | 数据防泄漏 | 12 种敏感信息规则/自动脱敏 |
-| `MemoryProtectionService` | JVM 内存保护 | 堆/GC/内存泄漏监控 |
-| `ProcessInjectionDetectionService` | 进程注入检测 | /proc 扫描/线程异常检测 |
-| `SecureFileDeletionService` | 安全文件删除 | 多道覆写 (DoD 5220.22-M) |
-| `ForensicsCollectorService` | 取证数据收集 | 进程/网络/日志快照 |
-| `IncidentResponseService` | 事件响应自动化 | 5 种预定义响应剧本 |
-| `ThreatHuntingService` | 威胁狩猎 | 10 种狩猎定义/5 个 IOC 类别 |
-| `ComplianceScannerService` | 合规扫描 | 7 类 20+ 检查项 |
-| `SecurityBaselineHardeningService` | 安全基线硬化 | 系统配置加固 |
-| `SecurityAutomationScheduler` | 安全自动化调度 | 定时安全任务 |
-| `SecurityOrchestrationService` | 安全编排 | 多模块协同 |
-| `FileIntegrityMonitorService` | 文件完整性监控 | 哈希比对 |
-| `EndpointDetectionResponseService` | 端点检测响应 | 行为监控 |
-| `HostEnforcementService` | 主机强制策略 | 内核级防火墙 |
-| `HostIntrusionCountermeasureService` | 主机入侵对策 | 自动隔离 |
-| `LogAnalysisService` | 日志分析 | 模式匹配与异常检测 |
-| `LogCorrelationService` | 日志关联 | 多源日志关联分析 |
-| `SIEMService` | 安全信息事件管理 | 事件关联引擎 |
-| `EncryptionService` | 加密服务 | AES/RSA 操作 |
-| `SSLMonitorService` | SSL 证书监控 | 到期检测 |
-| `SSLTLSCertificateService` | SSL/TLS 管理 | 证书生命周期 |
-
-#### 3.3.4 Minecraft 专属安全
-
-| 服务类 | 防护目标 | 关键技术 |
-|--------|----------|----------|
-| `MinecraftProtocolSecurityService` | 协议层安全 | NBT/数据包校验 |
-| `AntiGriefDetectionService` | 反破坏检测 | 方块破坏率/TNT/纵火/偷箱 |
-| `AntiXrayDetectionService` | X-ray 透视检测 | 钻石矿比例/直线挖掘/暗处精准 |
-| `AntiFlyDetectionService` | 飞行外挂检测 | 垂直/水平速度阈值/悬空时间 |
-| `AntiDupeDetectionService` | 物品复制检测 | 堆叠异常/高价值暴涨/9 种复制模式 |
-| `CrashExploitProtectionService` | 崩溃漏洞防护 | 超大包/NBT 炸弹/书与笔攻击 |
-| `LagMachineDetectionService` | 卡服机检测 | Observer 链/TNT 堆/红石密度 |
-| `PlayerSessionValidationService` | 玩家会话验证 | UUID 格式/离线模式/快速切换 (v3.3) |
-| `PluginVerificationService` | 插件完整性校验 | SHA-256/文件大小/恶意名称 (v3.3) |
-| `AntiSkinSpoofService` | 皮肤伪造检测 | 模型异常/URL 检测/变更频率 (v3.3) |
-
-#### 3.3.5 运维安全
-
-| 服务类 | 功能 |
-|--------|------|
-| `BackupSecurityService` | 备份安全策略管理 |
-| `BackupIntegrityService` | 备份完整性校验 SHA-256 (v3.3) |
-| `HoneypotService` | 蜜罐诱捕系统 |
-| `ZeroTrustArchitectureService` | 零信任架构 |
-| `CloudflareIntegrationService` | Cloudflare CDN 联动 |
-| `ThreatIntelligenceService` | 威胁情报中心 |
-| `AdvancedMalwareDetectionService` | 恶意软件扫描 |
-| `DNSSecurityService` | DNS 安全 |
-
-### 3.4 监控模块 (`com.aluer.monitor`)
-
-| 类名 | 监控目标 | 采集指标 |
-|------|----------|----------|
-| `ResourceMonitor` | 系统资源 | CPU/内存/磁盘/TPS |
-| `LogMonitor` | 服务端日志 | 异常堆栈/安全事件 |
-| `ProcessMonitor` | Minecraft 进程 | 存活状态/重启触发 |
-| `ConnectionMonitor` | 网络连接 | 连接数/连接频率 |
-
-### 3.5 核心服务 (`com.aluer.service`)
-
-| 类名 | 功能 |
-|------|------|
-| `ServerGuardService` | 系统总控，协调所有模块启动与调度 |
-| `AutoExecutor` | 自动化指令执行，将 AI 决策转为服务器操作 |
-| `RconClient` | RCON 协议客户端，安全下发 Minecraft 指令 |
-
-### 3.6 Web 控制台 (`com.aluer.web`)
-
-| 类名 | 功能 |
-|------|------|
-| `DashboardController` | 主 API 控制器，48 个 REST 端点 |
-| `ConsoleStreamController` | 控制台实时流 |
-| `OperationsConsoleController` | 运维操作 API |
-| `HealthService` | 健康检查服务 |
-| `RequestLoggingFilter` | HTTP 请求日志过滤器 |
+```
+src/main/java/com/aluer/
+│
+├── ServerGuardApplication.java       # Spring Boot 主入口
+│
+├── config/
+│   └── ServerGuardConfig.java        # 完整配置类（1273行）
+│       ├── MinecraftConfig           # Minecraft 进程配置
+│       ├── MonitorConfig             # 监控阈值配置
+│       ├── AlertConfig               # 告警（邮件）配置
+│       ├── AiConfig                  # AI/ML 配置
+│       │   └── DeepSeekConfig        #   DeepSeek 大模型配置
+│       │       └── AutoExecuteConfig #   自动执行配置
+│       ├── SecurityConfig            # 安全总配置
+│       │   ├── MinecraftDefenseConfig    # Minecraft 协议层防御
+│       │   ├── DDoSDefenseConfig         # DDoS 防御阈值
+│       │   ├── AntiIntrusionConfig       # 入侵检测配置
+│       │   ├── HostEnforcementConfig     # 主机层强制
+│       │   ├── CloudEdgeConfig           # Cloudflare 边缘
+│       │   ├── ThreatFeedsConfig         # 威胁情报源
+│       │   ├── OrchestrationConfig       # 多层编排
+│       │   ├── AutomationConfig          # 自动化调度
+│       │   ├── AutonomyConfig            # 自主决策
+│       │   ├── ShieldConfig              # 护盾配置
+│       │   ├── KernelConfig              # 内核/脉冲配置
+│       │   ├── TaskBusConfig             # 任务总线
+│       │   ├── SelfHealingConfig         # 自愈配置
+│       │   └── SuperEvolutionConfig      # 全部模块开关（70+开关）
+│       ├── DashboardConfig           # Web 控制台
+│       ├── AnnouncementConfig        # 公告
+│       ├── AfkConfig                 # AFK 管理
+│       ├── ChatFilterConfig          # 聊天过滤
+│       ├── BackupConfig              # 备份配置
+│       └── ScheduleConfig            # 定时任务
+│
+├── model/
+│   └── AlertType.java                # 告警类型枚举（75种）
+│
+├── agent/
+│   └── AgentMessage.java             # Agent 通信协议
+│       # 常量：TYPE_EVENT, TYPE_METRICS, TYPE_ALERT,
+│       #       TYPE_HEARTBEAT, TYPE_HANDSHAKE, TYPE_COMMAND_RESULT,
+│       #       TYPE_COMMAND, TYPE_CONFIG, TYPE_SHUTDOWN
+│       # 命令：CMD_BAN_IP, CMD_BAN_PLAYER, CMD_KICK,
+│       #       CMD_CLEAR_LAG, CMD_SET_SPAWN_RATE, ...
+│       # 事件：EVENT_PLAYER_JOIN, EVENT_PLAYER_MOVE,
+│       #       EVENT_COMBAT_ATTACK, EVENT_BLOCK_BREAK, ...
+│
+├── security/                         # 安全模块（123个Java文件）
+│   ├── AntiKillAuraService.java      # 杀戮光环检测
+│   ├── AntiReachService.java         # 超距攻击检测
+│   ├── AntiSpeedService.java         # 速度异常检测
+│   ├── AntiCriticalsService.java     # 暴击检测
+│   ├── AntiAutoCrystalService.java   # 水晶自动检测
+│   ├── ...                           # 120+ more
+│   └── ZeroTrustArchitectureService.java
+│
+├── ml/                               # ML/AI 模块（4个文件）
+│   ├── BehavioralProfilingEngine.java    # 行为画像
+│   ├── CombatPatternRecognizer.java      # 战斗模式识别
+│   ├── MovementPatternAnalyzer.java      # 移动模式分析
+│   └── ThreatScoreAggregator.java        # 威胁评分聚合
+│
+├── plugin/                           # Paper 插件实现
+│   ├── AluerPlugin.java              # 插件主类 (extends JavaPlugin)
+│   ├── AluerCommandExecutor.java     # 命令注册器
+│   ├── bridge/
+│   │   ├── AgentWebSocketClient.java     # WebSocket 客户端
+│   │   ├── DataBridge.java              # 数据格式转换
+│   │   └── InternalCommandExecutor.java # Bukkit API命令执行
+│   └── listener/                     # Bukkit 事件监听器
+│       ├── BlockEventListener.java       # 方块事件
+│       ├── ChatEventListener.java        # 聊天事件
+│       ├── CombatEventListener.java      # 战斗事件
+│       ├── CommandEventListener.java     # 命令事件
+│       ├── EntityEventListener.java      # 实体事件
+│       ├── InventoryEventListener.java   # 背包事件
+│       ├── PacketEventListener.java      # 原始包事件
+│       ├── PlayerEventListener.java      # 玩家事件
+│       └── WorldEventListener.java       # 世界事件
+│
+├── websocket/                        # WebSocket 服务端
+└── controller/
+    └── TestController.java           # 测试端点
+```
 
 ---
 
-## 4. 核心设计模式
+## 核心设计模式
 
-### 4.1 结果封装模式
+### 1. 双构造函数模式
 
-所有安全服务采用**内部静态结果类 + 静态工厂方法**模式：
+每个安全模块 Service 类同时提供两个构造函数，确保测试友好性和生产注入兼容性：
 
 ```java
-public class SomeSecurityService {
-    public static class DetectionResult {
-        private final boolean blocked;
-        private final List<String> reasons;
+@Service
+public class AntiKillAuraService {
 
-        private DetectionResult(boolean blocked, List<String> reasons) { ... }
-
-        public static DetectionResult clean() { return new DetectionResult(false, List.of()); }
-        public static DetectionResult blocked(List<String> reasons) { return new DetectionResult(true, reasons); }
-
-        public boolean isBlocked() { return blocked; }
-        public List<String> getReasons() { return reasons; }
-    }
-}
-```
-
-优势：不可变、类型安全、语义明确、易于测试断言。
-
-### 4.2 双构造函数模式
-
-所有安全服务实现双构造函数以支持 Spring 注入和单元测试：
-
-```java
-public class SomeSecurityService {
     private final ServerGuardConfig config;
 
-    // 无参构造函数 — 测试用
-    public SomeSecurityService() {
-        this(new ServerGuardConfig());
+    /** 无参构造函数：用于单元测试，使用默认配置 */
+    public AntiKillAuraService() {
+        this.config = new ServerGuardConfig();
     }
 
-    // 参数化构造函数 — Spring 注入
+    /** @Autowired 构造函数：用于生产环境，Spring 自动注入 */
     @Autowired
-    public SomeSecurityService(ServerGuardConfig config) {
+    public AntiKillAuraService(ServerGuardConfig config) {
         this.config = config;
     }
+
+    // ... 检测逻辑
 }
 ```
 
-### 4.3 开关控制模式
+### 2. 静态工厂方法模式
 
-所有 31 个扩展安全模块通过 `ServerGuardConfig` 统一控制，方法入口处检查：
+检测结果使用内部静态类 + 静态工厂方法构建，避免直接 new：
 
 ```java
-public DetectionResult detect(String input) {
-    if (!config.getSecurity().getSuperEvolution().isXxx()) {
-        return DetectionResult.clean();  // 模块关闭，返回安全结果
+public static class DetectionResult {
+    public enum Status { CLEAN, BLOCKED, FLAGGED }
+
+    private final Status status;
+    private final String reason;
+    private final double confidence;
+
+    private DetectionResult(Status status, String reason, double confidence) {
+        this.status = status;
+        this.reason = reason;
+        this.confidence = confidence;
     }
-    // ... 实际检测逻辑
+
+    public static DetectionResult clean() {
+        return new DetectionResult(Status.CLEAN, null, 0.0);
+    }
+
+    public static DetectionResult blocked(String reason, double confidence) {
+        return new DetectionResult(Status.BLOCKED, reason, confidence);
+    }
+
+    public static DetectionResult flagged(String reason, double confidence) {
+        return new DetectionResult(Status.FLAGGED, reason, confidence);
+    }
+
+    // getters...
 }
 ```
 
-### 4.4 配置层次绑定
+### 3. ConcurrentHashMap 玩家追踪
 
-使用 `@ConfigurationProperties(prefix = "serverguard")` 实现类型安全的 YAML 到 Java 映射，支持嵌套静态内部类，每个层级对应 YAML 的一级缩进。
+所有安全模块使用 `ConcurrentHashMap<String, ...>` 以玩家名称为键追踪行为数据，确保线程安全：
 
----
-
-## 5. 配置体系
-
-### 5.1 配置层级
-
-```
-serverguard
-├── minecraft        # Minecraft 服务端连接
-│   └── rcon         # RCON 协议配置
-├── monitor          # 监控阈值
-├── alert            # 告警配置
-│   └── email        # 邮件服务
-│       └── rate-limit
-├── ai               # AI 模块配置
-│   └── deepseek     # DeepSeek API
-│       └── auto-execute
-├── security         # 安全模块配置
-│   ├── anti-intrusion
-│   │   └── file-integrity
-│   ├── host-enforcement
-│   ├── cloud-edge
-│   ├── orchestration
-│   ├── autonomy
-│   ├── shield
-│   ├── kernel
-│   ├── task-bus
-│   ├── self-healing
-│   └── super-evolution    # 31 个扩展模块独立开关
-├── dashboard        # Web 控制台
-│   └── ssh-gateway
-├── webhook          # 通知集成
-└── report           # 报告输出
+```java
+private final Map<String, List<AttackRecord>> playerAttackHistory = new ConcurrentHashMap<>();
+private final Map<String, List<Double>> playerAngleHistory = new ConcurrentHashMap<>();
 ```
 
-### 5.2 Super Evolution 模块开关 (V4.0 全部 31 个)
+### 4. AtomicLong 统计计数
 
-所有开关均为 `boolean` 类型，默认值 `true`，位于 `serverguard.security.super-evolution` 路径下：
+使用 `AtomicLong` 进行线程安全的统计计数：
 
-| 配置键 | 模块名称 | 版本 |
-|--------|----------|------|
-| `jwt-auth` | JWT 身份认证 | v3.1 |
-| `brute-force` | 暴力破解防护 | v3.1 |
-| `anti-bot` | 反机器人检测 | v3.1 |
-| `reverse-shell` | 反向 Shell 检测 | v3.1 |
-| `arp-spoof` | ARP 欺骗检测 | v3.1 |
-| `dns-tunnel` | DNS 隧道检测 | v3.1 |
-| `exploit-signature` | 漏洞签名检测 | v3.1 |
-| `ssrf` | SSRF 防护 | v3.1 |
-| `xxe` | XXE 防护 | v3.1 |
-| `csp` | CSP 安全头 | v3.1 |
-| `database-firewall` | 数据库防火墙 | v3.1 |
-| `dlp` | 数据防泄漏 | v3.1 |
-| `memory-protection` | 内存保护 | v3.1 |
-| `process-injection` | 进程注入检测 | v3.1 |
-| `secure-delete` | 安全文件删除 | v3.1 |
-| `forensics` | 取证收集 | v3.1 |
-| `incident-response` | 事件响应 | v3.1 |
-| `threat-hunting` | 威胁狩猎 | v3.1 |
-| `compliance` | 合规扫描 | v3.1 |
-| `anti-grief` | 反破坏检测 | v3.1 |
-| `anti-xray` | X-ray 检测 | v3.2 |
-| `anti-fly` | 飞行外挂检测 | v3.2 |
-| `anti-dupe` | 物品复制检测 | v3.2 |
-| `crash-exploit` | 崩溃漏洞防护 | v3.2 |
-| `lag-machine` | 卡服机检测 | v3.2 |
-| `geo-block` | 地理 IP 封锁 | v3.3 |
-| `session-validation` | 会话验证 | v3.3 |
-| `plugin-verification` | 插件校验 | v3.3 |
-| `connection-throttle` | 连接速率限制 | v3.3 |
-| `backup-integrity` | 备份完整性 | v3.3 |
-| `anti-skin-spoof` | 皮肤伪造检测 | v3.3 |
+```java
+private final AtomicLong totalChecks = new AtomicLong(0);
+private final AtomicLong flaggedCount = new AtomicLong(0);
+```
 
----
+### 5. 配置驱动开关
 
-## 6. API 参考
+每个模块通过 `SuperEvolutionConfig` 中的独立开关控制启用/禁用：
 
-所有 API 基于 Spring Boot REST，前缀 `/api`。以下按功能域分组：
-
-### 6.1 系统状态
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/health` | 系统健康检查 |
-| GET | `/api/status` | 综合状态概览 |
-| GET | `/api/status/ai` | AI 模块状态 |
-| GET | `/api/status/monitor` | 监控模块状态 |
-
-### 6.2 安全防御
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/security/ddos/status` | DDoS 防御状态 |
-| GET | `/api/security/firewall/status` | 防火墙状态 |
-| GET | `/api/security/ids/status` | 入侵检测状态 |
-| GET | `/api/security/ips/status` | 入侵防御状态 |
-| GET | `/api/security/waf/status` | WAF 状态 |
-| GET | `/api/security/ip-reputation/status` | IP 信誉状态 |
-| GET | `/api/security/geo-block/status` | 地理封锁状态 (v3.3) |
-| GET | `/api/security/session-validation/status` | 会话验证状态 (v3.3) |
-| GET | `/api/security/plugin-verification/status` | 插件校验状态 (v3.3) |
-| GET | `/api/security/connection-throttle/status` | 连接限制状态 (v3.3) |
-| GET | `/api/security/backup-integrity/status` | 备份完整性状态 (v3.3) |
-| GET | `/api/security/anti-skin-spoof/status` | 反皮肤伪造状态 (v3.3) |
-
-### 6.3 安全检测（应用层）
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/security/jwt/status` | JWT 认证状态 |
-| GET | `/api/security/brute-force/status` | 暴力破解防御状态 |
-| GET | `/api/security/anti-bot/status` | 反机器人状态 |
-| GET | `/api/security/reverse-shell/status` | 反向 Shell 检测状态 |
-| GET | `/api/security/arp-spoof/status` | ARP 欺骗检测状态 |
-| GET | `/api/security/dns-tunnel/status` | DNS 隧道状态 |
-| GET | `/api/security/exploit-signature/status` | 漏洞签名状态 |
-| GET | `/api/security/ssrf/status` | SSRF 防护状态 |
-| GET | `/api/security/xxe/status` | XXE 防护状态 |
-| GET | `/api/security/csp/status` | CSP 状态 |
-| GET | `/api/security/database-firewall/status` | 数据库防火墙状态 |
-| GET | `/api/security/dlp/status` | 数据防泄漏状态 |
-| GET | `/api/security/memory-protection/status` | 内存保护状态 |
-| GET | `/api/security/process-injection/status` | 进程注入检测状态 |
-| GET | `/api/security/secure-delete/status` | 安全删除状态 |
-| GET | `/api/security/forensics/status` | 取证状态 |
-| GET | `/api/security/incident-response/status` | 事件响应状态 |
-| GET | `/api/security/threat-hunting/status` | 威胁狩猎状态 |
-| GET | `/api/security/compliance/status` | 合规扫描状态 |
-
-### 6.4 Minecraft 专属防御
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/security/anti-grief/status` | 反破坏检测状态 |
-| GET | `/api/security/anti-xray/status` | 反 X-ray 状态 |
-| GET | `/api/security/anti-fly/status` | 反飞行外挂状态 |
-| GET | `/api/security/anti-dupe/status` | 反物品复制状态 |
-| GET | `/api/security/crash-exploit/status` | 崩溃漏洞防护状态 |
-| GET | `/api/security/lag-machine/status` | 反卡服机状态 |
-
-### 6.5 运维操作
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/api/player/kick` | 踢出玩家 |
-| POST | `/api/player/ban` | 封禁玩家 |
-| POST | `/api/player/unban` | 解封玩家 |
-| GET | `/api/player/list` | 在线玩家列表 |
-| POST | `/api/world/backup` | 触发世界备份 |
-| GET | `/api/world/backup/list` | 备份列表 |
-| POST | `/api/world/restore` | 恢复世界备份 |
-| GET | `/api/profile` | 性能分析数据 |
-| POST | `/api/security/report/generate` | 生成安全报告 |
-
-### 6.6 返回格式
-
-```json
-{
-  "success": true,
-  "data": { ... },
-  "timestamp": "2026-05-10T22:00:00+08:00"
+```java
+if (!config.getSecurity().getSuperEvolution().isAntiKillAura()) {
+    return DetectionResult.clean();  // 模块已禁用，跳过检测
 }
 ```
 
 ---
 
-## 7. CLI 命令系统
+## 添加新反作弊模块
 
-### 7.1 架构
+### 完整步骤
 
-基于 Spring Shell 3.1.3，入口类 `AITerminal` (`@ShellComponent`)。支持 `@ShellMethod` 注解自动注册。
+**第一步：确认反作弊 Hack 类型**
 
-### 7.2 命令分类
+查阅 Meteor Client 的 hack 分类（Combat/Movement/World/Player/Misc/Render），确定你要对抗的 hack 名称和类型。
 
-| 类别 | 命令数 | 说明 |
-|------|--------|------|
-| `all` | ~35 | 全部命令列表（默认） |
-| `ai` | 6 | AI 分析与策略指令 |
-| `status` | 5 | 系统状态查询 |
-| `defense` | 8 | 防御模式控制 |
-| `security` | 6 | 安全模块管理 |
-| `monitor` | 4 | 监控数据查询 |
-| `player` | 5 | 玩家管理 |
-| `world` | 3 | 世界/备份管理 |
-| `admin` | 6 | 管理员运维操作 |
+**第二步：创建 Service 类**
 
-### 7.3 使用示例
-
-```bash
-# 启动终端
-java -jar AluerServerGuard-V4.0.jar
-
-# 在终端内
-help                    # 显示完整命令参考
-help ai                 # AI 相关命令
-help security           # 安全相关命令
-help all                # 全部命令（含 API 端点列表）
-
-# 自然语言交互
-分析当前服务器安全状态
-查看最近攻击报告
-```
-
----
-
-## 8. 测试策略
-
-### 8.1 测试框架
-
-- JUnit 5 (Jupiter)
-- Plain POJO 测试（不加载 Spring 上下文）
-- 不依赖 Mockito
-
-### 8.2 测试文件清单
-
-| 测试类 | 用例数 | 覆盖范围 |
-|--------|--------|----------|
-| `MinecraftSecurityTest` | 21 | 核心安全模块 |
-| `SuperEvolutionSecurityTest` | 52 | v3.1/v3.2 扩展模块 |
-| `V33SecurityTest` | 29 | v3.3 新模块 (6 个服务) |
-| `WebApplicationFirewallTest` | 2 | WAF 引擎 |
-| `NetworkThreatFusionServiceTest` | 2 | 威胁融合 |
-| `SecurityBaselineHardeningServiceTest` | 1 | 安全基线 |
-| `AluerKernelEngineTest` | 2 | 内核引擎 |
-| `AluerKernelTaskBusTest` | 1 | 任务总线 |
-| `AluerSelfHealingOrchestratorTest` | 1 | 自愈编排 |
-| `AluerEngineHandshakeServiceTest` | 1 | 引擎握手 |
-| `AluerMirageShieldServiceTest` | 1 | Mirage 盾 |
-| `RemoteSshGatewayServiceTest` | 1 | SSH 网关 |
-| **总计** | **114** | |
-
-### 8.3 运行测试
-
-```bash
-./apache-maven-3.9.6/bin/mvn test
-```
-
-### 8.4 测试模式
-
-所有安全服务使用双构造函数，测试中直接 `new ServiceName()` 实例化，无需 Spring 容器。涉及文件 I/O 的测试使用 `/tmp/` 路径配合不存在的文件，避免磁盘污染。
-
----
-
-## 9. 构建与部署
-
-### 9.1 环境要求
-
-| 项目 | 最低要求 |
-|------|----------|
-| JDK | 17+ |
-| 构建工具 | 内置 Maven 3.9.6 (无需系统安装) |
-| 操作系统 | Linux (推荐 Ubuntu 22.04+) |
-| 内存 | 建议 2GB+ 可用 |
-| 磁盘 | 建议 10GB+ 可用 |
-
-### 9.2 构建命令
-
-```bash
-# 编译 + 运行全部测试
-./apache-maven-3.9.6/bin/mvn test
-
-# 构建 fat JAR（跳过测试）
-./apache-maven-3.9.6/bin/mvn package -DskipTests
-
-# 产物位置
-# target/serverguard.jar  (Spring Boot 可执行 fat JAR)
-```
-
-### 9.3 部署
-
-```bash
-# 复制到目标服务器
-scp release/V4.0/AluerServerGuard-V4.0.jar user@server:/opt/aluer/
-
-# 启动（前台测试）
-java -jar /opt/aluer/AluerServerGuard-V4.0.jar
-
-# 启动（后台生产）
-nohup java -jar /opt/aluer/AluerServerGuard-V4.0.jar > /var/log/aluer.log 2>&1 &
-
-# 或使用 systemd（配置见 systemd/ 目录）
-sudo systemctl enable aluer
-sudo systemctl start aluer
-```
-
-### 9.4 版本发布
-
-发布产物存放于 `release/V4.0/` 目录：
-
-| 文件 | 说明 |
-|------|------|
-| `AluerServerGuard-V4.0.jar` | Spring Boot fat JAR (~29MB) |
-
----
-
-## 10. 安全机制层次
-
-系统实现四层纵深防御体系：
-
-```
-第一层 — 边界防御
-  GeoBlock, ConnectionThrottle, IPReputation, DDoS Protection
-  Cloudflare Integration, Port Scan Detection
-
-第二层 — 网络与协议
-  Firewall, IDS/IPS, Deep Packet Inspection, Protocol Analysis
-  DNS Tunnel Detection, ARP Spoof Detection, Reverse Shell Detection
-  DNSSEC, SSL/TLS Monitoring
-
-第三层 — 应用与数据
-  WAF, JWT Auth, Brute Force Protection, Anti-Bot
-  CSP, XXE Protection, SSRF Protection
-  SQL Firewall, DLP, Encryption Service
-  Session Management, API Rate Limit
-
-第四层 — 主机与运营
-  Memory Protection, Process Injection Detection
-  File Integrity Monitoring, Secure Delete, Forensics
-  Anti-Cheat (Xray/Fly/Dupe/Grief)
-  Crash Exploit, Lag Machine, Skin Spoof
-  Plugin Verification, Backup Integrity
-  Compliance Scanner, Threat Hunting, Incident Response
-```
-
----
-
-## 11. 扩展开发指南
-
-### 11.1 新增安全模块流程
-
-**步骤 1** — 创建服务类 (`src/main/java/com/aluer/security/NewDetectionService.java`)
+在 `src/main/java/com/aluer/security/` 下创建新类，遵循命名规范 `Anti{Xxx}Service.java`：
 
 ```java
 package com.aluer.security;
 
 import com.aluer.config.ServerGuardConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * {Hack名称}检测服务 — V5.X 反作弊模块
+ *
+ * 检测原理：
+ * 1. {原理1的详细说明}
+ * 2. {原理2的详细说明}
+ *
+ * 配置开关：serverguard.security.super-evolution.anti-{xxx}
+ */
 @Service
-public class NewDetectionService {
+public class AntiNewHackService {
 
     private final ServerGuardConfig config;
-    private final AtomicLong detectionCount = new AtomicLong(0);
-    private final Map<String, List<DetectionEvent>> history = new ConcurrentHashMap<>();
 
-    public NewDetectionService() { this(new ServerGuardConfig()); }
+    /** 追踪每个玩家的行为数据 */
+    private final Map<String, List<BehaviorRecord>> playerHistory = new ConcurrentHashMap<>();
 
-    @Autowired
-    public NewDetectionService(ServerGuardConfig config) { this.config = config; }
+    private final AtomicLong totalChecks = new AtomicLong(0);
+    private final AtomicLong flaggedCount = new AtomicLong(0);
 
-    public DetectionResult detect(String input, String source) {
-        if (!config.getSecurity().getSuperEvolution().isNewDetection()) {
+    // 常量定义
+    private static final int ANALYSIS_WINDOW_MS = 3000;
+    private static final double FLAG_THRESHOLD = 0.85;
+
+    /** 无参构造函数（测试用） */
+    public AntiNewHackService() {
+        this.config = new ServerGuardConfig();
+    }
+
+    /** @Autowired 构造函数（生产用） */
+    public AntiNewHackService(ServerGuardConfig config) {
+        this.config = config;
+    }
+
+    /**
+     * 分析玩家行为，检测是否存在 {hack名称} 作弊
+     *
+     * @param playerName 玩家名称
+     * @param eventData  事件数据（根据 hack 类型确定参数）
+     * @return 检测结果（CLEAN/FLAGGED/BLOCKED）
+     */
+    public DetectionResult analyze(String playerName, EventData eventData) {
+        // 1. 检查模块是否启用
+        if (!config.getSecurity().getSuperEvolution().isAntiNewHack()) {
             return DetectionResult.clean();
         }
-        // 检测逻辑...
+
+        totalChecks.incrementAndGet();
+
+        // 2. 更新玩家行为历史
+        List<BehaviorRecord> history = playerHistory.computeIfAbsent(
+            playerName, k -> Collections.synchronizedList(new ArrayList<>())
+        );
+        history.add(new BehaviorRecord(eventData, System.currentTimeMillis()));
+
+        // 3. 清理过期记录（超出分析窗口）
+        long cutoff = System.currentTimeMillis() - ANALYSIS_WINDOW_MS;
+        history.removeIf(r -> r.timestamp < cutoff);
+
+        // 4. 分析行为模式
+        double anomalyScore = computeAnomalyScore(history);
+
+        // 5. 返回结果
+        if (anomalyScore > FLAG_THRESHOLD) {
+            flaggedCount.incrementAndGet();
+            return DetectionResult.flagged(
+                String.format("NewHack detected: anomaly score %.2f", anomalyScore),
+                anomalyScore
+            );
+        }
+
         return DetectionResult.clean();
     }
 
-    public Map<String, Object> getStatus() {
-        Map<String, Object> s = new LinkedHashMap<>();
-        s.put("totalDetections", detectionCount.get());
-        return s;
+    private double computeAnomalyScore(List<BehaviorRecord> history) {
+        // 实现具体的异常检测算法
+        // ...
+        return 0.0;
     }
 
-    public static class DetectionResult {
-        private final boolean flagged;
-        private final List<String> reasons;
-        private DetectionResult(boolean f, List<String> r) { this.flagged = f; this.reasons = r; }
-        public static DetectionResult clean() { return new DetectionResult(false, List.of()); }
-        public static DetectionResult flagged(List<String> r) { return new DetectionResult(true, r); }
-        public boolean isFlagged() { return flagged; }
-        public List<String> getReasons() { return reasons; }
-    }
-
-    private static class DetectionEvent {
+    /** 行为记录内部类 */
+    private static class BehaviorRecord {
+        final EventData data;
         final long timestamp;
-        final String source;
-        final String input;
-        DetectionEvent(long t, String s, String i) {}
+
+        BehaviorRecord(EventData data, long timestamp) {
+            this.data = data;
+            this.timestamp = timestamp;
+        }
+    }
+
+    /** 检测结果（静态工厂） */
+    public static class DetectionResult {
+        public enum Status { CLEAN, BLOCKED, FLAGGED }
+
+        private final Status status;
+        private final String reason;
+        private final double confidence;
+
+        private DetectionResult(Status status, String reason, double confidence) {
+            this.status = status;
+            this.reason = reason;
+            this.confidence = confidence;
+        }
+
+        public static DetectionResult clean() {
+            return new DetectionResult(Status.CLEAN, null, 0.0);
+        }
+
+        public static DetectionResult blocked(String reason, double confidence) {
+            return new DetectionResult(Status.BLOCKED, reason, confidence);
+        }
+
+        public static DetectionResult flagged(String reason, double confidence) {
+            return new DetectionResult(Status.FLAGGED, reason, confidence);
+        }
+
+        public Status getStatus() { return status; }
+        public String getReason() { return reason; }
+        public double getConfidence() { return confidence; }
+        public boolean isClean() { return status == Status.CLEAN; }
+        public boolean isBlocked() { return status == Status.BLOCKED; }
+        public boolean isFlagged() { return status == Status.FLAGGED; }
     }
 }
 ```
 
-**步骤 2** — 添加配置开关 (`ServerGuardConfig.SuperEvolutionConfig` 中添加 `boolean` 字段)
+**第三步：添加告警类型**
 
-**步骤 3** — 添加 YAML 配置 (`application.yml` 中添加带中文注释的开关行)
+在 `AlertType.java` 中新增枚举值：
 
-**步骤 4** — 注册 API 端点 (`DashboardController` 中添加 `@GetMapping` 方法)
+```java
+// 在对应分类区域添加
+SECURITY_NEW_HACK("NewHack", "Description of this hack detection"),
+```
 
-**步骤 5** — 编写测试 (至少 3 个用例：正常/异常/状态)
+**第四步：添加配置开关**
 
-**步骤 6** — 更新文档
+在 `ServerGuardConfig.SuperEvolutionConfig` 中新增：
 
-### 11.2 代码规范
+```java
+// 属性声明
+private boolean antiNewHack = true;
 
-- 使用 `LinkedHashMap` 保持状态 Map 的插入顺序
-- 并发场景使用 `ConcurrentHashMap` + `AtomicLong`
-- 结果类使用内部静态类，构造函数私有，提供静态工厂方法
-- 不引入 Lombok 以外的额外依赖
-- 日志使用 Slf4j，级别：WARN（关键事件）、INFO（状态变更）、DEBUG（详细追踪）
-- 禁止在安全服务中执行阻塞 I/O 操作；所有文件操作使用异步调度器
+// Getter
+public boolean isAntiNewHack() { return antiNewHack; }
+
+// Setter
+public void setAntiNewHack(boolean antiNewHack) { this.antiNewHack = antiNewHack; }
+```
+
+**第五步：添加 application.yml 配置**
+
+```yaml
+# 在 super-evolution 节中添加
+anti-new-hack: true    # 新Hack检测说明
+```
+
+**第六步：编写单元测试**
+
+在 `src/test/java/com/aluer/security/` 下创建测试类：
+
+```java
+package com.aluer.security;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class AntiNewHackServiceTest {
+
+    private final AntiNewHackService service = new AntiNewHackService();
+
+    @Test
+    void testCleanBehavior() {
+        // 正常玩家行为应该返回 CLEAN
+        // ...
+    }
+
+    @Test
+    void testFlaggedBehavior() {
+        // 异常行为应该返回 FLAGGED
+        // ...
+    }
+
+    @Test
+    void testModuleDisabled() {
+        // 模块关闭时应返回 CLEAN
+        // ...
+    }
+}
+```
+
+**第七步：全量测试**
+
+```bash
+./apache-maven-3.9.6/bin/mvn test
+```
+
+确保所有现有测试和新测试全部通过。
 
 ---
 
-<div align="center">
-  <p><strong>Aluer ServerGuard V4.0</strong></p>
-  <p>为 Minecraft 服务器安全构建的专业防护系统</p>
-  <p>Apache 2.0 License © 2026</p>
-</div>
+## 事件监听器模式
+
+### 监听器基类结构
+
+所有 Bukkit 事件监听器位于 `com.aluer.plugin.listener` 包下，每个监听器负责一类事件：
+
+```java
+package com.aluer.plugin.listener;
+
+import com.aluer.plugin.bridge.DataBridge;
+import org.bukkit.event.Listener;
+
+/**
+ * {事件类别}监听器 — 拦截 Bukkit 事件并转发至 ServerGuard 引擎
+ */
+public class XxxEventListener implements Listener {
+
+    private final DataBridge dataBridge;
+
+    public XxxEventListener(DataBridge dataBridge) {
+        this.dataBridge = dataBridge;
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onXxxEvent(XxxEvent event) {
+        // 1. 提取事件数据
+        // 2. 通过 DataBridge 转换为 AgentMessage
+        // 3. 通过 WebSocket 发送至 ServerGuard
+        dataBridge.sendEvent("EVENT_TYPE", eventData);
+    }
+}
+```
+
+### 九大监听器及其监听事件
+
+| 监听器 | 主要监听事件 | 数据类型 |
+|--------|------------|---------|
+| BlockEventListener | BlockBreakEvent, BlockPlaceEvent | 方块坐标、类型、玩家、工具 |
+| ChatEventListener | AsyncPlayerChatEvent | 消息内容、发送时间 |
+| CombatEventListener | EntityDamageByEntityEvent, PlayerDeathEvent | 攻击者、目标、伤害量、武器 |
+| CommandEventListener | PlayerCommandPreprocessEvent | 命令文本、执行时间 |
+| EntityEventListener | EntitySpawnEvent, EntityDeathEvent | 实体类型、坐标、原因 |
+| InventoryEventListener | InventoryClickEvent, InventoryOpenEvent | 槽位、物品类型、容器位置 |
+| PacketEventListener | PacketEvent (ProtocolLib) | 原始数据包内容 |
+| PlayerEventListener | PlayerJoinEvent, PlayerQuitEvent, PlayerMoveEvent | 玩家信息、坐标、移动向量 |
+| WorldEventListener | ChunkLoadEvent, ChunkUnloadEvent | 区块坐标、加载原因 |
+
+### DataBridge 数据转换
+
+`DataBridge` 负责将 Bukkit 事件数据转换为 AgentMessage JSON 格式：
+
+```java
+public class DataBridge {
+    private final AgentWebSocketClient wsClient;
+
+    public void sendEvent(String eventType, JsonObject eventData) {
+        JsonObject payload = new JsonObject();
+        payload.addProperty("eventType", eventType);
+        // 添加通用字段
+        payload.add("data", eventData);
+
+        String message = AgentMessage.buildMessage(
+            AgentMessage.TYPE_EVENT,
+            agentId,
+            payload
+        );
+        wsClient.send(message);
+    }
+}
+```
+
+---
+
+## Agent 通信协议详解
+
+### 协议设计
+
+通信基于 WebSocket (RFC 6455)，所有消息为单行 JSON 文本帧。
+
+### 消息类型枚举
+
+定义在 `AgentMessage.java` 中：
+
+**Agent → Server:**
+| 常量 | 值 | 说明 |
+|------|-----|------|
+| TYPE_EVENT | "EVENT" | Bukkit 事件上报 |
+| TYPE_METRICS | "METRICS" | 服务器性能指标 |
+| TYPE_ALERT | "ALERT" | 安全告警上报 |
+| TYPE_HEARTBEAT | "HEARTBEAT" | 心跳保活（间隔由Kernel配置） |
+| TYPE_HANDSHAKE | "HANDSHAKE" | 初始连接握手 |
+| TYPE_COMMAND_RESULT | "COMMAND_RESULT" | 命令执行结果回执 |
+
+**Server → Agent:**
+| 常量 | 值 | 说明 |
+|------|-----|------|
+| TYPE_COMMAND | "COMMAND" | 防御指令下发 |
+| TYPE_CONFIG | "CONFIG" | 动态配置更新 |
+| TYPE_SHUTDOWN | "SHUTDOWN" | 连接关闭通知 |
+
+### 命令类型
+
+| 常量 | 值 | 对应 Bukkit 操作 |
+|------|-----|-----------------|
+| CMD_BAN_IP | "BAN_IP" | Bukkit.banIP() |
+| CMD_BAN_PLAYER | "BAN_PLAYER" | Bukkit.getBanList().addBan() |
+| CMD_KICK | "KICK" | Player.kickPlayer() |
+| CMD_CLEAR_LAG | "CLEAR_LAG" | World.getEntities().clear() |
+| CMD_SET_SPAWN_RATE | "SET_SPAWN_RATE" | 调整 spawn-limits |
+| CMD_ENABLE_WHITELIST | "ENABLE_WHITELIST" | Bukkit.setWhitelist(true) |
+| CMD_DISABLE_WHITELIST | "DISABLE_WHITELIST" | Bukkit.setWhitelist(false) |
+| CMD_BROADCAST | "BROADCAST" | Bukkit.broadcastMessage() |
+| CMD_SAVE_ALL | "SAVE_ALL" | Bukkit.savePlayers() + World.save() |
+| CMD_EXECUTE | "EXECUTE" | Bukkit.dispatchCommand() |
+
+### 事件类型
+
+| 常量 | 值 | 关联 Bukkit 事件 |
+|------|-----|-----------------|
+| EVENT_PLAYER_JOIN | "PLAYER_JOIN" | PlayerJoinEvent |
+| EVENT_PLAYER_QUIT | "PLAYER_QUIT" | PlayerQuitEvent |
+| EVENT_PLAYER_MOVE | "PLAYER_MOVE" | PlayerMoveEvent |
+| EVENT_PLAYER_TELEPORT | "PLAYER_TELEPORT" | PlayerTeleportEvent |
+| EVENT_PLAYER_CHAT | "PLAYER_CHAT" | AsyncPlayerChatEvent |
+| EVENT_PLAYER_COMMAND | "PLAYER_COMMAND" | PlayerCommandPreprocessEvent |
+| EVENT_PLAYER_DAMAGE | "PLAYER_DAMAGE" | EntityDamageEvent |
+| EVENT_COMBAT_ATTACK | "COMBAT_ATTACK" | EntityDamageByEntityEvent |
+| EVENT_COMBAT_DEATH | "COMBAT_DEATH" | PlayerDeathEvent |
+| EVENT_BLOCK_BREAK | "BLOCK_BREAK" | BlockBreakEvent |
+| EVENT_BLOCK_PLACE | "BLOCK_PLACE" | BlockPlaceEvent |
+| EVENT_INVENTORY_CLICK | "INVENTORY_CLICK" | InventoryClickEvent |
+| EVENT_ENTITY_SPAWN | "ENTITY_SPAWN" | EntitySpawnEvent |
+| EVENT_CHUNK_LOAD | "CHUNK_LOAD" | ChunkLoadEvent |
+
+### 消息格式规范
+
+```java
+// Agent → Server: 构建消息
+public static String buildMessage(String type, String agentId, JsonObject payload) {
+    JsonObject msg = new JsonObject();
+    msg.addProperty("type", type);
+    msg.addProperty("agentId", agentId);
+    msg.addProperty("timestamp", Instant.now().toEpochMilli());
+    msg.add("payload", payload);
+    return gson.toJson(msg);
+}
+
+// Server → Agent: 构建命令
+public static String buildCommand(String commandType, String target, String reason) {
+    JsonObject payload = new JsonObject();
+    payload.addProperty("command", commandType);
+    payload.addProperty("target", target != null ? target : "");
+    payload.addProperty("reason", reason != null ? reason : "");
+
+    JsonObject msg = new JsonObject();
+    msg.addProperty("type", TYPE_COMMAND);
+    msg.addProperty("requestId", UUID.randomUUID().toString());
+    msg.addProperty("timestamp", Instant.now().toEpochMilli());
+    msg.add("payload", payload);
+    return gson.toJson(msg);
+}
+
+// 解析工具方法
+public static String getType(String message) { /* 解析 type 字段 */ }
+public static JsonObject getPayload(String message) { /* 解析 payload 对象 */ }
+public static String getAgentId(String message) { /* 解析 agentId 字段 */ }
+```
+
+---
+
+## 配置系统
+
+### 配置层次结构
+
+```
+application.yml
+  └── serverguard.*                    # 所有配置的前缀
+       ├── mode                        # 运行模式：plugin | external
+       ├── minecraft.*                 # Minecraft 进程管理
+       ├── monitor.*                   # 监控阈值
+       ├── alert.*                     # 告警配置
+       │    └── email.*                #   邮件配置
+       ├── ai.*                        # AI/ML 配置
+       │    └── deepseek.*             #   DeepSeek 集成
+       │         └── auto-execute.*    #   自动执行
+       ├── security.*                  # 安全配置
+       │    ├── minecraft-defense.*    #   协议层防御
+       │    ├── ddos-defense.*         #   DDoS 防御
+       │    ├── anti-intrusion.*       #   入侵检测
+       │    │    └── file-integrity.*  #   文件完整性
+       │    ├── host-enforcement.*     #   主机强制
+       │    ├── cloud-edge.*           #   云端边缘
+       │    ├── threat-feeds.*         #   威胁情报
+       │    ├── orchestration.*        #   编排
+       │    ├── automation.*           #   自动化
+       │    ├── autonomy.*             #   自主决策
+       │    ├── shield.*               #   护盾
+       │    ├── kernel.*               #   内核
+       │    ├── task-bus.*             #   任务总线
+       │    ├── self-healing.*         #   自愈
+       │    └── super-evolution.*      #   模块开关（70+个）
+       ├── dashboard.*                 # Web 控制台
+       │    └── ssh-gateway.*          #   SSH 网关
+       ├── announcement.*              # 公告
+       ├── afk.*                       # AFK 管理
+       ├── chat-filter.*               # 聊天过滤
+       ├── backup.*                    # 备份
+       └── schedule.*                  # 定时任务
+```
+
+### 配置类映射关系
+
+`ServerGuardConfig` 使用 `@ConfigurationProperties(prefix = "serverguard")` 注解，Spring Boot 自动将 YAML 配置绑定到对应的嵌套静态内部类。
+
+命名转换规则：
+- YAML 中 `kebab-case`（如 `tps-threshold`）
+- Java 中 `camelCase`（如 `tpsThreshold`）
+- Spring Boot 自动完成转换
+
+### 环境变量覆盖
+
+配置值可以使用 `${ENV_VAR:default}` 语法通过环境变量覆盖，示例如下：
+
+```yaml
+serverguard:
+  mode: ${SERVERGUARD_MODE:external}
+  ai:
+    deepseek:
+      api-key: ${DEEPSEEK_API_KEY:}
+      model: ${DEEPSEEK_MODEL:deepseek-chat}
+  alert:
+    email:
+      username: ${ALUER_ALERT_SMTP_USERNAME:}
+      password: ${ALUER_ALERT_SMTP_PASSWORD:}
+```
+
+---
+
+## ML/AI 集成
+
+### 四大 ML 模块
+
+| 模块 | 功能 | 算法 |
+|------|------|------|
+| BehavioralProfilingEngine | 基于统计特征建立玩家行为基线，检测偏离 | Isolation Forest, Statistical Profiling |
+| CombatPatternRecognizer | 识别异常战斗序列（多目标切换、异常连击模式） | Pattern Matching, Sequence Analysis |
+| MovementPatternAnalyzer | 分析移动轨迹异常（路径熵值、加速度模式） | Trajectory Analysis, Entropy Calculation |
+| ThreatScoreAggregator | 融合多维度检测结果，生成统一威胁评分 | Weighted Aggregation, Escalation Logic |
+
+### AI 配置参数
+
+```yaml
+ai:
+  enabled: true
+  use-isolation-forest: true       # 启用隔离森林
+  use-prediction: true              # 启用时间序列预测
+  sliding-window-size: 100          # 滑动窗口数据点数
+  anomaly-threshold: 0.7            # 异常判定阈值 (0.0-1.0)
+  prediction-horizon-minutes: 60    # 预测未来时间范围
+```
+
+### DeepSeek 集成
+
+```yaml
+ai:
+  deepseek:
+    enabled: true
+    api-key: ${DEEPSEEK_API_KEY:}
+    base-url: https://api.deepseek.com
+    model: deepseek-chat
+    max-tokens: 1000
+    temperature: 0.35               # 低温度获得稳定分析
+    auto-analyze-alerts: true       # 自动分析所有告警
+    analysis-interval-seconds: 45   # 分析间隔
+    auto-execute:
+      enabled: true
+      ban-ip: true
+      kill-entity: true
+      clear-lag: true
+      set-spawn-rate: true
+      kick-player: true
+      whitelist: true
+      min-confidence: 88            # 低于此置信度不自动执行
+```
+
+---
+
+## 测试规范
+
+### 测试原则
+
+1. **打靶试验** — 测试必须模拟真实 Minecraft 服务器环境，不允许使用假数据
+2. **生产对齐** — 测试数据和行为必须与实际生产环境对齐
+3. **全量验证** — 修改代码前后必须跑全量 278 项测试，一个不能挂
+4. **双构造函数模式** — 每个 Service 必须提供无参构造函数用于测试
+
+### 测试类命名规范
+
+```
+src/test/java/com/aluer/
+├── security/
+│   ├── AntiKillAuraServiceTest.java
+│   ├── AntiReachServiceTest.java
+│   └── ...
+├── ml/
+│   ├── BehavioralProfilingEngineTest.java
+│   └── ...
+└── plugin/
+    └── ...
+```
+
+### 测试方法命名
+
+```java
+@Test
+void testCleanBehavior() { }          // 正常行为 → CLEAN
+@Test
+void testFlaggedBehavior() { }        // 可疑行为 → FLAGGED
+@Test
+void testBlockedBehavior() { }        // 明确作弊 → BLOCKED
+@Test
+void testModuleDisabled() { }         // 模块关闭 → CLEAN
+@Test
+void testEdgeCase() { }               // 边界条件
+@Test
+void testPerformance() { }            // 性能测试
+```
+
+### 运行测试
+
+```bash
+# 全量测试
+./apache-maven-3.9.6/bin/mvn test
+
+# 运行特定测试类
+./apache-maven-3.9.6/bin/mvn test -Dtest=AntiKillAuraServiceTest
+
+# 运行特定测试方法
+./apache-maven-3.9.6/bin/mvn test -Dtest=AntiKillAuraServiceTest#testFlaggedBehavior
+```
+
+---
+
+## 代码风格指南
+
+### 命名规范
+
+| 元素 | 规范 | 示例 |
+|------|------|------|
+| 包名 | 全小写 | `com.aluer.security` |
+| 类名 | PascalCase | `AntiKillAuraService` |
+| 方法名 | camelCase | `analyzePlayerBehavior()` |
+| 常量 | UPPER_SNAKE_CASE | `MAX_ATTACK_DISTANCE` |
+| 配置属性 | camelCase (Java) / kebab-case (YAML) | `tpsThreshold` / `tps-threshold` |
+| 枚举值 | UPPER_SNAKE_CASE | `SECURITY_KILL_AURA` |
+
+### 注释规范
+
+- **类级别**：必须有 JavaDoc 注释，说明模块功能、检测原理、配置开关
+- **方法级别**：必须有 JavaDoc 注释，说明参数、返回值、算法思路
+- **关键逻辑**：行内注释解释 WHY 而非 WHAT
+- **语言**：使用中文注释
+
+```java
+/**
+ * 杀戮光环（KillAura）检测服务 — V4.0 反作弊扩展模块
+ *
+ * 检测原理：
+ * 1. 攻击目标切换频率检测 — 追踪每个玩家的攻击目标列表，如果在3秒窗口内切换超过3个不同目标
+ * 2. 攻击角度一致性检测 — 连续攻击的角度偏差小于5度时，表明存在自动瞄准（Aimbot）
+ *
+ * 配置开关：serverguard.security.super-evolution.anti-kill-aura
+ */
+@Service
+public class AntiKillAuraService {
+    // ...
+}
+```
+
+### 代码组织
+
+```java
+// 1. Package 声明
+// 2. Import 语句（按字母排序，静态导入在后）
+// 3. 类 JavaDoc
+// 4. @Service 或其他注解
+// 5. 类声明
+// 6. 常量字段
+// 7. 配置注入字段
+// 8. 数据追踪字段（ConcurrentHashMap, AtomicLong）
+// 9. 构造函数（无参 + @Autowired）
+// 10. 公共分析方法
+// 11. 私有辅助方法
+// 12. 内部类（BehaviorRecord, DetectionResult）
+```
+
+### Git 提交规范
+
+- 使用中文 commit message
+- 格式：`{类型}: {简短描述}`
+- 类型：新增、修复、重构、文档、测试、优化
+- 频繁提交，每个有意义的改动单独提交
+
+示例：
+```
+新增: AntiAutoCrystal 末影水晶自动化检测模块
+修复: Reach 检测误判穿墙攻击时的距离计算错误
+重构: 统一所有安全模块的 DetectionResult 返回类型
+```
+
+---
+
+## 构建系统
+
+### Maven 配置
+
+项目使用 Apache Maven 3.9.6（bundled），配置文件 `pom.xml`。
+
+### 关键依赖
+
+```xml
+<dependencies>
+    <!-- Spring Boot 核心 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+
+    <!-- Spring Shell CLI -->
+    <dependency>
+        <groupId>org.springframework.shell</groupId>
+        <artifactId>spring-shell-starter</artifactId>
+        <version>3.1.3</version>
+    </dependency>
+
+    <!-- PaperMC API -->
+    <dependency>
+        <groupId>io.papermc.paper</groupId>
+        <artifactId>paper-api</artifactId>
+        <version>1.21.1-R0.1-SNAPSHOT</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <!-- 机器学习 -->
+    <dependency>
+        <groupId>com.github.haifengl</groupId>
+        <artifactId>smile-core</artifactId>
+        <version>2.6.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>3.6.1</version>
+    </dependency>
+
+    <!-- YAML 配置 -->
+    <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>2.2</version>
+    </dependency>
+
+    <!-- JSON (内嵌) -->
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+    </dependency>
+</dependencies>
+```
+
+### 构建命令速查
+
+```bash
+# 编译（不运行测试）
+./apache-maven-3.9.6/bin/mvn compile
+
+# 编译 + 运行全量测试
+./apache-maven-3.9.6/bin/mvn test
+
+# 打包（跳过测试）
+./apache-maven-3.9.6/bin/mvn package -DskipTests
+
+# 打包 + 运行测试
+./apache-maven-3.9.6/bin/mvn package
+
+# 清理构建产物
+./apache-maven-3.9.6/bin/mvn clean
+
+# 清理 + 完整重新构建
+./apache-maven-3.9.6/bin/mvn clean package
+```
+
+### 构建产物
+
+```
+target/
+├── serverguard-4.0.0.jar              # 可执行 JAR（Spring Boot Fat JAR）
+├── classes/                            # 编译后的 .class 文件
+├── test-classes/                       # 测试编译产物
+├── generated-sources/                  # 注解处理器生成
+└── surefire-reports/                   # 测试报告
+```
+
+### 部署产物说明
+
+- `serverguard-4.0.0.jar` 是 Spring Boot 可执行 JAR，包含所有依赖
+- 同时作为 Paper 插件使用（复制到 `plugins/` 目录）
+- Plugin 模式下，AluerPlugin 作为 Paper 插件启动，但不启动嵌入的 Spring Boot（由外部引擎独立运行）
