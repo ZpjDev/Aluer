@@ -1,4 +1,8 @@
 serverguard:
+  # 运行模式：plugin（Paper 插件嵌入式）或 external（传统外部监控）
+  # Paper 插件模式由系统属性 serverguard.mode=plugin 自动设置
+  mode: ${SERVERGUARD_MODE:external}
+
   minecraft:
     service-name: minecraft
     process-name: paper-1.21.11.jar

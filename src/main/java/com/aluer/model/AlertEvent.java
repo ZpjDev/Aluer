@@ -1,6 +1,8 @@
 package com.aluer.model;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class AlertEvent {
     private AlertType type;
@@ -9,6 +11,8 @@ public class AlertEvent {
     private LocalDateTime timestamp;
     private double confidence;
     private String suggestedAction;
+    /** 告警来源（玩家名/IP/系统模块名） */
+    private String source;
 
     public AlertEvent() {
         this.timestamp = LocalDateTime.now();
@@ -32,4 +36,11 @@ public class AlertEvent {
     public void setConfidence(double confidence) { this.confidence = confidence; }
     public String getSuggestedAction() { return suggestedAction; }
     public void setSuggestedAction(String suggestedAction) { this.suggestedAction = suggestedAction; }
+    public String getSource() { return source; }
+    public void setSource(String source) { this.source = source; }
+
+    /** 以 epoch millis 设置时间戳 */
+    public void setTimestamp(long epochMillis) {
+        this.timestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), ZoneId.systemDefault());
+    }
 }

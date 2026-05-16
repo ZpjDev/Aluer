@@ -1,0 +1,47 @@
+name: AluerServerGuard
+version: 4.0.0
+main: com.aluer.plugin.AluerPlugin
+api-version: '1.21'
+description: AI-powered Minecraft PaperMC Server Protection System — 29 anti-cheat modules, DDoS defense, WAF, kernel-based threat fusion
+author: Aluer
+website: https://github.com/aluer-ai/serverguard
+load: STARTUP
+prefix: Aluer
+
+commands:
+  aluer:
+    description: Aluer ServerGuard 主控命令
+    usage: /aluer <status|reload|scan|defense|info>
+    permission: aluer.admin
+  aluerstatus:
+    description: 查看 Aluer 实时防护状态
+    usage: /aluerstatus
+    permission: aluer.status
+  aluerplayers:
+    description: 查看玩家风险评分列表
+    usage: /aluerplayers
+    permission: aluer.status
+  aluerblock:
+    description: 手动封禁玩家/IP
+    usage: /aluerblock <player|ip> <target> [reason]
+    permission: aluer.admin
+  aluerunblock:
+    description: 手动解封玩家/IP
+    usage: /aluerunblock <player|ip> <target>
+    permission: aluer.admin
+  aluerscan:
+    description: 手动触发安全扫描
+    usage: /aluerscan <player>
+    permission: aluer.admin
+  aluerwhitelist:
+    description: 启用/禁用紧急白名单模式
+    usage: /aluerwhitelist <on|off|status>
+    permission: aluer.admin
+
+permissions:
+  aluer.admin:
+    description: Aluer ServerGuard 管理员权限
+    default: op
+  aluer.status:
+    description: 查看 Aluer 状态
+    default: op

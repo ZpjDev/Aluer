@@ -23,6 +23,13 @@ public class ServerGuardConfig {
     private AnnouncementConfig announcement = new AnnouncementConfig();
     private AfkConfig afk = new AfkConfig();
 
+    /** 运行模式：plugin（Paper 插件内部）或 external（传统外部监控），默认 external */
+    private String mode = "external";
+
+    public String getMode() { return mode; }
+    public void setMode(String mode) { this.mode = mode; }
+    public boolean isPluginMode() { return "plugin".equalsIgnoreCase(mode); }
+
     public static class MinecraftConfig {
         private String serviceName = "minecraft";
         private String processName = "java";

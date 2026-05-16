@@ -6,8 +6,11 @@ import com.aluer.config.ServerGuardConfig;
 import com.aluer.monitor.*;
 import com.aluer.model.AlertEvent;
 import com.aluer.model.MetricsData;
+import com.aluer.plugin.bridge.DataBridge;
+import com.aluer.plugin.bridge.InternalCommandExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,14 @@ public class ServerGuardService implements CommandLineRunner {
     private final DeepSeekClient deepSeekClient;
     private final AutoExecutor autoExecutor;
     private final RconClient rconClient;
+
+    /** 插件模式下的数据桥接（external 模式下为 null） */
+    @Autowired(required = false)
+    private DataBridge dataBridge;
+
+    /** 插件模式下的内部命令执行器（external 模式下为 null） */
+    @Autowired(required = false)
+    private InternalCommandExecutor internalCommandExecutor;
 
     @Value("${server.port:8080}")
     private int serverPort;
@@ -84,6 +95,20 @@ public class ServerGuardService implements CommandLineRunner {
 
         startMonitoring();
 
+        // 插件模式：注册 DataBridge 告警/指标处理器
+        if (config.isPluginMode() && dataBridge != null) {
+            dataBridge.setAlertHandler(this::handleAlert);
+            dataBridge.setMetricsHandler(metrics -> {
+                deepSeekClient.addMetrics(metrics);
+                adaptiveThreshold.addMetric(metrics);
+                anomalyDetector.addMetric(metrics);
+                timeSeriesPredictor.addMetric(metrics);
+            });
+            // 启动 DataBridge 包速率定时更新
+            scheduler.scheduleAtFixedRate(() -> dataBridge.updatePacketRate(), 1, 1, TimeUnit.SECONDS);
+            logger.info("DataBridge alert/metrics handlers registered — plugin mode active");
+        }
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Shutdown signal received, gracefully stopping...");
             running.set(false);
@@ -107,8 +132,9 @@ public class ServerGuardService implements CommandLineRunner {
     private void printBanner() {
         logger.info("");
         logger.info("╔══════════════════════════════════════════════════════════════╗");
-        logger.info("║          Aluer ServerGuard v1.0.0                           ║");
+        logger.info("║          Aluer ServerGuard v4.0.0                           ║");
         logger.info("║          AI-Powered Minecraft Server Protection              ║");
+        logger.info("║          Mode: " + String.format("%-39s", config.isPluginMode() ? "Paper Plugin (Embedded)" : "External Monitor") + "║");
         logger.info("╠══════════════════════════════════════════════════════════════╣");
         logger.info("║  Java:        {} ║", String.format("%-36s", System.getProperty("java.version")));
         logger.info("║  Available CPUs: {}{} ║",
@@ -210,6 +236,15 @@ public class ServerGuardService implements CommandLineRunner {
 
     private void collectAndAnalyzeMetrics() {
         try {
+            // 插件模式：从 DataBridge 采集实时指标
+            if (config.isPluginMode() && dataBridge != null) {
+                MetricsData pluginMetrics = dataBridge.buildMetricsSnapshot();
+                deepSeekClient.addMetrics(pluginMetrics);
+                adaptiveThreshold.addMetric(pluginMetrics);
+                anomalyDetector.addMetric(pluginMetrics);
+                timeSeriesPredictor.addMetric(pluginMetrics);
+            }
+
             MetricsData data = resourceMonitor.collectMetrics();
 
             deepSeekClient.addMetrics(data);

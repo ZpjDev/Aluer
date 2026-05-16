@@ -4,8 +4,10 @@ import com.aluer.ai.DeepSeekClient;
 import com.aluer.config.ServerGuardConfig;
 import com.aluer.model.AlertEvent;
 import com.aluer.model.AlertType;
+import com.aluer.plugin.bridge.InternalCommandExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,15 +18,19 @@ import java.util.regex.Pattern;
 @Component
 public class AutoExecutor {
     private static final Logger logger = LoggerFactory.getLogger(AutoExecutor.class);
-    
+
     private final ServerGuardConfig config;
     private final RconClient rconClient;
     private final DeepSeekClient deepSeekClient;
     private final ConcurrentLinkedQueue<ExecuteTask> taskQueue = new ConcurrentLinkedQueue<>();
     private final ConcurrentHashMap<String, Long> recentActions = new ConcurrentHashMap<>();
-    
+
     private static final Pattern IP_PATTERN = Pattern.compile("\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b");
     private static final long ACTION_COOLDOWN_MS = 60000;
+
+    /** 插件模式下的内部命令执行器（external 模式下为 null） */
+    @Autowired(required = false)
+    private InternalCommandExecutor internalCommandExecutor;
 
     public AutoExecutor(ServerGuardConfig config, RconClient rconClient, DeepSeekClient deepSeekClient) {
         this.config = config;
@@ -86,13 +92,15 @@ public class AutoExecutor {
             logger.info("[AUTO-EXEC] Ban disabled in config");
             return;
         }
-        
+
         String ip = extractIpFromAlert(alert);
-        
+
         if (ip != null) {
             String banKey = "ban-ip:" + ip;
             if (!isActionCooldown(banKey)) {
-                boolean success = rconClient.banIp(ip);
+                boolean success = isPluginMode()
+                    ? internalCommandExecutor.banIP(ip, "AI 自动封禁 — " + alert.getType().getTitle())
+                    : rconClient.banIp(ip);
                 logger.info("[AUTO-EXEC] Ban IP {} - {}", ip, success ? "SUCCESS" : "FAILED");
                 recordAction(banKey);
             }
@@ -101,7 +109,9 @@ public class AutoExecutor {
             if (player != null) {
                 String banKey = "ban-player:" + player;
                 if (!isActionCooldown(banKey)) {
-                    boolean success = rconClient.banPlayer(player);
+                    boolean success = isPluginMode()
+                        ? internalCommandExecutor.banPlayer(player, "AI 自动封禁 — " + alert.getType().getTitle())
+                        : rconClient.banPlayer(player);
                     logger.info("[AUTO-EXEC] Ban player {} - {}", player, success ? "SUCCESS" : "FAILED");
                     recordAction(banKey);
                 }
@@ -113,12 +123,14 @@ public class AutoExecutor {
         if (!config.getAi().getDeepseek().getAutoExecute().isKickPlayer()) {
             return;
         }
-        
+
         String player = extractPlayerFromAlert(alert);
         if (player != null) {
             String kickKey = "kick:" + player;
             if (!isActionCooldown(kickKey)) {
-                boolean success = rconClient.kickPlayer(player, "Auto-kick by AI security system");
+                boolean success = isPluginMode()
+                    ? internalCommandExecutor.kickPlayer(player, "AI 安全系统自动踢出")
+                    : rconClient.kickPlayer(player, "Auto-kick by AI security system");
                 logger.info("[AUTO-EXEC] Kick player {} - {}", player, success ? "SUCCESS" : "FAILED");
                 recordAction(kickKey);
             }
@@ -129,14 +141,18 @@ public class AutoExecutor {
         if (!config.getAi().getDeepseek().getAutoExecute().isClearLag()) {
             return;
         }
-        
+
         String clearKey = "clear-lag";
         if (!isActionCooldown(clearKey)) {
-            boolean success = rconClient.clearLag();
-            logger.info("[AUTO-EXEC] Clear lag - {}", success ? "SUCCESS" : "FAILED");
+            if (isPluginMode()) {
+                int removed = internalCommandExecutor.clearDroppedItems();
+                logger.info("[AUTO-EXEC] Clear lag - removed {} dropped items via Bukkit API", removed);
+            } else {
+                boolean success = rconClient.clearLag();
+                logger.info("[AUTO-EXEC] Clear lag - {}", success ? "SUCCESS" : "FAILED");
+                rconClient.killAllMobs();
+            }
             recordAction(clearKey);
-            
-            rconClient.killAllMobs();
         }
     }
 
@@ -144,10 +160,14 @@ public class AutoExecutor {
         if (!config.getAi().getDeepseek().getAutoExecute().isSetSpawnRate()) {
             return;
         }
-        
+
         String spawnKey = "spawn-control";
         if (!isActionCooldown(spawnKey)) {
-            rconClient.setSpawnRate(5);
+            if (isPluginMode()) {
+                internalCommandExecutor.setSpawnRate(5);
+            } else {
+                rconClient.setSpawnRate(5);
+            }
             logger.info("[AUTO-EXEC] Reduced spawn rate to prevent lag");
             recordAction(spawnKey);
         }
@@ -157,14 +177,22 @@ public class AutoExecutor {
         if (!config.getAi().getDeepseek().getAutoExecute().isWhitelist()) {
             return;
         }
-        
+
         String whitelistKey = "whitelist";
         if (!isActionCooldown(whitelistKey)) {
             if (action.contains("enable") || action.contains("开启") || action.contains("启用")) {
-                rconClient.enableWhitelist();
+                if (isPluginMode()) {
+                    internalCommandExecutor.enableWhitelist();
+                } else {
+                    rconClient.enableWhitelist();
+                }
                 logger.info("[AUTO-EXEC] Enabled whitelist");
             } else if (action.contains("disable") || action.contains("关闭")) {
-                rconClient.disableWhitelist();
+                if (isPluginMode()) {
+                    internalCommandExecutor.disableWhitelist();
+                } else {
+                    rconClient.disableWhitelist();
+                }
                 logger.info("[AUTO-EXEC] Disabled whitelist");
             }
             recordAction(whitelistKey);
@@ -176,10 +204,15 @@ public class AutoExecutor {
         if (!isActionCooldown(restartKey)) {
             logger.warn("[AUTO-EXEC] AI recommended server restart");
             logger.warn("[AUTO-EXEC] Sending alert to admin before restart...");
-            
-            rconClient.executeCommand("say §c[Aluer AI] Server restart recommended due to performance issues");
-            rconClient.executeCommand("save-all");
-            
+
+            if (isPluginMode()) {
+                internalCommandExecutor.executeCommand("say §c[Aluer AI] Server restart recommended due to performance issues");
+                internalCommandExecutor.saveAllWorlds();
+            } else {
+                rconClient.executeCommand("say §c[Aluer AI] Server restart recommended due to performance issues");
+                rconClient.executeCommand("save-all");
+            }
+
             recordAction(restartKey);
         }
     }
@@ -187,7 +220,11 @@ public class AutoExecutor {
     private void executeWorldBorder() {
         String borderKey = "world-border";
         if (!isActionCooldown(borderKey)) {
-            rconClient.setWorldBorder(1000);
+            if (isPluginMode()) {
+                internalCommandExecutor.executeCommand("worldborder set 1000");
+            } else {
+                rconClient.setWorldBorder(1000);
+            }
             logger.info("[AUTO-EXEC] Set world border to reduce entity spawns");
             recordAction(borderKey);
         }
@@ -195,13 +232,18 @@ public class AutoExecutor {
 
     private String extractIpFromAlert(AlertEvent alert) {
         String message = alert.getMessage();
-        
+
         Matcher matcher = IP_PATTERN.matcher(message);
         if (matcher.find()) {
             return matcher.group();
         }
-        
-        return rconClient.extractIpFromMessage(message);
+
+        return isPluginMode() ? null : rconClient.extractIpFromMessage(message);
+    }
+
+    /** 当前是否运行在 Paper 插件模式 */
+    private boolean isPluginMode() {
+        return config.isPluginMode() && internalCommandExecutor != null;
     }
 
     private String extractPlayerFromAlert(AlertEvent alert) {
@@ -255,13 +297,25 @@ public class AutoExecutor {
         ExecuteTask task;
         while ((task = taskQueue.poll()) != null) {
             try {
-                switch (task.getType()) {
-                    case BAN_IP -> rconClient.banIp(task.getTarget());
-                    case BAN_PLAYER -> rconClient.banPlayer(task.getTarget());
-                    case KICK -> rconClient.kickPlayer(task.getTarget(), task.getReason());
-                    case CLEAR_LAG -> rconClient.clearLag();
-                    case RESTART -> rconClient.restartServer();
-                    default -> logger.warn("Unknown task type: {}", task.getType());
+                if (isPluginMode()) {
+                    switch (task.getType()) {
+                        case BAN_IP -> internalCommandExecutor.banIP(task.getTarget(), task.getReason());
+                        case BAN_PLAYER -> internalCommandExecutor.banPlayer(task.getTarget(), task.getReason());
+                        case KICK -> internalCommandExecutor.kickPlayer(task.getTarget(), task.getReason());
+                        case CLEAR_LAG -> internalCommandExecutor.clearDroppedItems();
+                        case RESTART -> internalCommandExecutor.executeCommand("restart");
+                        case WHITELIST -> internalCommandExecutor.enableWhitelist();
+                        default -> logger.warn("Unknown task type: {}", task.getType());
+                    }
+                } else {
+                    switch (task.getType()) {
+                        case BAN_IP -> rconClient.banIp(task.getTarget());
+                        case BAN_PLAYER -> rconClient.banPlayer(task.getTarget());
+                        case KICK -> rconClient.kickPlayer(task.getTarget(), task.getReason());
+                        case CLEAR_LAG -> rconClient.clearLag();
+                        case RESTART -> rconClient.restartServer();
+                        default -> logger.warn("Unknown task type: {}", task.getType());
+                    }
                 }
             } catch (Exception e) {
                 logger.error("Failed to execute task: {}", e.getMessage());
