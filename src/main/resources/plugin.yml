@@ -4,7 +4,7 @@ main: com.aluer.plugin.AluerPlugin
 api-version: '1.21'
 description: AI-powered Minecraft PaperMC Server Protection System — 29 anti-cheat modules, DDoS defense, WAF, kernel-based threat fusion
 author: Aluer
-website: https://github.com/aluer-ai/serverguard
+website: https://github.com/ZpjDev/Aluer/
 load: STARTUP
 prefix: Aluer
 

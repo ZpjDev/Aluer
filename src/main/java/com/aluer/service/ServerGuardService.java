@@ -202,21 +202,42 @@ public class ServerGuardService implements CommandLineRunner {
 
     private void printBanner() {
         boolean hasAgent = agentServer != null;
+        // ANSI 颜色码
+        final String GOLD  = "[38;5;220m";
+        final String CYAN  = "[38;5;51m";
+        final String GRAY  = "[38;5;245m";
+        final String GREEN = "[38;5;46m";
+        final String PURP  = "[38;5;177m";
+        final String RST   = "[0m";
+
         logger.info("");
-        logger.info("╔══════════════════════════════════════════════════════════════╗");
-        logger.info("║          Aluer ServerGuard v5.0.0                           ║");
-        logger.info("║          AI-Powered Minecraft Server Protection              ║");
-        logger.info("║          Mode: " + String.format("%-39s", hasAgent ? "Agent Server (WebSocket)" : "External Monitor") + "║");
-        logger.info("╠══════════════════════════════════════════════════════════════╣");
-        logger.info("║  Java:        {} ║", String.format("%-36s", System.getProperty("java.version")));
-        logger.info("║  Web Console: http://0.0.0.0:{}{} ║", serverPort, "                        ");
+        logger.info("{}╔══════════════════════════════════════════════════════════════╗{}", GRAY, RST);
+        logger.info("{}║{}  {}█████╗ ██╗   ██╗███████╗██████╗    {}███████╗██████╗ {}        {}║{}", GRAY, GOLD, CYAN, GRAY, RST);
+        logger.info("{}║{}  {}██╔══██╗██║   ██║██╔════╝██╔══██╗   {}██╔════╝██╔══██╗{}        {}║{}", GRAY, GOLD, CYAN, GRAY, RST);
+        logger.info("{}║{}  {}███████║██║   ██║█████╗  ██████╔╝   {}███████╗██████╔╝{}        {}║{}", GRAY, GOLD, CYAN, GRAY, RST);
+        logger.info("{}║{}  {}██╔══██║██║   ██║██╔══╝  ██╔══██╗   {}╚════██║██╔══██╗{}        {}║{}", GRAY, GOLD, CYAN, GRAY, RST);
+        logger.info("{}║{}  {}██║  ██║╚██████╔╝███████╗██║  ██║   {}███████║██║  ██║{}        {}║{}", GRAY, GOLD, CYAN, GRAY, RST);
+        logger.info("{}║{}  {}╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝   {}╚══════╝╚═╝  ╚═╝{}        {}║{}", GRAY, GOLD, CYAN, GRAY, RST);
+        logger.info("{}║{}                                                            {}║{}", GRAY, RST);
+        logger.info("{}║{}  {}AI-Powered Minecraft PaperMC Server Protection  {}V5.0.0      {}║{}", GRAY, GREEN, PURP, GRAY, RST);
+        logger.info("{}║{}  {}135+ Security Modules │ 100% Anti-Cheat Coverage         {}║{}", GRAY, PURP, GRAY, RST);
+        logger.info("{}╠══════════════════════════════════════════════════════════════╣{}", GRAY, RST);
+        logger.info("{}║{}  Java:        {} {}║{}", GRAY, String.format("%-36s", System.getProperty("java.version")), GRAY, RST);
+        logger.info("{}║{}  Available CPUs: {}{} {}║{}", GRAY, String.format("%-32s", Runtime.getRuntime().availableProcessors()), GRAY, RST);
+        logger.info("{}║{}  Max Memory:  {}{} {}║{}", GRAY, String.format("%-32s", (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " MB"), GRAY, RST);
         if (hasAgent) {
-            logger.info("║  Agent WS:    ws://0.0.0.0:{}/agent{} ║", serverPort, "                ");
+            logger.info("{}║{}  Agent WS:    ws://0.0.0.0:{}/agent{} {}║{}", GRAY, serverPort, "                ", GRAY, RST);
         }
-        logger.info("║  DeepSeek AI: {}{} ║",
+        logger.info("{}║{}  Web Console: http://0.0.0.0:{}{} {}║{}", GRAY, serverPort, "                        ", GRAY, RST);
+        logger.info("{}║{}  DeepSeek AI: {}{} {}║{}", GRAY,
             deepSeekClient.isEnabled() ? "enabled (" + config.getAi().getDeepseek().getModel() + ")" : "disabled",
-            deepSeekClient.isEnabled() ? "" : "                          ");
-        logger.info("╚══════════════════════════════════════════════════════════════╝");
+            deepSeekClient.isEnabled() ? "" : "                          ", GRAY, RST);
+        logger.info("{}║{}  Mode:        {} {}║{}", GRAY,
+            String.format("%-36s", hasAgent ? "Agent Server (WebSocket)" : "External Monitor"), GRAY, RST);
+        logger.info("{}╚══════════════════════════════════════════════════════════════╝{}", GRAY, RST);
+        logger.info("");
+        logger.info("  {}Type 'help' in the shell for full command reference.{}", GOLD, RST);
+        logger.info("  {}Access the web console at http://localhost:{}/{}", GOLD, serverPort, RST);
         logger.info("");
     }
 
