@@ -1,17 +1,17 @@
 
-${AnsiColor.BRIGHT_YELLOW}  ╔══════════════════════════════════════════════════════╗
-  ║                                                      ║
-  ║     █████╗ ██╗   ██╗███████╗██████╗                 ║
-  ║    ██╔══██╗██║   ██║██╔════╝██╔══██╗                ║
-  ║    ███████║██║   ██║█████╗  ██████╔╝                ║
-  ║    ██╔══██║██║   ██║██╔══╝  ██╔══██╗                ║
-  ║    ██║  ██║╚██████╔╝███████╗██║  ██║                ║
-  ║    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝                ║
-  ║                                                      ║
-  ║       ${AnsiColor.BRIGHT_GREEN}ServerGuard v5.0.0${AnsiColor.BRIGHT_YELLOW}                             ║
-  ║       ${AnsiColor.BRIGHT_CYAN}AI-Powered Minecraft Server Protection${AnsiColor.BRIGHT_YELLOW}          ║
-  ║                                                      ║
-  ╚══════════════════════════════════════════════════════╝${AnsiStyle.NORMAL}
+${AnsiColor.BRIGHT_YELLOW}  ╔══════════════════════════════════════════════════════════════╗
+  ║                                                              ║
+  ║${AnsiColor.BRIGHT_RED}     █████╗ ██╗   ██╗███████╗██████╗ ${AnsiColor.BRIGHT_YELLOW}  ${AnsiColor.BRIGHT_CYAN}███████╗██████╗ ${AnsiColor.BRIGHT_YELLOW}          ║
+  ║${AnsiColor.BRIGHT_RED}    ██╔══██╗██║   ██║██╔════╝██╔══██╗${AnsiColor.BRIGHT_YELLOW}  ${AnsiColor.BRIGHT_CYAN}██╔════╝██╔══██╗${AnsiColor.BRIGHT_YELLOW}          ║
+  ║${AnsiColor.BRIGHT_RED}    ███████║██║   ██║█████╗  ██████╔╝${AnsiColor.BRIGHT_YELLOW}  ${AnsiColor.BRIGHT_CYAN}███████╗██████╔╝${AnsiColor.BRIGHT_YELLOW}          ║
+  ║${AnsiColor.BRIGHT_RED}    ██╔══██║██║   ██║██╔══╝  ██╔══██╗${AnsiColor.BRIGHT_YELLOW}  ${AnsiColor.BRIGHT_CYAN}╚════██║██╔══██╗${AnsiColor.BRIGHT_YELLOW}          ║
+  ║${AnsiColor.BRIGHT_RED}    ██║  ██║╚██████╔╝███████╗██║  ██║${AnsiColor.BRIGHT_YELLOW}  ${AnsiColor.BRIGHT_CYAN}███████║██║  ██║${AnsiColor.BRIGHT_YELLOW}          ║
+  ║${AnsiColor.BRIGHT_RED}    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝${AnsiColor.BRIGHT_YELLOW}  ${AnsiColor.BRIGHT_CYAN}╚══════╝╚═╝  ╚═╝${AnsiColor.BRIGHT_YELLOW}          ║
+  ║                                                              ║
+  ║       ${AnsiColor.BRIGHT_GREEN}AI-Powered Minecraft PaperMC Server Protection${AnsiColor.BRIGHT_YELLOW}       ║
+  ║       ${AnsiColor.BRIGHT_MAGENTA}V5.0.0  ${AnsiColor.BRIGHT_WHITE}|${AnsiColor.BRIGHT_MAGENTA}  135+ Security Modules  ${AnsiColor.BRIGHT_WHITE}|${AnsiColor.BRIGHT_MAGENTA}  100% Anti-Cheat${AnsiColor.BRIGHT_YELLOW}       ║
+  ║                                                              ║
+  ╚══════════════════════════════════════════════════════════════╝${AnsiStyle.NORMAL}
 
   ${AnsiColor.BRIGHT_GREEN}Type ${AnsiColor.BRIGHT_WHITE}'help'${AnsiColor.BRIGHT_GREEN} for full command reference${AnsiStyle.NORMAL}
   ${AnsiColor.BRIGHT_CYAN}Web Console: ${AnsiColor.BRIGHT_WHITE}http://localhost:${server.port}/${AnsiStyle.NORMAL}
