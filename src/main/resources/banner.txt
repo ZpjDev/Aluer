@@ -1,18 +1,17 @@
 
-${AnsiColor.BRIGHT_CYAN}    ╔════════════════════════════════════════════════════════════╗
-    ║                                                            ║
-    ║       █████╗ ██╗     ██╗   ██╗███████╗██████╗             ║
-    ║      ██╔══██╗██║     ██║   ██║██╔════╝██╔══██╗            ║
-    ║      ███████║██║     ██║   ██║█████╗  ██████╔╝            ║
-    ║      ██╔══██║██║     ██║   ██║██╔══╝  ██╔══██╗            ║
-    ║      ██║  ██║███████╗╚██████╔╝███████╗██║  ██║            ║
-    ║      ╚═╝  ╚═╝╚══════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝            ║
-    ║                                                            ║
-    ║         ServerGuard v1.0.0                                 ║
-    ║         AI-Powered Minecraft Server Protection             ║
-    ║                                                            ║
-    ╚════════════════════════════════════════════════════════════╝${AnsiStyle.NORMAL}
+${AnsiColor.BRIGHT_YELLOW}    ╔══════════════════════════════════════════════════════════════╗
+    ║                                                              ║
+    ║      ${AnsiColor.BRIGHT_RED}█████╗ ${AnsiColor.BRIGHT_GREEN}██╗   ██╗${AnsiColor.BRIGHT_YELLOW}███████╗${AnsiColor.BRIGHT_CYAN}██████╗ ${AnsiColor.BRIGHT_YELLOW}   ${AnsiColor.BRIGHT_RED}███████╗${AnsiColor.BRIGHT_CYAN}██████╗ ${AnsiColor.BRIGHT_YELLOW}       ║
+    ║     ${AnsiColor.BRIGHT_RED}██╔══██╗${AnsiColor.BRIGHT_GREEN}██║   ██║${AnsiColor.BRIGHT_YELLOW}██╔════╝${AnsiColor.BRIGHT_CYAN}██╔══██╗${AnsiColor.BRIGHT_YELLOW}   ${AnsiColor.BRIGHT_RED}██╔════╝${AnsiColor.BRIGHT_CYAN}██╔══██╗${AnsiColor.BRIGHT_YELLOW}      ║
+    ║     ${AnsiColor.BRIGHT_RED}███████║${AnsiColor.BRIGHT_GREEN}██║   ██║${AnsiColor.BRIGHT_YELLOW}█████╗  ${AnsiColor.BRIGHT_CYAN}██████╔╝${AnsiColor.BRIGHT_YELLOW}   ${AnsiColor.BRIGHT_RED}███████╗${AnsiColor.BRIGHT_CYAN}██████╔╝${AnsiColor.BRIGHT_YELLOW}      ║
+    ║     ${AnsiColor.BRIGHT_RED}██╔══██║${AnsiColor.BRIGHT_GREEN}██║   ██║${AnsiColor.BRIGHT_YELLOW}██╔══╝  ${AnsiColor.BRIGHT_CYAN}██╔══██╗${AnsiColor.BRIGHT_YELLOW}   ${AnsiColor.BRIGHT_RED}╚════██║${AnsiColor.BRIGHT_CYAN}██╔══██╗${AnsiColor.BRIGHT_YELLOW}      ║
+    ║     ${AnsiColor.BRIGHT_RED}██║  ██║${AnsiColor.BRIGHT_GREEN}╚██████╔╝${AnsiColor.BRIGHT_YELLOW}███████╗${AnsiColor.BRIGHT_CYAN}██║  ██║${AnsiColor.BRIGHT_YELLOW}   ${AnsiColor.BRIGHT_RED}███████║${AnsiColor.BRIGHT_CYAN}██║  ██║${AnsiColor.BRIGHT_YELLOW}      ║
+    ║     ${AnsiColor.BRIGHT_RED}╚═╝  ╚═╝${AnsiColor.BRIGHT_GREEN} ╚═════╝ ${AnsiColor.BRIGHT_YELLOW}╚══════╝${AnsiColor.BRIGHT_CYAN}╚═╝  ╚═╝${AnsiColor.BRIGHT_YELLOW}   ${AnsiColor.BRIGHT_RED}╚══════╝${AnsiColor.BRIGHT_CYAN}╚═╝  ╚═╝${AnsiColor.BRIGHT_YELLOW}      ║
+    ║                                                              ║
+    ║       ${AnsiColor.BRIGHT_GREEN}AI-Powered Minecraft PaperMC Server Protection${AnsiColor.BRIGHT_YELLOW}       ║
+    ║       ${AnsiColor.BRIGHT_MAGENTA}V5.0.0  ${AnsiColor.BRIGHT_WHITE}|${AnsiColor.BRIGHT_MAGENTA}  135+ Security Modules  ${AnsiColor.BRIGHT_WHITE}|${AnsiColor.BRIGHT_MAGENTA}  100% Anti-Cheat${AnsiColor.BRIGHT_YELLOW}       ║
+    ║                                                              ║
+    ╚══════════════════════════════════════════════════════════════╝${AnsiStyle.NORMAL}
 
-  ${AnsiColor.BRIGHT_GREEN}:: DeepSeek AI Powered ::${AnsiStyle.NORMAL} ${AnsiColor.BRIGHT_WHITE}Autonomous Defense Engine${AnsiStyle.NORMAL}
-  ${AnsiColor.BRIGHT_GREEN}:: Multi-Layer Kernel ::${AnsiStyle.NORMAL} ${AnsiColor.BRIGHT_WHITE}Signal Fusion + Threat Mesh${AnsiStyle.NORMAL}
-  ${AnsiColor.BRIGHT_GREEN}:: Mirage Shield ::${AnsiStyle.NORMAL} ${AnsiColor.BRIGHT_WHITE}4-Mode Adaptive Protection${AnsiStyle.NORMAL}
+  ${AnsiColor.BRIGHT_GREEN}Type 'help' in the shell for full command reference.${AnsiStyle.NORMAL}
+  ${AnsiColor.BRIGHT_CYAN}Web Console: http://0.0.0.0:${server.port}/${AnsiStyle.NORMAL}
