@@ -8,13 +8,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
- * Aluer ServerGuard 主应用入口
+ * Aluer ServerGuard 主应用入口（外部引擎）
  *
- * 支持两种运行模式：
- * 1. standalone — java -jar serverguard.jar（传统外部监控模式）
- * 2. plugin — 由 PaperMC 插件 AluerPlugin 调用 bootstrap() 启动嵌入式上下文
- *
- * 模式由系统属性 serverguard.mode 决定，AluerPlugin 启动时自动设置为 "plugin"
+ * 独立运行，等待 Paper 插件 Agent 通过 WebSocket 连接并推送实时数据。
+ * 同时保留传统 external 监控模式的进程保活和日志分析能力。
  */
 @SpringBootApplication
 @EnableAsync
@@ -23,8 +20,6 @@ public class ServerGuardApplication {
     private static volatile ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
-        // standalone 模式：直接启动
-        System.setProperty("serverguard.mode", "external");
         context = SpringApplication.run(ServerGuardApplication.class, args);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -34,25 +29,8 @@ public class ServerGuardApplication {
             }
         }, "serverguard-shutdown-hook"));
 
-        logger.info("Aluer ServerGuard standalone mode is ready");
-    }
-
-    /**
-     * 插件模式启动入口 — 由 AluerPlugin.onEnable() 调用
-     *
-     * Paper 插件在 onEnable 时异步调用此方法，
-     * 返回的 ConfigurableApplicationContext 由插件持有并在 onDisable 时关闭。
-     *
-     * @return Spring 应用上下文
-     */
-    public static ConfigurableApplicationContext bootstrap() {
-        if (context != null) {
-            logger.warn("Spring Boot context already running, reusing existing context");
-            return context;
-        }
-        context = SpringApplication.run(ServerGuardApplication.class);
-        logger.info("Aluer ServerGuard plugin mode bootstrapped — Spring context ready");
-        return context;
+        logger.info("Aluer ServerGuard v5.0.0 is ready");
+        logger.info("Agent WebSocket endpoint: ws://0.0.0.0:{}/agent", context.getEnvironment().getProperty("server.port", "8080"));
     }
 
     public static ConfigurableApplicationContext getContext() {

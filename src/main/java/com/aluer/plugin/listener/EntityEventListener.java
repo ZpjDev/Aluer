@@ -1,83 +1,57 @@
 package com.aluer.plugin.listener;
 
-import com.aluer.model.AlertType;
 import com.aluer.plugin.AluerPlugin;
-import com.aluer.plugin.bridge.DataBridge;
+import com.aluer.plugin.bridge.AgentWebSocketClient;
+import com.google.gson.JsonObject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 实体事件监听器 — 处理实体生成、拾取、交互
- *
- * 实时检测：
- * - AutoFish（自动钓鱼）— 异常快速的钓鱼收杆时机
- * - 实体生成速率异常（可能为故意的服务器压力测试）
- */
 public class EntityEventListener implements Listener {
     private static final Logger logger = LoggerFactory.getLogger(EntityEventListener.class);
 
     private final AluerPlugin plugin;
-    private final DataBridge bridge;
+    private final AgentWebSocketClient wsClient;
 
-    public EntityEventListener(AluerPlugin plugin, DataBridge bridge) {
+    public EntityEventListener(AluerPlugin plugin, AgentWebSocketClient wsClient) {
         this.plugin = plugin;
-        this.bridge = bridge;
+        this.wsClient = wsClient;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onEntitySpawn(EntitySpawnEvent event) {
-        if (bridge == null) return;
-        bridge.incrementEvent("entity.spawn");
+        if (wsClient == null) return;
+        JsonObject data = new JsonObject();
+        data.addProperty("entityType", event.getEntity().getType().name());
+        data.addProperty("world", event.getLocation().getWorld() != null ? event.getLocation().getWorld().getName() : "");
+        wsClient.sendEvent("ENTITY_SPAWN", data);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerFish(PlayerFishEvent event) {
-        if (bridge == null) return;
-        Player player = event.getPlayer();
-
-        // —— AutoFish 检测 ——
-        // 正常钓鱼需要玩家注意力响应，AutoFish hack 会在鱼咬钩瞬间自动收杆
-        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH
-            || event.getState() == PlayerFishEvent.State.CAUGHT_ENTITY) {
-
-            bridge.incrementEvent("fish.caught");
-
-            // 记录钓鱼收杆时间，如果连续快速收杆则标记
-            var snap = bridge.getPlayer(player.getUniqueId());
-            if (snap != null) {
-                long now = System.currentTimeMillis();
-                long recentCatches = snap.recentTargets.values().stream()
-                    .filter(t -> t > now - 30_000) // 30秒内
-                    .count();
-                if (recentCatches > 5) { // 30秒内收杆超过5次（正常钓鱼约15-60秒一次）
-                    bridge.alert(AlertType.SECURITY_AUTO_FISH,
-                        String.format("玩家 %s 30秒内钓鱼收杆 %d 次，疑似 AutoFish",
-                            player.getName(), recentCatches),
-                        0.7, player.getName());
-                }
-                // 复用 recentTargets 的 key 为 "fish" 来记录钓鱼时间
-                snap.recentTargets.put("fish:" + System.nanoTime(), now);
-            }
+        if (wsClient == null) return;
+        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH || event.getState() == PlayerFishEvent.State.CAUGHT_ENTITY) {
+            JsonObject data = new JsonObject();
+            data.addProperty("playerName", event.getPlayer().getName());
+            data.addProperty("state", event.getState().name());
+            wsClient.sendEvent("PLAYER_FISH", data);
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onEntityPickupItem(EntityPickupItemEvent event) {
-        if (bridge == null) return;
-        if (event.getEntity() instanceof Player) {
-            bridge.incrementEvent("entity.pickup");
+    public void onEntityPickup(EntityPickupItemEvent event) {
+        if (wsClient == null) return;
+        if (event.getEntity() instanceof Player p) {
+            JsonObject data = new JsonObject();
+            data.addProperty("playerName", p.getName());
+            data.addProperty("itemType", event.getItem().getItemStack().getType().name());
+            wsClient.sendEvent("ENTITY_PICKUP", data);
         }
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onEntityExplode(EntityExplodeEvent event) {
-        if (bridge == null) return;
-        bridge.incrementEvent("entity.explode");
     }
 }

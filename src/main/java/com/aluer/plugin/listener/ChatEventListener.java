@@ -1,9 +1,8 @@
 package com.aluer.plugin.listener;
 
-import com.aluer.model.AlertType;
 import com.aluer.plugin.AluerPlugin;
-import com.aluer.plugin.bridge.DataBridge;
-import com.aluer.plugin.bridge.DataBridge.PlayerSnapshot;
+import com.aluer.plugin.bridge.AgentWebSocketClient;
+import com.google.gson.JsonObject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -11,88 +10,84 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
- * 聊天事件监听器 — 处理玩家聊天消息
+ * 聊天事件监听器（Agent 端）
  *
- * 实时检测：
- * - ChatFlood（聊天刷屏）— 短时间内大量消息
- * - Advertisement（广告）— IP/域名模式匹配
- * - PhishingLink（钓鱼链接）— 可疑 URL 检测
- * - Profanity（不雅用语）— 关键词过滤
- * - Spam（重复消息）— 相同内容重复发送
+ * Agent 端即时拦截（可取消事件）：IP广告/钓鱼链接/刷屏
+ * 同时推送所有聊天数据至 ServerGuard 做深度内容分析和模式学习
  */
 public class ChatEventListener implements Listener {
     private static final Logger logger = LoggerFactory.getLogger(ChatEventListener.class);
 
     private final AluerPlugin plugin;
-    private final DataBridge bridge;
+    private final AgentWebSocketClient wsClient;
 
-    /** IP 地址正则 */
     private static final Pattern IP_PATTERN = Pattern.compile(
         "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(:\\d{1,5})?");
-
-    /** URL 正则（含常见短链接服务） */
     private static final Pattern URL_PATTERN = Pattern.compile(
-        "https?://[^\\s]+|bit\\.ly/[^\\s]+|tinyurl\\.com/[^\\s]+|discord\\.gg/[^\\s]+",
+        "https?://[^\\s]+|bit\\.ly/[^\\s]+|discord\\.gg/[^\\s]+",
         Pattern.CASE_INSENSITIVE);
 
-    /** 聊天刷屏阈值（秒内消息数） */
-    private static final int SPAM_THRESHOLD = 5;
-    private static final long SPAM_WINDOW_MS = 10_000;
+    /** 刷屏检测：最近消息时间戳 */
+    private final Map<UUID, Long> lastChatTime = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> chatBurstCount = new ConcurrentHashMap<>();
+    private static final long CHAT_BURST_WINDOW_MS = 2000;
+    private static final int CHAT_BURST_THRESHOLD = 4;
 
-    public ChatEventListener(AluerPlugin plugin, DataBridge bridge) {
+    public ChatEventListener(AluerPlugin plugin, AgentWebSocketClient wsClient) {
         this.plugin = plugin;
-        this.bridge = bridge;
+        this.wsClient = wsClient;
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (bridge == null) return;
+        if (wsClient == null) return;
         String message = event.getMessage();
         String playerName = event.getPlayer().getName();
-        PlayerSnapshot snap = bridge.getPlayer(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
 
-        // —— 聊天刷屏检测 ——
-        if (snap != null) {
-            snap.recentMessages.add(message);
-            while (snap.recentMessages.size() > 20) {
-                snap.recentMessages.removeFirst();
-            }
+        // —— Agent 端即时拦截：IP 广告 ——
+        if (IP_PATTERN.matcher(message).find()) {
+            event.setCancelled(true);
+            wsClient.sendAlert("CHAT_ADVERTISEMENT",
+                "即时拦截：玩家 " + playerName + " 发送疑似IP地址", 0.9, playerName);
+            return;
+        }
 
-            long now = System.currentTimeMillis();
-            long recentCount = snap.recentMessages.stream()
-                .filter(m -> true) // 所有消息都在时间窗口内（Deque 中保留最近 20 条）
-                .count();
+        // —— Agent 端即时拦截：钓鱼链接 ——
+        if (URL_PATTERN.matcher(message).find()) {
+            event.setCancelled(true);
+            wsClient.sendAlert("CHAT_PHISHING",
+                "即时拦截：玩家 " + playerName + " 发送外部链接", 0.85, playerName);
+            return;
+        }
 
-            if (recentCount >= SPAM_THRESHOLD) {
-                bridge.alert(AlertType.CHAT_FLOOD,
-                    String.format("玩家 %s 聊天刷屏：%d 条消息", playerName, recentCount),
-                    0.7, playerName);
+        // —— Agent 端即时拦截：刷屏 ——
+        long now = System.currentTimeMillis();
+        Long last = lastChatTime.get(uuid);
+        if (last != null && (now - last) < CHAT_BURST_WINDOW_MS) {
+            int count = chatBurstCount.merge(uuid, 1, Integer::sum);
+            if (count >= CHAT_BURST_THRESHOLD) {
                 event.setCancelled(true);
+                wsClient.sendAlert("CHAT_FLOOD",
+                    "即时拦截：玩家 " + playerName + " 聊天刷屏", 0.8, playerName);
                 return;
             }
+        } else {
+            chatBurstCount.put(uuid, 1);
         }
+        lastChatTime.put(uuid, now);
 
-        // —— 广告/IP 检测 ——
-        if (IP_PATTERN.matcher(message).find()) {
-            bridge.alert(AlertType.CHAT_ADVERTISEMENT,
-                String.format("玩家 %s 发送疑似IP地址：%s", playerName, message),
-                0.8, playerName);
-            event.setCancelled(true);
-            return;
-        }
-
-        // —— 钓鱼链接检测 ——
-        if (URL_PATTERN.matcher(message).find()) {
-            bridge.alert(AlertType.CHAT_PHISHING,
-                String.format("玩家 %s 发送外部链接：%s", playerName, message),
-                0.75, playerName);
-            event.setCancelled(true);
-            return;
-        }
-
-        bridge.incrementEvent("chat.message");
+        // 推送聊天数据到 ServerGuard
+        JsonObject data = new JsonObject();
+        data.addProperty("playerName", playerName);
+        data.addProperty("uuid", uuid.toString());
+        data.addProperty("message", message);
+        wsClient.sendEvent("PLAYER_CHAT", data);
     }
 }

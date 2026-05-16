@@ -1,112 +1,108 @@
 package com.aluer.plugin.listener;
 
-import com.aluer.model.AlertType;
 import com.aluer.plugin.AluerPlugin;
-import com.aluer.plugin.bridge.DataBridge;
-import com.aluer.plugin.bridge.DataBridge.PlayerSnapshot;
-import org.bukkit.entity.*;
+import com.aluer.plugin.bridge.AgentWebSocketClient;
+import com.google.gson.JsonObject;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * 战斗事件监听器 — 处理玩家攻击、实体伤害、死亡事件
+ * 战斗事件监听器（Agent 端）
  *
- * 实时检测：
- * - KillAura（杀戮光环）— 多目标快速切换 + 攻击角度一致性
- * - Reach（攻击距离扩展）— 攻击距离超过 3.0 方块
- * - AutoClicker（自动连点）— 异常攻击频率
- * - ChestSteal — 容器交互跟踪由 InventoryEventListener 处理
+ * 采集每次 PvP 攻击的原始数据（双方、距离、角度、伤害值、时间戳），
+ * 推送至 ServerGuard 做 KillAura/Reach/AutoClicker 模式识别。
  */
 public class CombatEventListener implements Listener {
     private static final Logger logger = LoggerFactory.getLogger(CombatEventListener.class);
 
     private final AluerPlugin plugin;
-    private final DataBridge bridge;
+    private final AgentWebSocketClient wsClient;
 
-    /** 正常最大攻击距离（方块） */
-    private static final double MAX_ATTACK_DISTANCE = 3.0;
+    /** Agent 端即时拦截：攻击距离超过此值直接取消（防止极端 Reach hack） */
+    private static final double INSTANT_BLOCK_DISTANCE = 5.0;
 
-    /** 攻击距离扩展容忍度 */
-    private static final double REACH_TOLERANCE = 3.3;
+    /** 记录每个玩家的攻击时间戳（用于 Agent 端简单 CPS 估算） */
+    private final Map<UUID, Long> lastAttackTime = new ConcurrentHashMap<>();
 
-    public CombatEventListener(AluerPlugin plugin, DataBridge bridge) {
+    public CombatEventListener(AluerPlugin plugin, AgentWebSocketClient wsClient) {
         this.plugin = plugin;
-        this.bridge = bridge;
+        this.wsClient = wsClient;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (bridge == null) return;
-
-        // 仅处理玩家攻击
+        if (wsClient == null) return;
         if (!(event.getDamager() instanceof Player attacker)) return;
         Entity victim = event.getEntity();
 
-        PlayerSnapshot attackerSnap = bridge.getPlayer(attacker.getUniqueId());
-        if (attackerSnap == null) return;
-
-        // —— 记录攻击目标（KillAura 检测用） ——
-        attackerSnap.recordTarget(victim.getName());
-
-        // —— KillAura 检测：多目标快速切换 ——
-        int recentTargets = attackerSnap.getRecentTargetCount();
-        if (recentTargets > 4) {
-            bridge.alert(AlertType.SECURITY_KILL_AURA,
-                String.format("玩家 %s 在3秒内攻击了 %d 个不同目标", attacker.getName(), recentTargets),
-                Math.min(0.95, recentTargets * 0.2), attacker.getName());
-        }
-
-        // —— Reach 检测：攻击距离 ——
         double distance = attacker.getLocation().distance(victim.getLocation());
-        attackerSnap.recordAttackDistance(distance);
-        if (distance > REACH_TOLERANCE) {
-            bridge.alert(AlertType.SECURITY_REACH,
-                String.format("玩家 %s 攻击距离异常：%.2f 方块（最大 %.2f）",
-                    attacker.getName(), distance, MAX_ATTACK_DISTANCE),
-                Math.min(0.95, (distance - MAX_ATTACK_DISTANCE) * 0.5 + 0.5),
-                attacker.getName());
-        }
-
-        // —— KillAura：攻击角度一致性 ——
-        Vector attackerDir = attacker.getLocation().getDirection();
-        double angle = Math.atan2(
+        double attackerAngle = Math.toDegrees(Math.atan2(
             victim.getLocation().getZ() - attacker.getLocation().getZ(),
             victim.getLocation().getX() - attacker.getLocation().getX()
-        ) * 180.0 / Math.PI;
-        attackerSnap.recordAttackAngle(angle);
-        if (attackerSnap.hasSuspiciousAngleConsistency()) {
-            bridge.alert(AlertType.SECURITY_KILL_AURA,
-                String.format("玩家 %s 攻击角度高度一致，疑似 Aimbot", attacker.getName()),
-                0.85, attacker.getName());
+        ));
+
+        // —— Agent 端即时拦截：极端距离直接取消攻击 ——
+        if (distance > INSTANT_BLOCK_DISTANCE) {
+            event.setCancelled(true);
+            wsClient.sendAlert("SECURITY_REACH",
+                "即时拦截：玩家 " + attacker.getName() + " 攻击距离 " + String.format("%.2f", distance) + " 方块",
+                0.95, attacker.getName());
+            return;
         }
 
-        // —— AutoClicker 检测：攻击频率异常 ——
+        // 计算 CPS（Agent 端简单估算）
         long now = System.currentTimeMillis();
-        long recentAttacks = attackerSnap.recentTargets.values().stream()
-            .filter(t -> t > now - 1000)
-            .count();
-        if (recentAttacks > 20) { // 每秒超过20次攻击（正常CPS上限约14）
-            bridge.alert(AlertType.SECURITY_AUTO_CLICKER,
-                String.format("玩家 %s 攻击频率异常：每秒 %d 次", attacker.getName(), recentAttacks),
-                0.8, attacker.getName());
+        Long lastTime = lastAttackTime.get(attacker.getUniqueId());
+        double estimatedCPS = 0;
+        if (lastTime != null && lastTime > 0) {
+            long interval = now - lastTime;
+            if (interval > 0) estimatedCPS = 1000.0 / interval;
+        }
+        lastAttackTime.put(attacker.getUniqueId(), now);
+
+        // 推送攻击数据到 ServerGuard
+        JsonObject data = new JsonObject();
+        data.addProperty("attackerName", attacker.getName());
+        data.addProperty("attackerUUID", attacker.getUniqueId().toString());
+        data.addProperty("victimName", victim.getName());
+        data.addProperty("victimType", victim.getType().name());
+        data.addProperty("victimUUID", victim instanceof Player vp ? vp.getUniqueId().toString() : "");
+        data.addProperty("distance", distance);
+        data.addProperty("angle", attackerAngle);
+        data.addProperty("damage", event.getDamage());
+        data.addProperty("estimatedCPS", estimatedCPS);
+        wsClient.sendEvent("COMBAT_ATTACK", data);
+
+        // Agent 端即时告警（高置信度快速标记，最终决策由 Server 端确认）
+        if (estimatedCPS > 25) {
+            wsClient.sendAlert("SECURITY_AUTO_CLICKER",
+                "Agent 检测：玩家 " + attacker.getName() + " CPS ≈ " + String.format("%.0f", estimatedCPS),
+                0.75, attacker.getName());
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent event) {
-        if (bridge == null) return;
-        Entity entity = event.getEntity();
+        if (wsClient == null) return;
         Player killer = event.getEntity().getKiller();
+        if (killer == null) return;
 
-        if (killer != null && entity instanceof Player victim) {
-            bridge.incrementEvent("combat.player_kill");
-        }
+        JsonObject data = new JsonObject();
+        data.addProperty("killerName", killer.getName());
+        data.addProperty("victimName", event.getEntity().getName());
+        data.addProperty("victimType", event.getEntity().getType().name());
+        wsClient.sendEvent("COMBAT_DEATH", data);
     }
 }

@@ -1,8 +1,9 @@
 package com.aluer.plugin.listener;
 
-import com.aluer.model.AlertType;
 import com.aluer.plugin.AluerPlugin;
-import com.aluer.plugin.bridge.DataBridge;
+import com.aluer.plugin.bridge.AgentWebSocketClient;
+import com.google.gson.JsonObject;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,50 +11,52 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 包级事件监听器 — 利用 Paper API 对网络包进行细粒度监控
+ * 包级事件监听器（Agent 端，Paper 特定 API）
  *
- * Paper 特有 API，非 Paper 服务端会自动跳过注册。
- *
- * 实时检测：
- * - PacketFlood（包洪水）— 单个玩家发送异常数量的包
- * - TabCompleteCrash — 异常大的 TabComplete 请求
- * - BookBan — 超大书内容导致的崩溃包
- * - ResourcePackExploit — 恶意资源包下载尝试
+ * 利用 Paper 特有 API 监控网络包速率，
+ * 非 Paper 服务端自动跳过注册。
  */
 public class PacketEventListener implements Listener {
     private static final Logger logger = LoggerFactory.getLogger(PacketEventListener.class);
 
     private final AluerPlugin plugin;
-    private final DataBridge bridge;
+    private final AgentWebSocketClient wsClient;
 
-    /** 每秒最大允许的包速率（单玩家） */
-    private static final int MAX_PACKETS_PER_SECOND = 200;
+    private long lastPacketReport = System.currentTimeMillis();
+    private long packetCount = 0;
+    private static final long REPORT_INTERVAL_MS = 1000;
 
-    public PacketEventListener(AluerPlugin plugin, DataBridge bridge) {
+    public PacketEventListener(AluerPlugin plugin, AgentWebSocketClient wsClient) {
         this.plugin = plugin;
-        this.bridge = bridge;
+        this.wsClient = wsClient;
     }
 
     /**
-     * 监听 Paper 的包预接收事件（需 Paper 1.20.6+）
-     * 使用反射调用避免编译时硬依赖 Paper 特定 API 类
+     * 定期上报包速率指标（由 ServerGuard 端调度器触发的心跳也会附带此数据）
      */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPacketReceive(com.destroystokyo.paper.event.player.PlayerHandshakeEvent event) {
-        if (bridge == null) return;
-        // 握手阶段即可获取连接来源
-        bridge.incrementEvent("packet.handshake");
+    public void reportPacketRate() {
+        if (wsClient == null) return;
+        long now = System.currentTimeMillis();
+        long elapsed = now - lastPacketReport;
+        if (elapsed <= 0) return;
+
+        double pps = packetCount * 1000.0 / elapsed;
+        JsonObject metrics = new JsonObject();
+        metrics.addProperty("packetsPerSecond", pps);
+        metrics.addProperty("tps", getTPS());
+        metrics.addProperty("onlinePlayers", Bukkit.getServer().getOnlinePlayers().size());
+        wsClient.sendMetrics(metrics);
+
+        packetCount = 0;
+        lastPacketReport = now;
     }
 
-    /**
-     * 通用的包事件监听 — 使用 Paper 1.21+ 的 AsyncPacketReceiveEvent
-     * 注：此类在 paper-api 1.21 中可用，但具体 API 可能因版本而异
-     */
-    // @EventHandler 注释留空，待 Paper 版本确认后启用
-    // 当前通过 DataBridge.recordPacket() 提供包速率追踪入口
-    public void onAsyncPacket(Object event) {
-        if (bridge == null) return;
-        bridge.recordPacket();
-        bridge.incrementEvent("packet.total");
+    private double getTPS() {
+        try {
+            double[] tps = Bukkit.getServer().getTPS();
+            return tps.length > 0 ? tps[0] : 20.0;
+        } catch (Exception e) {
+            return 20.0;
+        }
     }
 }
