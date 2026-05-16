@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 无摔落伤害（NoFall）检测服务 — V4.0 反作弊扩展模块
+ * 无摔落伤害（NoFall）检测服务 — V4.0 反作弊扩展模块，V5.2 增强
  *
  * 检测原理：
  * 1. 坠落检测 — 追踪玩家从高处坠落的事件。在Minecraft中，从3+方块高度坠落后
@@ -27,6 +27,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * 3. 可疑NoFall模式检测 — 如果同一玩家反复经历高空坠落但从未受伤，
  *    且无法用合法情况解释，则标记为作弊。
  * 4. 摔落距离与伤害不一致检测 — 比较服务端计算的摔落距离与客户端报告的伤害。
+ *
+ * V5.2 新增检测：
+ * 5. GroundSpoof检测 — 客户端声称onGround=true但服务端Y速度指示应在空中
+ * 6. 数据包级分析 — 逐tick比较客户端声称onGround与服务端计算onGround状态的差异
+ * 7. 坠落距离累积 — 服务端独立计算坠落距离，与客户端报告对比
+ * 8. 传送式NoFall — 玩家瞬间下落5+方块后无伤害（与VClip/TeleportFall配合）
  *
  * 配置开关：serverguard.security.super-evolution.anti-no-fall
  */
@@ -50,9 +56,50 @@ public class AntiNoFallService {
      */
     private final Map<String, List<Map<String, Object>>> noFallEvents = new ConcurrentHashMap<>();
 
+    // ─── V5.2 新增追踪数据结构 ───
+
+    /**
+     * 追踪玩家地面伪造（GroundSpoof）的连续tick数（playerName -> 连续次数）
+     * 用于检测客户端onGround=true但服务端Y速度指示应在空中
+     */
+    private final Map<String, Integer> playerGroundSpoofTicks = new ConcurrentHashMap<>();
+
+    /**
+     * 追踪每个玩家服务端计算的onGround状态历史（playerName -> 服务端onGround历史）
+     * 用于与客户端声称的onGround进行交叉对比
+     */
+    private final Map<String, List<GroundStateRecord>> playerGroundStateHistory = new ConcurrentHashMap<>();
+
+    /**
+     * 追踪每个玩家服务端累积的坠落距离（playerName -> 累积坠落距离）
+     * 从离开地面开始累积，直到接触地面或受伤重置
+     */
+    private final Map<String, Double> playerAccumulatedFallDistance = new ConcurrentHashMap<>();
+
+    /**
+     * 追踪每个玩家最近一次开始累积坠落距离的起始Y坐标
+     */
+    private final Map<String, Double> playerFallStartY = new ConcurrentHashMap<>();
+
+    /**
+     * 追踪每个玩家是否处于服务端判断的空中状态
+     */
+    private final Map<String, Boolean> playerServerSideAirborne = new ConcurrentHashMap<>();
+
+    /**
+     * 追踪每个玩家的最近一次Y坐标，用于检测传送式下落
+     */
+    private final Map<String, Double> playerLastY = new ConcurrentHashMap<>();
+
     private final AtomicLong totalFalls = new AtomicLong(0);
     private final AtomicLong noFallViolations = new AtomicLong(0);
     private final AtomicLong falsePositives = new AtomicLong(0);
+
+    /**
+     * V5.2 新增计数器
+     */
+    private final AtomicLong groundSpoofViolations = new AtomicLong(0);
+    private final AtomicLong teleportNoFallViolations = new AtomicLong(0);
 
     /**
      * 坠落伤害触发高度（方块）— 从3方块高度坠落开始产生摔落伤害
@@ -73,6 +120,34 @@ public class AntiNoFallService {
      * 每个玩家保留的最大坠落记录数
      */
     private static final int MAX_FALL_RECORDS = 20;
+
+    // ─── V5.2 新增常量 ───
+
+    /**
+     * GroundSpoof连续tick阈值 — 连续超过此tick数的ground伪造判定为NoFall
+     * AntiHunger hack同样使用ground伪造，但此处关注的是坠落伤害规避场景
+     */
+    private static final int MAX_GROUND_SPOOF_TICKS = 5;
+
+    /**
+     * 传送式下落检测阈值（方块）— 单tick内Y坐标下降超过此值且无伤害
+     */
+    private static final double TELEPORT_FALL_THRESHOLD = 5.0;
+
+    /**
+     * 服务端累积坠落距离阈值 — 超过此距离且无伤害时标记
+     */
+    private static final double ACCUMULATED_FALL_THRESHOLD = 3.0;
+
+    /**
+     * Y速度正值阈值 — 低于此值的波动忽略
+     */
+    private static final double ZERO_VELOCITY_THRESHOLD = 0.01;
+
+    /**
+     * 每个玩家保留的最大地面状态记录数
+     */
+    private static final int MAX_GROUND_STATE_RECORDS = 30;
 
     /**
      * 无参构造函数 — 测试/默认配置使用
@@ -251,6 +326,389 @@ public class AntiNoFallService {
         return NoFallCheckResult.clean();
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // V5.2 新增检测方法
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * V5.2 GroundSpoof检测 — 逐tick调用
+     *
+     * 检测客户端声称onGround=true但服务端Y速度指示玩家应在空中。
+     * NoFall hack常通过伪造onGround=true来跳过服务端的摔落伤害计算，
+     * 因为Minecraft服务端在onGround=true时重置摔落距离。
+     *
+     * @param playerName      玩家名称
+     * @param yVelocity       当前tick的Y速度（负值=下落中）
+     * @param clientOnGround  客户端声称的onGround状态
+     * @param timestamp       时间戳
+     * @return 如果检测到持续的ground伪造则返回flagged，否则返回clean
+     */
+    public NoFallCheckResult detectGroundSpoof(String playerName,
+                                                double yVelocity,
+                                                boolean clientOnGround,
+                                                Instant timestamp) {
+        if (!config.getSecurity().getSuperEvolution().isAntiNoFall()) {
+            return NoFallCheckResult.clean();
+        }
+
+        // 客户端声称在地面，但Y速度为负（在下落）— 物理上矛盾
+        // 正常在地面时Y速度应接近0（重力被地面法向力抵消）
+        boolean serverSideLikelyAirborne = yVelocity < -ZERO_VELOCITY_THRESHOLD;
+
+        if (clientOnGround && serverSideLikelyAirborne) {
+            int spoofTicks = playerGroundSpoofTicks.getOrDefault(playerName, 0) + 1;
+            playerGroundSpoofTicks.put(playerName, spoofTicks);
+
+            if (spoofTicks >= MAX_GROUND_SPOOF_TICKS) {
+                List<String> reasons = new ArrayList<>();
+                reasons.add("GROUND_SPOOF: client claims onGround=true for "
+                        + spoofTicks + " consecutive ticks while server Y velocity ("
+                        + String.format("%.3f", yVelocity) + ") indicates falling");
+                reasons.add("This is consistent with NoFall: faking onGround to reset fall distance");
+                groundSpoofViolations.incrementAndGet();
+                noFallViolations.incrementAndGet();
+                return NoFallCheckResult.flagged(reasons);
+            }
+
+            if (spoofTicks >= 3) {
+                List<String> reasons = new ArrayList<>();
+                reasons.add("GROUND_SPOOF_SUSPICIOUS: " + spoofTicks
+                        + " ticks of onGround=true while yVel="
+                        + String.format("%.3f", yVelocity));
+                return NoFallCheckResult.suspicious(reasons);
+            }
+        } else {
+            // 状态一致或客户端正确报告了空中状态，重置计数
+            playerGroundSpoofTicks.remove(playerName);
+        }
+
+        return NoFallCheckResult.clean();
+    }
+
+    /**
+     * V5.2 数据包级地面状态分析 — 逐tick调用
+     *
+     * 比较客户端声称的onGround与服务端独立计算的onGround状态。
+     * 服务端根据以下条件自行判断地面状态：
+     * - Y坐标与整数边界的关系（脚部Y坐标接近整数表示在地面）
+     * - Y速度接近0且上一tick在下降
+     * - 碰撞检测（服务端的方块碰撞计算结果）
+     *
+     * 如果客户端与服务端在onGround上持续不一致，说明客户端在伪造数据包。
+     *
+     * @param playerName          玩家名称
+     * @param clientOnGround      客户端声称的onGround
+     * @param serverCalcOnGround  服务端计算的onGround（基于Y坐标/碰撞）
+     * @param playerY             玩家当前Y坐标
+     * @param yVelocity           玩家Y速度
+     * @param timestamp           时间戳
+     * @return 检测结果
+     */
+    public NoFallCheckResult analyzePacketGroundState(String playerName,
+                                                       boolean clientOnGround,
+                                                       boolean serverCalcOnGround,
+                                                       double playerY,
+                                                       double yVelocity,
+                                                       Instant timestamp) {
+        if (!config.getSecurity().getSuperEvolution().isAntiNoFall()) {
+            return NoFallCheckResult.clean();
+        }
+
+        // 记录地面状态历史
+        List<GroundStateRecord> history = playerGroundStateHistory.computeIfAbsent(
+                playerName, k -> new ArrayList<>());
+        GroundStateRecord record = new GroundStateRecord(timestamp, clientOnGround,
+                serverCalcOnGround, playerY, yVelocity);
+        history.add(record);
+        while (history.size() > MAX_GROUND_STATE_RECORDS) {
+            history.remove(0);
+        }
+
+        List<String> reasons = new ArrayList<>();
+
+        // 逐tick比较：客户端声称在地面但服务端计算显示在空中
+        if (clientOnGround && !serverCalcOnGround && yVelocity < -ZERO_VELOCITY_THRESHOLD) {
+            // 服务端计算在空中 + 客户端说在地面 + Y速度在下落 = 典型的NoFall数据包伪造
+            reasons.add("PACKET_GROUND_MISMATCH: client onGround=true but server "
+                    + "calculates onGround=false (yVel=" + String.format("%.3f", yVelocity)
+                    + ", playerY=" + String.format("%.2f", playerY + ")"));
+        }
+
+        // 长期模式分析：统计客户端/服务端不一致的比例
+        if (history.size() >= 10) {
+            long mismatchCount = history.stream()
+                    .filter(r -> r.clientOnGround != r.serverCalcOnGround)
+                    .count();
+            double mismatchRatio = (double) mismatchCount / history.size();
+
+            // 超过60%的tick存在onGround不一致 — 客户端在系统性伪造
+            if (mismatchRatio > 0.6) {
+                reasons.add("SYSTEMATIC_GROUND_MISMATCH: "
+                        + String.format("%.0f", mismatchRatio * 100)
+                        + "% ground state mismatch over " + history.size()
+                        + " ticks (" + mismatchCount + "/" + history.size() + " ticks)");
+                noFallViolations.incrementAndGet();
+            }
+        }
+
+        if (reasons.size() >= 2) {
+            return NoFallCheckResult.flagged(reasons);
+        } else if (reasons.size() == 1) {
+            return NoFallCheckResult.suspicious(reasons);
+        }
+
+        return NoFallCheckResult.clean();
+    }
+
+    /**
+     * V5.2 服务端坠落距离累积追踪 — 逐tick调用
+     *
+     * 服务端独立追踪玩家的坠落距离，不受客户端报告的onGround影响。
+     * 从服务端判断的离地瞬间开始累积Y坐标的下降量，直到接触地面或受到伤害。
+     *
+     * 如果服务端累积的坠落距离超过3.0方块但玩家未受到任何伤害，
+     * 说明客户端可能伪造了onGround或摔落距离数据包。
+     *
+     * @param playerName      玩家名称
+     * @param currentY        玩家当前Y坐标
+     * @param yVelocity       玩家Y速度
+     * @param serverOnGround  服务端判断的onGround状态
+     * @param tookDamage      玩家是否受到伤害（本tick）
+     * @param timestamp       时间戳
+     * @return 检测结果
+     */
+    public NoFallCheckResult checkFallDistanceAccumulation(String playerName,
+                                                            double currentY,
+                                                            double yVelocity,
+                                                            boolean serverOnGround,
+                                                            boolean tookDamage,
+                                                            Instant timestamp) {
+        if (!config.getSecurity().getSuperEvolution().isAntiNoFall()) {
+            return NoFallCheckResult.clean();
+        }
+
+        Double previousY = playerLastY.get(playerName);
+
+        // 在地面上，重置坠落累积
+        if (serverOnGround) {
+            Double accumulated = playerAccumulatedFallDistance.get(playerName);
+            if (accumulated != null && accumulated >= ACCUMULATED_FALL_THRESHOLD && !tookDamage) {
+                // 累积了足够的坠落距离但没有受伤 — NoFall
+                List<String> reasons = new ArrayList<>();
+                reasons.add("ACCUMULATED_FALL_NO_DAMAGE: server-side fall distance of "
+                        + String.format("%.1f", accumulated) + " blocks accumulated,"
+                        + " landed without taking damage");
+                reasons.add("Client likely faked onGround or fall distance packet");
+                noFallViolations.incrementAndGet();
+
+                // 重置累积
+                playerAccumulatedFallDistance.remove(playerName);
+                playerFallStartY.remove(playerName);
+
+                return NoFallCheckResult.flagged(reasons);
+            }
+
+            // 正常落地，重置
+            playerAccumulatedFallDistance.remove(playerName);
+            playerFallStartY.remove(playerName);
+            playerServerSideAirborne.put(playerName, false);
+        } else {
+            // 在空中 — 累积坠落距离
+            playerServerSideAirborne.put(playerName, true);
+
+            if (previousY != null && yVelocity < -ZERO_VELOCITY_THRESHOLD) {
+                double fallDelta = previousY - currentY;
+                if (fallDelta > 0) {
+                    double accumulated = playerAccumulatedFallDistance.getOrDefault(playerName, 0.0);
+                    accumulated += fallDelta;
+                    playerAccumulatedFallDistance.put(playerName, accumulated);
+
+                    // 记录坠落起始Y
+                    playerFallStartY.putIfAbsent(playerName, previousY);
+
+                    // 如果累积超过阈值但玩家未受伤且仍在空中 — 记录可疑状态
+                    if (accumulated >= ACCUMULATED_FALL_THRESHOLD + 3.0) {
+                        // 积累了大量坠落距离但还未落地 — 可能是Blink或持续空中状态
+                        // 暂时仅记录，等落地时再判断
+                    }
+                }
+            }
+        }
+
+        // 如果玩家受到伤害，重置累积（伤害已正确应用，非NoFall）
+        if (tookDamage) {
+            playerAccumulatedFallDistance.remove(playerName);
+            playerFallStartY.remove(playerName);
+        }
+
+        // 更新最近Y坐标
+        if (previousY == null || !serverOnGround) {
+            playerLastY.put(playerName, currentY);
+        }
+
+        return NoFallCheckResult.clean();
+    }
+
+    /**
+     * V5.2 传送式NoFall检测 — 逐tick调用
+     *
+     * 检测玩家在单tick内Y坐标突然下降5+方块且没有受到伤害。
+     * 这通常意味着hack结合了VClip（垂直传送）和NoFall（免疫伤害）功能。
+     *
+     * 合法情况排除：
+     * - 末影珍珠传送（有投掷音效+伤害/粒子）
+     * - /tp命令（有日志）
+     * - 紫颂果传送（有粒子效果）
+     * - 鞘翅俯冲然后突然拉起（有速度渐变+无伤害是因为鞘翅免疫）
+     *
+     * @param playerName       玩家名称
+     * @param fromY            上一tick Y坐标
+     * @param toY              当前tick Y坐标
+     * @param tookDamage       本tick是否受到伤害
+     * @param isElytraFlying   是否鞘翅飞行
+     * @param isTeleportCommand 是否为/tp命令触发
+     * @param timestamp        时间戳
+     * @return 检测结果
+     */
+    public NoFallCheckResult detectTeleportNoFall(String playerName,
+                                                   double fromY, double toY,
+                                                   boolean tookDamage,
+                                                   boolean isElytraFlying,
+                                                   boolean isTeleportCommand,
+                                                   Instant timestamp) {
+        if (!config.getSecurity().getSuperEvolution().isAntiNoFall()) {
+            return NoFallCheckResult.clean();
+        }
+
+        double dy = toY - fromY;
+        double fallAmount = Math.abs(dy);
+
+        // 没有显著下落，跳过
+        if (dy >= 0 || fallAmount < TELEPORT_FALL_THRESHOLD) {
+            return NoFallCheckResult.clean();
+        }
+
+        // 排除合法情况
+        if (isElytraFlying || isTeleportCommand) {
+            return NoFallCheckResult.clean();
+        }
+
+        // 大幅下落但无伤害 — 典型的Teleport+NoFall组合
+        if (!tookDamage && fallAmount >= TELEPORT_FALL_THRESHOLD) {
+            List<String> reasons = new ArrayList<>();
+            reasons.add("TELEPORT_NOFALL: instant drop of "
+                    + String.format("%.1f", fallAmount) + " blocks (Y "
+                    + String.format("%.1f", fromY) + " -> " + String.format("%.1f", toY)
+                    + ") with zero damage taken");
+            reasons.add("Consistent with VClip + NoFall combination cheat");
+
+            if (fallAmount >= DANGEROUS_FALL_HEIGHT) {
+                reasons.add("CRITICAL_TELEPORT_NOFALL: drop distance ("
+                        + String.format("%.1f", fallAmount)
+                        + " blocks) would cause " + String.format("%.0f", fallAmount - FALL_DAMAGE_HEIGHT)
+                        + " damage points normally");
+                teleportNoFallViolations.incrementAndGet();
+                noFallViolations.incrementAndGet();
+                return NoFallCheckResult.flagged(reasons);
+            }
+
+            // 小于危险高度但超过阈值
+            teleportNoFallViolations.incrementAndGet();
+            return NoFallCheckResult.flagged(reasons);
+        }
+
+        return NoFallCheckResult.clean();
+    }
+
+    /**
+     * V5.2 逐tick综合检测入口 — 在一个方法调用中执行所有tick级检测
+     *
+     * 调用方应在每个玩家移动tick中调用此方法，传入完整的移动和状态数据。
+     * 此方法内部协调调用所有V5.2新增的子检测方法。
+     *
+     * @param playerName          玩家名称
+     * @param currentY            玩家当前Y坐标
+     * @param previousY           玩家上一tick Y坐标
+     * @param yVelocity           玩家Y速度
+     * @param clientOnGround      客户端声称的onGround
+     * @param serverCalcOnGround  服务端计算的onGround
+     * @param tookDamage          本tick是否受到伤害
+     * @param isElytraFlying      是否鞘翅飞行
+     * @param isTeleportCommand   是否为/tp命令传送
+     * @param timestamp           时间戳
+     * @return 综合检测结果（合并所有子检测的发现）
+     */
+    public NoFallCheckResult detect(String playerName,
+                                     double currentY, double previousY,
+                                     double yVelocity,
+                                     boolean clientOnGround, boolean serverCalcOnGround,
+                                     boolean tookDamage,
+                                     boolean isElytraFlying, boolean isTeleportCommand,
+                                     Instant timestamp) {
+        if (!config.getSecurity().getSuperEvolution().isAntiNoFall()) {
+            return NoFallCheckResult.clean();
+        }
+
+        List<String> allReasons = new ArrayList<>();
+        boolean anyFlagged = false;
+        boolean anySuspicious = false;
+
+        // 1. GroundSpoof检测
+        NoFallCheckResult groundSpoofResult = detectGroundSpoof(
+                playerName, yVelocity, clientOnGround, timestamp);
+        if (groundSpoofResult.isFlagged()) {
+            anyFlagged = true;
+            allReasons.addAll(groundSpoofResult.getReasons());
+        } else if (groundSpoofResult.isSuspicious()) {
+            anySuspicious = true;
+            allReasons.addAll(groundSpoofResult.getReasons());
+        }
+
+        // 2. 数据包级地面状态分析
+        NoFallCheckResult packetResult = analyzePacketGroundState(
+                playerName, clientOnGround, serverCalcOnGround,
+                currentY, yVelocity, timestamp);
+        if (packetResult.isFlagged()) {
+            anyFlagged = true;
+            allReasons.addAll(packetResult.getReasons());
+        } else if (packetResult.isSuspicious()) {
+            anySuspicious = true;
+            allReasons.addAll(packetResult.getReasons());
+        }
+
+        // 3. 服务端坠落距离累积
+        NoFallCheckResult accumulationResult = checkFallDistanceAccumulation(
+                playerName, currentY, yVelocity, serverCalcOnGround,
+                tookDamage, timestamp);
+        if (accumulationResult.isFlagged()) {
+            anyFlagged = true;
+            allReasons.addAll(accumulationResult.getReasons());
+        } else if (accumulationResult.isSuspicious()) {
+            anySuspicious = true;
+            allReasons.addAll(accumulationResult.getReasons());
+        }
+
+        // 4. 传送式NoFall检测
+        NoFallCheckResult teleportResult = detectTeleportNoFall(
+                playerName, previousY, currentY, tookDamage,
+                isElytraFlying, isTeleportCommand, timestamp);
+        if (teleportResult.isFlagged()) {
+            anyFlagged = true;
+            allReasons.addAll(teleportResult.getReasons());
+        } else if (teleportResult.isSuspicious()) {
+            anySuspicious = true;
+            allReasons.addAll(teleportResult.getReasons());
+        }
+
+        if (anyFlagged) {
+            return NoFallCheckResult.flagged(allReasons);
+        } else if (anySuspicious) {
+            return NoFallCheckResult.suspicious(allReasons);
+        }
+
+        return NoFallCheckResult.clean();
+    }
+
     /**
      * 玩家离线时清理追踪数据
      * @param playerName 离线玩家名称
@@ -259,6 +717,13 @@ public class AntiNoFallService {
         playerFallHistory.remove(playerName);
         activeFalls.remove(playerName);
         noFallEvents.remove(playerName);
+        // V5.2 新增数据结构清理
+        playerGroundSpoofTicks.remove(playerName);
+        playerGroundStateHistory.remove(playerName);
+        playerAccumulatedFallDistance.remove(playerName);
+        playerFallStartY.remove(playerName);
+        playerServerSideAirborne.remove(playerName);
+        playerLastY.remove(playerName);
     }
 
     /**
@@ -270,8 +735,12 @@ public class AntiNoFallService {
         status.put("totalFalls", totalFalls.get());
         status.put("noFallViolations", noFallViolations.get());
         status.put("falsePositives", falsePositives.get());
+        status.put("groundSpoofViolations", groundSpoofViolations.get());
+        status.put("teleportNoFallViolations", teleportNoFallViolations.get());
         status.put("activeTrackedPlayers", playerFallHistory.size());
         status.put("playersInFall", activeFalls.size());
+        status.put("playersInGroundSpoof", playerGroundSpoofTicks.size());
+        status.put("playersAccumulatingFall", playerAccumulatedFallDistance.size());
 
         // 列出可疑NoFall玩家
         List<Map<String, Object>> suspiciousPlayers = new ArrayList<>();
@@ -289,6 +758,19 @@ public class AntiNoFallService {
         suspiciousPlayers.sort((a, b) ->
                 Long.compare((Long) b.get("noDamageFalls"), (Long) a.get("noDamageFalls")));
         status.put("suspiciousPlayers", suspiciousPlayers.subList(0, Math.min(suspiciousPlayers.size(), 10)));
+
+        // V5.2: 列出正在伪造ground的玩家
+        List<Map<String, Object>> groundSpoofPlayers = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : playerGroundSpoofTicks.entrySet()) {
+            if (entry.getValue() >= 1) {
+                Map<String, Object> info = new LinkedHashMap<>();
+                info.put("player", entry.getKey());
+                info.put("spoofTicks", entry.getValue());
+                groundSpoofPlayers.add(info);
+            }
+        }
+        status.put("groundSpoofPlayers", groundSpoofPlayers);
+
         return status;
     }
 
@@ -324,6 +806,28 @@ public class AntiNoFallService {
             this.tookDamage = tookDamage;
             this.damageAmount = damageAmount;
             this.legitimateNoDamage = legitimateNoDamage;
+        }
+    }
+
+    /**
+     * V5.2 地面状态记录 — 存储每次地面状态数据包分析的结果
+     * 用于逐tick的客户端/服务端onGround交叉对比
+     */
+    private static class GroundStateRecord {
+        final Instant timestamp;
+        final boolean clientOnGround;
+        final boolean serverCalcOnGround;
+        final double playerY;
+        final double yVelocity;
+
+        GroundStateRecord(Instant timestamp, boolean clientOnGround,
+                          boolean serverCalcOnGround, double playerY,
+                          double yVelocity) {
+            this.timestamp = timestamp;
+            this.clientOnGround = clientOnGround;
+            this.serverCalcOnGround = serverCalcOnGround;
+            this.playerY = playerY;
+            this.yVelocity = yVelocity;
         }
     }
 

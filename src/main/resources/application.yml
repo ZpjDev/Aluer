@@ -195,6 +195,33 @@ serverguard:
         anti-jesus: true                  # 水上行走检测（水面/岩浆面移动验证）
         anti-no-fall: true                # 无摔落伤害检测（落地检测/伤害验证）
         anti-scaffold: true               # 自动搭路检测（方块放置频率/角度/速度）
+        anti-timer: true                  # 游戏加速检测（Timer hack/移动tick间隔异常）
+        anti-velocity: true               # 击退修改检测（抗击退/击退幅度异常）
+        anti-phase: true                  # 穿墙检测（Phase hack/方块剪切/固体穿越）
+        anti-blink: true                  # 闪烁检测（Blink hack/快速断连躲避伤害）
+        anti-fast-break: true             # 快速破坏检测（加速挖掘/方块破坏速度异常）
+        anti-elytra-fly: true             # 鞘翅飞行检测（ElytraFly/鞘翅速度/高度操控）
+        # === V5.1 反作弊战斗模块（Meteor Client 对抗） ===
+        anti-criticals: true              # 自动暴击检测（零速度暴击/暴击率异常/无跳跃暴击）
+        anti-auto-totem: true             # 自动不死图腾检测（图腾换装速度/连续图腾使用）
+        anti-surround: true               # 自动包围检测（四向方块放置速度/防御方块模式）
+        anti-auto-trap: true              # 自动困笼检测（目标玩家围笼/活塞陷阱构建速度）
+        anti-auto-crystal: true           # 自动末影水晶检测（水晶放置/引爆速度/最优位置计算）
+        anti-auto-armor: true             # 自动盔甲检测（多槽位装甲切换速度/背包扫描模式）
+        anti-chest-swap: true             # 快速胸甲切换检测（胸甲/鞘翅互换tick检测）
+        anti-auto-log: true               # 自动断线检测（受伤后立即断开/低血量脱战模式）
+        anti-hitboxes: true               # 扩大碰撞箱检测（边缘命中率/射线追踪距离分析）
+        anti-bow-aimbot: true             # 弓自瞄检测（移动目标命中率/弹道一致性/瞬发精准）
+        # === V5.2 反作弊移动模块（Meteor Client 移动类对抗） ===
+        anti-no-slow: true                # 无减速检测（使用物品时移速不减/吃食物/拉弓/举盾速度检测）
+        anti-spider: true                 # 爬墙检测（无攀爬方块贴墙上升/固体方块攀爬/垂直墙面移动）
+        anti-step: true                   # 自动跨步检测（无跳跃跨越完整方块/上升1方块无跳跃冲量）
+        anti-packet-fly: true             # 数据包飞行检测（数据包操控飞行/上下震荡模式/永不落地）
+        anti-air-jump: true               # 空中跳跃检测（半空发送跳跃数据包/连续空中跳跃）
+        anti-long-jump: true              # 远跳检测（极端水平跳跃距离/跳跃后水平速度持续不减）
+        anti-anti-hunger: true            # 反饥饿检测（饥饿值消耗绕过/高活动量零饥饿消耗）
+        anti-fast-fall: true              # 快速坠落检测（超终端速度下落/持续超速坠落/瞬间坠落）
+        anti-vclip: true                  # 垂直穿墙检测（瞬间垂直穿透方块/排除合法传送方式）
         # === V4.0 玩家行为安全模块 ===
         anti-nuker: true                  # 快速破坏检测（挖矿速度/范围/模式识别）
         anti-auto-clicker: true           # 自动点击检测（CPS统计/点击间隔熵值分析）
@@ -222,6 +249,28 @@ serverguard:
         anti-phishing-link: true          # 钓鱼链接检测（可疑域名/短链接/SSL证书校验）
         anti-command-abuse: true          # 命令滥用检测（频率限制/敏感命令拦截/权限校验）
         player-privacy: true              # 玩家隐私保护（IP脱敏/坐标隐藏/日志匿名化）
+        # === V5.0 服务器保护扩展模块 ===
+        chunk-load-rate-limiter: true     # 区块加载速率限制（WARN/LIMIT/BLOCK三级响应/ChunkBan检测）
+        entity-count-enforcer: true       # 实体数量强制执行（按区块/玩家/类型优先级自动移除）
+        redstone-update-limiter: true     # 红石更新频率限制（逐tick检测/降频/冻结/指数退避）
+        crash-exploit-signature-db: true  # 崩溃漏洞签名数据库（12种已知签名/PacketSize/NBT/Item四级响应）
+        # === V4.0 网络协议安全模块 ===
+        protocol-validator: true         # 协议状态机验证（HANDSHAKE→STATUS→LOGIN→PLAY状态转换检测）
+        token-bucket-rate-limiter: true   # 令牌桶速率限制（可复用限速原语/可配置速率与突发容量）
+        bot-fingerprint: true            # 机器人行为指纹检测（登录时序/命名模式/移动熵值/聊天/延迟）
+        nbt-exploit-prevention: true     # NBT漏洞防护（深度检测/尺寸限制/BookBan/SignExploit/ChunkBan）
+        handshake-validator: true        # 连接握手验证（协议版本/nextState/主机名/Ping洪水/端口扫描）
+        # === V5.3 反作弊世界/玩家/杂物模块（Meteor Client 对抗） ===
+        anti-speed-mine: true             # 加速挖掘检测（SpeedMine/InstaMine/PacketMine hack）
+        anti-fast-use: true               # 加速物品使用检测（FastUse hack）
+        anti-no-interact: true            # 交互绕过检测（NoInteract hack）
+        anti-auto-mine: true              # 自动挖矿检测（AutoMine hack）
+        anti-vein-miner: true             # 矿脉自动挖掘检测（VeinMiner hack）
+        anti-auto-tool: true              # 自动工具切换检测（AutoTool hack）
+        anti-fake-player: true            # 假人实体检测（FakePlayer hack）
+        anti-piston-aura: true            # 活塞陷阱自动化检测（PistonAura hack）
+        anti-anchor: true                 # 洞穴锚点检测（Anchor hack）
+        anti-stash-finder: true           # 自动储藏箱探测（StashFinder hack）
 
   dashboard:
     enabled: true

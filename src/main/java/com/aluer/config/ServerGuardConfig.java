@@ -947,6 +947,62 @@ public class ServerGuardConfig {
         private boolean antiCommandAbuse = true;
         private boolean playerPrivacy = true;
 
+        // === V5.0 反作弊高级模块 ===
+        private boolean antiTimer = true;
+        private boolean antiVelocity = true;
+        private boolean antiPhase = true;
+        private boolean antiBlink = true;
+        private boolean antiFastBreak = true;
+        private boolean antiElytraFly = true;
+
+        // === V5.1 反作弊战斗模块（Meteor Client 对抗） ===
+        private boolean antiCriticals = true;
+        private boolean antiAutoTotem = true;
+        private boolean antiSurround = true;
+        private boolean antiAutoTrap = true;
+        private boolean antiAutoCrystal = true;
+        private boolean antiAutoArmor = true;
+        private boolean antiChestSwap = true;
+        private boolean antiAutoLog = true;
+        private boolean antiHitboxes = true;
+        private boolean antiBowAimbot = true;
+
+        // === V5.2 反作弊移动模块（Meteor Client 移动类对抗） ===
+        private boolean antiNoSlow = true;
+        private boolean antiSpider = true;
+        private boolean antiStep = true;
+        private boolean antiPacketFly = true;
+        private boolean antiAirJump = true;
+        private boolean antiLongJump = true;
+        private boolean antiAntiHunger = true;
+        private boolean antiFastFall = true;
+        private boolean antiVClip = true;
+
+        // === V5.3 反作弊世界/玩家/杂物模块（Meteor Client 对抗） ===
+        private boolean antiSpeedMine = true;
+        private boolean antiFastUse = true;
+        private boolean antiNoInteract = true;
+        private boolean antiAutoMine = true;
+        private boolean antiVeinMiner = true;
+        private boolean antiAutoTool = true;
+        private boolean antiFakePlayer = true;
+        private boolean antiPistonAura = true;
+        private boolean antiAnchor = true;
+        private boolean antiStashFinder = true;
+
+        // === V5.0 服务器保护扩展模块 ===
+        private boolean chunkLoadRateLimiter = true;
+        private boolean entityCountEnforcer = true;
+        private boolean redstoneUpdateLimiter = true;
+        private boolean crashExploitSignatureDB = true;
+
+        // === V4.0 网络协议安全模块 ===
+        private boolean protocolValidator = true;
+        private boolean tokenBucketRateLimiter = true;
+        private boolean botFingerprint = true;
+        private boolean nbtExploitPrevention = true;
+        private boolean handshakeValidator = true;
+
         public boolean isJwtAuth() { return jwtAuth; }
         public void setJwtAuth(boolean jwtAuth) { this.jwtAuth = jwtAuth; }
         public boolean isBruteForce() { return bruteForce; }
@@ -1077,6 +1133,106 @@ public class ServerGuardConfig {
         public void setAntiCommandAbuse(boolean antiCommandAbuse) { this.antiCommandAbuse = antiCommandAbuse; }
         public boolean isPlayerPrivacy() { return playerPrivacy; }
         public void setPlayerPrivacy(boolean playerPrivacy) { this.playerPrivacy = playerPrivacy; }
+
+        // === V5.0 反作弊高级模块 getters/setters ===
+        public boolean isAntiTimer() { return antiTimer; }
+        public void setAntiTimer(boolean antiTimer) { this.antiTimer = antiTimer; }
+        public boolean isAntiVelocity() { return antiVelocity; }
+        public void setAntiVelocity(boolean antiVelocity) { this.antiVelocity = antiVelocity; }
+        public boolean isAntiPhase() { return antiPhase; }
+        public void setAntiPhase(boolean antiPhase) { this.antiPhase = antiPhase; }
+        public boolean isAntiBlink() { return antiBlink; }
+        public void setAntiBlink(boolean antiBlink) { this.antiBlink = antiBlink; }
+        public boolean isAntiFastBreak() { return antiFastBreak; }
+        public void setAntiFastBreak(boolean antiFastBreak) { this.antiFastBreak = antiFastBreak; }
+        public boolean isAntiElytraFly() { return antiElytraFly; }
+        public void setAntiElytraFly(boolean antiElytraFly) { this.antiElytraFly = antiElytraFly; }
+
+        // === V5.1 反作弊战斗模块（Meteor Client 对抗） getters/setters ===
+        public boolean isAntiCriticals() { return antiCriticals; }
+        public void setAntiCriticals(boolean antiCriticals) { this.antiCriticals = antiCriticals; }
+        public boolean isAntiAutoTotem() { return antiAutoTotem; }
+        public void setAntiAutoTotem(boolean antiAutoTotem) { this.antiAutoTotem = antiAutoTotem; }
+        public boolean isAntiSurround() { return antiSurround; }
+        public void setAntiSurround(boolean antiSurround) { this.antiSurround = antiSurround; }
+        public boolean isAntiAutoTrap() { return antiAutoTrap; }
+        public void setAntiAutoTrap(boolean antiAutoTrap) { this.antiAutoTrap = antiAutoTrap; }
+        public boolean isAntiAutoCrystal() { return antiAutoCrystal; }
+        public void setAntiAutoCrystal(boolean antiAutoCrystal) { this.antiAutoCrystal = antiAutoCrystal; }
+        public boolean isAntiAutoArmor() { return antiAutoArmor; }
+        public void setAntiAutoArmor(boolean antiAutoArmor) { this.antiAutoArmor = antiAutoArmor; }
+        public boolean isAntiChestSwap() { return antiChestSwap; }
+        public void setAntiChestSwap(boolean antiChestSwap) { this.antiChestSwap = antiChestSwap; }
+        public boolean isAntiAutoLog() { return antiAutoLog; }
+        public void setAntiAutoLog(boolean antiAutoLog) { this.antiAutoLog = antiAutoLog; }
+        public boolean isAntiHitboxes() { return antiHitboxes; }
+        public void setAntiHitboxes(boolean antiHitboxes) { this.antiHitboxes = antiHitboxes; }
+        public boolean isAntiBowAimbot() { return antiBowAimbot; }
+        public void setAntiBowAimbot(boolean antiBowAimbot) { this.antiBowAimbot = antiBowAimbot; }
+
+        // === V5.2 反作弊移动模块（Meteor Client 移动类对抗） getters/setters ===
+        public boolean isAntiNoSlow() { return antiNoSlow; }
+        public void setAntiNoSlow(boolean antiNoSlow) { this.antiNoSlow = antiNoSlow; }
+        public boolean isAntiSpider() { return antiSpider; }
+        public void setAntiSpider(boolean antiSpider) { this.antiSpider = antiSpider; }
+        public boolean isAntiStep() { return antiStep; }
+        public void setAntiStep(boolean antiStep) { this.antiStep = antiStep; }
+        public boolean isAntiPacketFly() { return antiPacketFly; }
+        public void setAntiPacketFly(boolean antiPacketFly) { this.antiPacketFly = antiPacketFly; }
+        public boolean isAntiAirJump() { return antiAirJump; }
+        public void setAntiAirJump(boolean antiAirJump) { this.antiAirJump = antiAirJump; }
+        public boolean isAntiLongJump() { return antiLongJump; }
+        public void setAntiLongJump(boolean antiLongJump) { this.antiLongJump = antiLongJump; }
+        public boolean isAntiAntiHunger() { return antiAntiHunger; }
+        public void setAntiAntiHunger(boolean antiAntiHunger) { this.antiAntiHunger = antiAntiHunger; }
+        public boolean isAntiFastFall() { return antiFastFall; }
+        public void setAntiFastFall(boolean antiFastFall) { this.antiFastFall = antiFastFall; }
+        public boolean isAntiVClip() { return antiVClip; }
+        public void setAntiVClip(boolean antiVClip) { this.antiVClip = antiVClip; }
+
+        // === V5.3 反作弊世界/玩家/杂物模块（Meteor Client 对抗） getters/setters ===
+        public boolean isAntiSpeedMine() { return antiSpeedMine; }
+        public void setAntiSpeedMine(boolean antiSpeedMine) { this.antiSpeedMine = antiSpeedMine; }
+        public boolean isAntiFastUse() { return antiFastUse; }
+        public void setAntiFastUse(boolean antiFastUse) { this.antiFastUse = antiFastUse; }
+        public boolean isAntiNoInteract() { return antiNoInteract; }
+        public void setAntiNoInteract(boolean antiNoInteract) { this.antiNoInteract = antiNoInteract; }
+        public boolean isAntiAutoMine() { return antiAutoMine; }
+        public void setAntiAutoMine(boolean antiAutoMine) { this.antiAutoMine = antiAutoMine; }
+        public boolean isAntiVeinMiner() { return antiVeinMiner; }
+        public void setAntiVeinMiner(boolean antiVeinMiner) { this.antiVeinMiner = antiVeinMiner; }
+        public boolean isAntiAutoTool() { return antiAutoTool; }
+        public void setAntiAutoTool(boolean antiAutoTool) { this.antiAutoTool = antiAutoTool; }
+        public boolean isAntiFakePlayer() { return antiFakePlayer; }
+        public void setAntiFakePlayer(boolean antiFakePlayer) { this.antiFakePlayer = antiFakePlayer; }
+        public boolean isAntiPistonAura() { return antiPistonAura; }
+        public void setAntiPistonAura(boolean antiPistonAura) { this.antiPistonAura = antiPistonAura; }
+        public boolean isAntiAnchor() { return antiAnchor; }
+        public void setAntiAnchor(boolean antiAnchor) { this.antiAnchor = antiAnchor; }
+        public boolean isAntiStashFinder() { return antiStashFinder; }
+        public void setAntiStashFinder(boolean antiStashFinder) { this.antiStashFinder = antiStashFinder; }
+
+        // === V5.0 服务器保护扩展模块 getters/setters ===
+        public boolean isChunkLoadRateLimiter() { return chunkLoadRateLimiter; }
+        public void setChunkLoadRateLimiter(boolean chunkLoadRateLimiter) { this.chunkLoadRateLimiter = chunkLoadRateLimiter; }
+        public boolean isEntityCountEnforcer() { return entityCountEnforcer; }
+        public void setEntityCountEnforcer(boolean entityCountEnforcer) { this.entityCountEnforcer = entityCountEnforcer; }
+        public boolean isRedstoneUpdateLimiter() { return redstoneUpdateLimiter; }
+        public void setRedstoneUpdateLimiter(boolean redstoneUpdateLimiter) { this.redstoneUpdateLimiter = redstoneUpdateLimiter; }
+        public boolean isCrashExploitSignatureDB() { return crashExploitSignatureDB; }
+        public void setCrashExploitSignatureDB(boolean crashExploitSignatureDB) { this.crashExploitSignatureDB = crashExploitSignatureDB; }
+
+        // === V4.0 网络协议安全模块 getters/setters ===
+        public boolean isProtocolValidator() { return protocolValidator; }
+        public void setProtocolValidator(boolean protocolValidator) { this.protocolValidator = protocolValidator; }
+        public boolean isTokenBucketRateLimiter() { return tokenBucketRateLimiter; }
+        public void setTokenBucketRateLimiter(boolean tokenBucketRateLimiter) { this.tokenBucketRateLimiter = tokenBucketRateLimiter; }
+        public boolean isBotFingerprint() { return botFingerprint; }
+        public void setBotFingerprint(boolean botFingerprint) { this.botFingerprint = botFingerprint; }
+        public boolean isNbtExploitPrevention() { return nbtExploitPrevention; }
+        public void setNbtExploitPrevention(boolean nbtExploitPrevention) { this.nbtExploitPrevention = nbtExploitPrevention; }
+        public boolean isHandshakeValidator() { return handshakeValidator; }
+        public void setHandshakeValidator(boolean handshakeValidator) { this.handshakeValidator = handshakeValidator; }
     }
 
     public static class AnnouncementConfig {
