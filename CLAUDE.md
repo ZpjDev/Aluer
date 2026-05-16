@@ -25,8 +25,9 @@
 ## 技术规范
 
 - Java 21，Spring Boot 3.2.0，Maven 3.9.6 (bundled)
-- 编译：`./apache-maven-3.9.6/bin/mvn compile`
-- 测试：`./apache-maven-3.9.6/bin/mvn test`
-- 打包：`./apache-maven-3.9.6/bin/mvn package -DskipTests`
+- 编译：`./apache-maven-3.9.6/bin/mvn clean compile`（必须 clean，禁止增量编译）
+- 测试：`./apache-maven-3.9.6/bin/mvn clean test`
+- 打包：`./apache-maven-3.9.6/bin/mvn clean package -DskipTests`
+- **禁止 IDE Make 增量编译** — 所有 IDE Run Configuration 必须配置 Maven.BeforeRunTask clean compile，确保每次运行从零编译
 - PaperMC API 1.21.1-R0.1-SNAPSHOT（provided scope）
 - Agent 通信：WebSocket（spring-boot-starter-websocket + java.net.http.WebSocket）
