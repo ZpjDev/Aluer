@@ -28,12 +28,20 @@ public class WafRequestFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return uri.startsWith("/favicon")
+        if (uri.startsWith("/favicon")
             || uri.startsWith("/assets/")
             || uri.endsWith(".css")
             || uri.endsWith(".js")
             || uri.endsWith(".png")
-            || uri.endsWith(".ico");
+            || uri.endsWith(".ico")) {
+            return true;
+        }
+        // 本地回环地址不经过 WAF 过滤（localhost / 127.0.0.1 / ::1）
+        String remoteAddr = request.getRemoteAddr();
+        return "127.0.0.1".equals(remoteAddr)
+            || "0:0:0:0:0:0:0:1".equals(remoteAddr)
+            || "::1".equals(remoteAddr)
+            || "localhost".equalsIgnoreCase(remoteAddr);
     }
 
     @Override
