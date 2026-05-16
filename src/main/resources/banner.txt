@@ -1,17 +1,18 @@
 
-${AnsiColor.BRIGHT_RED}  ╔══════════════════════════════════════════════════════════════╗
-  ║                                                              ║
-  ║     █████╗ ██╗   ██╗███████╗██████╗    ███████╗██████╗     ║
-  ║    ██╔══██╗██║   ██║██╔════╝██╔══██╗   ██╔════╝██╔══██╗    ║
-  ║    ███████║██║   ██║█████╗  ██████╔╝   ███████╗██████╔╝    ║
-  ║    ██╔══██║██║   ██║██╔══╝  ██╔══██╗   ╚════██║██╔══██╗    ║
-  ║    ██║  ██║╚██████╔╝███████╗██║  ██║   ███████║██║  ██║    ║
-  ║    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚══════╝╚═╝  ╚═╝    ║
-  ║                                                              ║
-  ║       ${AnsiColor.BRIGHT_GREEN}Aluer ServerGuard v5.0.0${AnsiColor.BRIGHT_RED}                              ║
-  ║       ${AnsiColor.BRIGHT_MAGENTA}135+ Security Modules │ 100% Anti-Cheat Coverage${AnsiColor.BRIGHT_RED}       ║
-  ║                                                              ║
-  ╚══════════════════════════════════════════════════════════════╝${AnsiStyle.NORMAL}
+${AnsiColor.BRIGHT_CYAN}    ╔════════════════════════════════════════════════════════════╗
+    ║                                                            ║
+    ║       █████╗ ██╗     ██╗   ██╗███████╗██████╗             ║
+    ║      ██╔══██╗██║     ██║   ██║██╔════╝██╔══██╗            ║
+    ║      ███████║██║     ██║   ██║█████╗  ██████╔╝            ║
+    ║      ██╔══██║██║     ██║   ██║██╔══╝  ██╔══██╗            ║
+    ║      ██║  ██║███████╗╚██████╔╝███████╗██║  ██║            ║
+    ║      ╚═╝  ╚═╝╚══════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝            ║
+    ║                                                            ║
+    ║       ${AnsiColor.BRIGHT_YELLOW}Aluer ServerGuard V5.0.0${AnsiColor.BRIGHT_CYAN}                        ║
+    ║       ${AnsiColor.BRIGHT_GREEN}AI-Powered Minecraft PaperMC Server Protection${AnsiColor.BRIGHT_CYAN}   ║
+    ║       ${AnsiColor.BRIGHT_MAGENTA}135+ Security Modules | 100% Anti-Cheat Coverage${AnsiColor.BRIGHT_CYAN}      ║
+    ║                                                            ║
+    ╚════════════════════════════════════════════════════════════╝${AnsiStyle.NORMAL}
 
   ${AnsiColor.BRIGHT_GREEN}Type ${AnsiColor.BRIGHT_WHITE}'help'${AnsiColor.BRIGHT_GREEN} for full command reference${AnsiStyle.NORMAL}
   ${AnsiColor.BRIGHT_CYAN}Web Console: ${AnsiColor.BRIGHT_WHITE}http://localhost:${server.port}/${AnsiStyle.NORMAL}
