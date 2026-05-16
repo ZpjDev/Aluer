@@ -184,6 +184,40 @@ serverguard:
         connection-throttle: true         # 连接速率限制（IP/时间窗口/递增延迟）
         backup-integrity: true            # 备份完整性校验（SHA-256/文件计数/大小对比）
         anti-skin-spoof: true             # 皮肤伪造检测（模型数据异常/皮肤URL检测）
+        # === V4.0 反作弊扩展模块 ===
+        anti-kill-aura: true              # 杀戮光环检测（攻击频率/目标切换/旋转角度）
+        anti-reach: true                  # 超距攻击检测（攻击距离/位置回溯验证）
+        anti-speed: true                  # 水平速度检测（移动速度/GroundSpoof异常）
+        anti-jesus: true                  # 水上行走检测（水面/岩浆面移动验证）
+        anti-no-fall: true                # 无摔落伤害检测（落地检测/伤害验证）
+        anti-scaffold: true               # 自动搭路检测（方块放置频率/角度/速度）
+        # === V4.0 玩家行为安全模块 ===
+        anti-nuker: true                  # 快速破坏检测（挖矿速度/范围/模式识别）
+        anti-auto-clicker: true           # 自动点击检测（CPS统计/点击间隔熵值分析）
+        anti-chest-steal: true            # 自动偷箱检测（开箱/取物速度模式识别）
+        anti-auto-fish: true              # 自动钓鱼检测（钓鱼行为时序/反应速度）
+        anti-inventory-manipulation: true # 背包操作检测（非正常速度/非法槽位操作）
+        anti-baritone: true               # AI寻路机器人检测（路径平滑度/行为重复率）
+        # === V4.0 服务器保护模块 ===
+        packet-flood-protection: true     # 数据包洪水防护（窗口/自定义负载/品牌包限制）
+        anti-sign-exploit: true           # 告示牌漏洞防护（超长JSON/无效组件/NBT炸弹）
+        anti-book-ban: true               # 书与笔封禁防护（超大页码/超深JSON层级）
+        anti-resource-pack-exploit: true  # 资源包漏洞防护（恶意URL/超大文件/格式校验）
+        anti-tab-complete-crash: true     # Tab补全崩溃防护（长文本/深度嵌套补全限制）
+        anti-offline-mode-spoof: true     # 离线UUID欺诈防护（正版UUID冲突/IP关联验证）
+        # === V4.0 访问控制模块 ===
+        op-privilege-monitor: true        # OP权限监控（权限变更/敏感命令执行审计）
+        config-tamper-detection: true     # 配置文件篡改检测（Hash基线/实时监控ops/whitelist）
+        backdoor-plugin-scanner: true     # 后门插件扫描（已知恶意类名/远程执行/隐藏命令）
+        anti-vpn-proxy: true              # VPN代理检测（已知VPN IP库/托管ASN匹配）
+        anti-alt-account: true            # 小号检测（IP关联/行为相似度/登录时间模式）
+        anti-name-spoof: true             # 名称冒充检测（管理员/知名玩家昵称伪造）
+        # === V4.0 聊天社交安全模块 ===
+        chat-flood-protection: true       # 聊天洪水防护（消息频率/相似度/长度激增）
+        anti-advertisement: true          # 广告检测（IP地址/域名/群号正则匹配）
+        anti-phishing-link: true          # 钓鱼链接检测（可疑域名/短链接/SSL证书校验）
+        anti-command-abuse: true          # 命令滥用检测（频率限制/敏感命令拦截/权限校验）
+        player-privacy: true              # 玩家隐私保护（IP脱敏/坐标隐藏/日志匿名化）
 
   dashboard:
     enabled: true

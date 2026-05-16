@@ -68,6 +68,40 @@ public class DashboardController {
     private final ConnectionThrottleService connectionThrottleService;
     private final BackupIntegrityService backupIntegrityService;
     private final AntiSkinSpoofService antiSkinSpoofService;
+    // V4.0 反作弊扩展模块
+    private final AntiKillAuraService antiKillAuraService;
+    private final AntiReachService antiReachService;
+    private final AntiSpeedService antiSpeedService;
+    private final AntiJesusService antiJesusService;
+    private final AntiNoFallService antiNoFallService;
+    private final AntiScaffoldService antiScaffoldService;
+    // V4.0 玩家行为安全模块
+    private final AntiNukerService antiNukerService;
+    private final AntiAutoClickerService antiAutoClickerService;
+    private final AntiChestStealService antiChestStealService;
+    private final AntiAutoFishService antiAutoFishService;
+    private final AntiInventoryManipulationService antiInventoryManipulationService;
+    private final AntiBaritoneService antiBaritoneService;
+    // V4.0 服务器保护模块
+    private final PacketFloodProtectionService packetFloodProtectionService;
+    private final AntiSignExploitService antiSignExploitService;
+    private final AntiBookBanService antiBookBanService;
+    private final AntiResourcePackExploitService antiResourcePackExploitService;
+    private final AntiTabCompleteCrashService antiTabCompleteCrashService;
+    private final AntiOfflineModeSpoofService antiOfflineModeSpoofService;
+    // V4.0 访问控制模块
+    private final OPPrivilegeMonitorService opPrivilegeMonitorService;
+    private final ConfigTamperDetectionService configTamperDetectionService;
+    private final BackdoorPluginScannerService backdoorPluginScannerService;
+    private final AntiVPNProxyService antiVPNProxyService;
+    private final AntiAltAccountService antiAltAccountService;
+    private final AntiNameSpoofService antiNameSpoofService;
+    // V4.0 聊天社交安全模块
+    private final ChatFloodProtectionService chatFloodProtectionService;
+    private final AntiAdvertisementService antiAdvertisementService;
+    private final AntiPhishingLinkService antiPhishingLinkService;
+    private final AntiCommandAbuseService antiCommandAbuseService;
+    private final PlayerPrivacyService playerPrivacyService;
 
     @SuppressWarnings("java:S107")
     public DashboardController(
@@ -113,7 +147,36 @@ public class DashboardController {
             PluginVerificationService pluginVerificationService,
             ConnectionThrottleService connectionThrottleService,
             BackupIntegrityService backupIntegrityService,
-            AntiSkinSpoofService antiSkinSpoofService) {
+            AntiSkinSpoofService antiSkinSpoofService,
+            AntiKillAuraService antiKillAuraService,
+            AntiReachService antiReachService,
+            AntiSpeedService antiSpeedService,
+            AntiJesusService antiJesusService,
+            AntiNoFallService antiNoFallService,
+            AntiScaffoldService antiScaffoldService,
+            AntiNukerService antiNukerService,
+            AntiAutoClickerService antiAutoClickerService,
+            AntiChestStealService antiChestStealService,
+            AntiAutoFishService antiAutoFishService,
+            AntiInventoryManipulationService antiInventoryManipulationService,
+            AntiBaritoneService antiBaritoneService,
+            PacketFloodProtectionService packetFloodProtectionService,
+            AntiSignExploitService antiSignExploitService,
+            AntiBookBanService antiBookBanService,
+            AntiResourcePackExploitService antiResourcePackExploitService,
+            AntiTabCompleteCrashService antiTabCompleteCrashService,
+            AntiOfflineModeSpoofService antiOfflineModeSpoofService,
+            OPPrivilegeMonitorService opPrivilegeMonitorService,
+            ConfigTamperDetectionService configTamperDetectionService,
+            BackdoorPluginScannerService backdoorPluginScannerService,
+            AntiVPNProxyService antiVPNProxyService,
+            AntiAltAccountService antiAltAccountService,
+            AntiNameSpoofService antiNameSpoofService,
+            ChatFloodProtectionService chatFloodProtectionService,
+            AntiAdvertisementService antiAdvertisementService,
+            AntiPhishingLinkService antiPhishingLinkService,
+            AntiCommandAbuseService antiCommandAbuseService,
+            PlayerPrivacyService playerPrivacyService) {
         this.rconClient = rconClient;
         this.profiler = profiler;
         this.backupService = backupService;
@@ -157,6 +220,35 @@ public class DashboardController {
         this.connectionThrottleService = connectionThrottleService;
         this.backupIntegrityService = backupIntegrityService;
         this.antiSkinSpoofService = antiSkinSpoofService;
+        this.antiKillAuraService = antiKillAuraService;
+        this.antiReachService = antiReachService;
+        this.antiSpeedService = antiSpeedService;
+        this.antiJesusService = antiJesusService;
+        this.antiNoFallService = antiNoFallService;
+        this.antiScaffoldService = antiScaffoldService;
+        this.antiNukerService = antiNukerService;
+        this.antiAutoClickerService = antiAutoClickerService;
+        this.antiChestStealService = antiChestStealService;
+        this.antiAutoFishService = antiAutoFishService;
+        this.antiInventoryManipulationService = antiInventoryManipulationService;
+        this.antiBaritoneService = antiBaritoneService;
+        this.packetFloodProtectionService = packetFloodProtectionService;
+        this.antiSignExploitService = antiSignExploitService;
+        this.antiBookBanService = antiBookBanService;
+        this.antiResourcePackExploitService = antiResourcePackExploitService;
+        this.antiTabCompleteCrashService = antiTabCompleteCrashService;
+        this.antiOfflineModeSpoofService = antiOfflineModeSpoofService;
+        this.opPrivilegeMonitorService = opPrivilegeMonitorService;
+        this.configTamperDetectionService = configTamperDetectionService;
+        this.backdoorPluginScannerService = backdoorPluginScannerService;
+        this.antiVPNProxyService = antiVPNProxyService;
+        this.antiAltAccountService = antiAltAccountService;
+        this.antiNameSpoofService = antiNameSpoofService;
+        this.chatFloodProtectionService = chatFloodProtectionService;
+        this.antiAdvertisementService = antiAdvertisementService;
+        this.antiPhishingLinkService = antiPhishingLinkService;
+        this.antiCommandAbuseService = antiCommandAbuseService;
+        this.playerPrivacyService = playerPrivacyService;
     }
 
     @GetMapping("/status")
@@ -517,5 +609,160 @@ public class DashboardController {
     @GetMapping("/security/anti-skin-spoof/status")
     public Map<String, Object> getAntiSkinSpoofStatus() {
         return antiSkinSpoofService.getStatus();
+    }
+
+    // --- V4.0 反作弊扩展 API ---
+
+    @GetMapping("/security/anti-kill-aura/status")
+    public Map<String, Object> getAntiKillAuraStatus() {
+        return antiKillAuraService.getStatus();
+    }
+
+    @GetMapping("/security/anti-reach/status")
+    public Map<String, Object> getAntiReachStatus() {
+        return antiReachService.getStatus();
+    }
+
+    @GetMapping("/security/anti-speed/status")
+    public Map<String, Object> getAntiSpeedStatus() {
+        return antiSpeedService.getStatus();
+    }
+
+    @GetMapping("/security/anti-jesus/status")
+    public Map<String, Object> getAntiJesusStatus() {
+        return antiJesusService.getStatus();
+    }
+
+    @GetMapping("/security/anti-no-fall/status")
+    public Map<String, Object> getAntiNoFallStatus() {
+        return antiNoFallService.getStatus();
+    }
+
+    @GetMapping("/security/anti-scaffold/status")
+    public Map<String, Object> getAntiScaffoldStatus() {
+        return antiScaffoldService.getStatus();
+    }
+
+    // --- V4.0 玩家行为安全 API ---
+
+    @GetMapping("/security/anti-nuker/status")
+    public Map<String, Object> getAntiNukerStatus() {
+        return antiNukerService.getStatus();
+    }
+
+    @GetMapping("/security/anti-auto-clicker/status")
+    public Map<String, Object> getAntiAutoClickerStatus() {
+        return antiAutoClickerService.getStatus();
+    }
+
+    @GetMapping("/security/anti-chest-steal/status")
+    public Map<String, Object> getAntiChestStealStatus() {
+        return antiChestStealService.getStatus();
+    }
+
+    @GetMapping("/security/anti-auto-fish/status")
+    public Map<String, Object> getAntiAutoFishStatus() {
+        return antiAutoFishService.getStatus();
+    }
+
+    @GetMapping("/security/anti-inventory-manipulation/status")
+    public Map<String, Object> getAntiInventoryManipulationStatus() {
+        return antiInventoryManipulationService.getStatus();
+    }
+
+    @GetMapping("/security/anti-baritone/status")
+    public Map<String, Object> getAntiBaritoneStatus() {
+        return antiBaritoneService.getStatus();
+    }
+
+    // --- V4.0 服务器保护模块 API ---
+
+    @GetMapping("/security/packet-flood/status")
+    public Map<String, Object> getPacketFloodStatus() {
+        return packetFloodProtectionService.getStatus();
+    }
+
+    @GetMapping("/security/anti-sign-exploit/status")
+    public Map<String, Object> getAntiSignExploitStatus() {
+        return antiSignExploitService.getStatus();
+    }
+
+    @GetMapping("/security/anti-book-ban/status")
+    public Map<String, Object> getAntiBookBanStatus() {
+        return antiBookBanService.getStatus();
+    }
+
+    @GetMapping("/security/anti-resource-pack/status")
+    public Map<String, Object> getAntiResourcePackStatus() {
+        return antiResourcePackExploitService.getStatus();
+    }
+
+    @GetMapping("/security/anti-tab-complete/status")
+    public Map<String, Object> getAntiTabCompleteStatus() {
+        return antiTabCompleteCrashService.getStatus();
+    }
+
+    @GetMapping("/security/anti-offline-spoof/status")
+    public Map<String, Object> getAntiOfflineSpoofStatus() {
+        return antiOfflineModeSpoofService.getStatus();
+    }
+
+    // --- V4.0 访问控制模块 API ---
+
+    @GetMapping("/security/op-monitor/status")
+    public Map<String, Object> getOPMonitorStatus() {
+        return opPrivilegeMonitorService.getStatus();
+    }
+
+    @GetMapping("/security/config-tamper/status")
+    public Map<String, Object> getConfigTamperStatus() {
+        return configTamperDetectionService.getStatus();
+    }
+
+    @GetMapping("/security/backdoor-scanner/status")
+    public Map<String, Object> getBackdoorScannerStatus() {
+        return backdoorPluginScannerService.getStatus();
+    }
+
+    @GetMapping("/security/anti-vpn/status")
+    public Map<String, Object> getAntiVPNStatus() {
+        return antiVPNProxyService.getStatus();
+    }
+
+    @GetMapping("/security/anti-alt/status")
+    public Map<String, Object> getAntiAltStatus() {
+        return antiAltAccountService.getStatus();
+    }
+
+    @GetMapping("/security/anti-name-spoof/status")
+    public Map<String, Object> getAntiNameSpoofStatus() {
+        return antiNameSpoofService.getStatus();
+    }
+
+    // --- V4.0 聊天社交安全模块 API ---
+
+    @GetMapping("/security/chat-flood/status")
+    public Map<String, Object> getChatFloodStatus() {
+        return chatFloodProtectionService.getStatus();
+    }
+
+    @GetMapping("/security/anti-advertisement/status")
+    public Map<String, Object> getAntiAdvertisementStatus() {
+        return antiAdvertisementService.getStatus();
+    }
+
+    @GetMapping("/security/anti-phishing/status")
+    public Map<String, Object> getAntiPhishingStatus() {
+        return antiPhishingLinkService.getStatus();
+    }
+
+    @GetMapping("/security/anti-command-abuse/status")
+    public Map<String, Object> getAntiCommandAbuseStatus() {
+        return antiCommandAbuseService.getStatus();
+    }
+
+    @GetMapping("/security/player-privacy/status")
+    public Map<String, Object> getPlayerPrivacyStatus() {
+        return playerPrivacyService.getStatus();
     }
 }

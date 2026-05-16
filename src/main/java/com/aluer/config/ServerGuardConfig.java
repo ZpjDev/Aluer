@@ -901,6 +901,45 @@ public class ServerGuardConfig {
         private boolean backupIntegrity = true;
         private boolean antiSkinSpoof = true;
 
+        // === V4.0 反作弊扩展模块 ===
+        private boolean antiKillAura = true;
+        private boolean antiReach = true;
+        private boolean antiSpeed = true;
+        private boolean antiJesus = true;
+        private boolean antiNoFall = true;
+        private boolean antiScaffold = true;
+
+        // === V4.0 玩家行为安全模块 ===
+        private boolean antiNuker = true;
+        private boolean antiAutoClicker = true;
+        private boolean antiChestSteal = true;
+        private boolean antiAutoFish = true;
+        private boolean antiInventoryManipulation = true;
+        private boolean antiBaritone = true;
+
+        // === V4.0 服务器保护模块 ===
+        private boolean packetFloodProtection = true;
+        private boolean antiSignExploit = true;
+        private boolean antiBookBan = true;
+        private boolean antiResourcePackExploit = true;
+        private boolean antiTabCompleteCrash = true;
+        private boolean antiOfflineModeSpoof = true;
+
+        // === V4.0 访问控制模块 ===
+        private boolean opPrivilegeMonitor = true;
+        private boolean configTamperDetection = true;
+        private boolean backdoorPluginScanner = true;
+        private boolean antiVpnProxy = true;
+        private boolean antiAltAccount = true;
+        private boolean antiNameSpoof = true;
+
+        // === V4.0 聊天社交安全模块 ===
+        private boolean chatFloodProtection = true;
+        private boolean antiAdvertisement = true;
+        private boolean antiPhishingLink = true;
+        private boolean antiCommandAbuse = true;
+        private boolean playerPrivacy = true;
+
         public boolean isJwtAuth() { return jwtAuth; }
         public void setJwtAuth(boolean jwtAuth) { this.jwtAuth = jwtAuth; }
         public boolean isBruteForce() { return bruteForce; }
@@ -963,6 +1002,74 @@ public class ServerGuardConfig {
         public void setBackupIntegrity(boolean backupIntegrity) { this.backupIntegrity = backupIntegrity; }
         public boolean isAntiSkinSpoof() { return antiSkinSpoof; }
         public void setAntiSkinSpoof(boolean antiSkinSpoof) { this.antiSkinSpoof = antiSkinSpoof; }
+
+        // === V4.0 反作弊扩展模块 getters/setters ===
+        public boolean isAntiKillAura() { return antiKillAura; }
+        public void setAntiKillAura(boolean antiKillAura) { this.antiKillAura = antiKillAura; }
+        public boolean isAntiReach() { return antiReach; }
+        public void setAntiReach(boolean antiReach) { this.antiReach = antiReach; }
+        public boolean isAntiSpeed() { return antiSpeed; }
+        public void setAntiSpeed(boolean antiSpeed) { this.antiSpeed = antiSpeed; }
+        public boolean isAntiJesus() { return antiJesus; }
+        public void setAntiJesus(boolean antiJesus) { this.antiJesus = antiJesus; }
+        public boolean isAntiNoFall() { return antiNoFall; }
+        public void setAntiNoFall(boolean antiNoFall) { this.antiNoFall = antiNoFall; }
+        public boolean isAntiScaffold() { return antiScaffold; }
+        public void setAntiScaffold(boolean antiScaffold) { this.antiScaffold = antiScaffold; }
+
+        // === V4.0 玩家行为安全模块 getters/setters ===
+        public boolean isAntiNuker() { return antiNuker; }
+        public void setAntiNuker(boolean antiNuker) { this.antiNuker = antiNuker; }
+        public boolean isAntiAutoClicker() { return antiAutoClicker; }
+        public void setAntiAutoClicker(boolean antiAutoClicker) { this.antiAutoClicker = antiAutoClicker; }
+        public boolean isAntiChestSteal() { return antiChestSteal; }
+        public void setAntiChestSteal(boolean antiChestSteal) { this.antiChestSteal = antiChestSteal; }
+        public boolean isAntiAutoFish() { return antiAutoFish; }
+        public void setAntiAutoFish(boolean antiAutoFish) { this.antiAutoFish = antiAutoFish; }
+        public boolean isAntiInventoryManipulation() { return antiInventoryManipulation; }
+        public void setAntiInventoryManipulation(boolean antiInventoryManipulation) { this.antiInventoryManipulation = antiInventoryManipulation; }
+        public boolean isAntiBaritone() { return antiBaritone; }
+        public void setAntiBaritone(boolean antiBaritone) { this.antiBaritone = antiBaritone; }
+
+        // === V4.0 服务器保护模块 getters/setters ===
+        public boolean isPacketFloodProtection() { return packetFloodProtection; }
+        public void setPacketFloodProtection(boolean packetFloodProtection) { this.packetFloodProtection = packetFloodProtection; }
+        public boolean isAntiSignExploit() { return antiSignExploit; }
+        public void setAntiSignExploit(boolean antiSignExploit) { this.antiSignExploit = antiSignExploit; }
+        public boolean isAntiBookBan() { return antiBookBan; }
+        public void setAntiBookBan(boolean antiBookBan) { this.antiBookBan = antiBookBan; }
+        public boolean isAntiResourcePackExploit() { return antiResourcePackExploit; }
+        public void setAntiResourcePackExploit(boolean antiResourcePackExploit) { this.antiResourcePackExploit = antiResourcePackExploit; }
+        public boolean isAntiTabCompleteCrash() { return antiTabCompleteCrash; }
+        public void setAntiTabCompleteCrash(boolean antiTabCompleteCrash) { this.antiTabCompleteCrash = antiTabCompleteCrash; }
+        public boolean isAntiOfflineModeSpoof() { return antiOfflineModeSpoof; }
+        public void setAntiOfflineModeSpoof(boolean antiOfflineModeSpoof) { this.antiOfflineModeSpoof = antiOfflineModeSpoof; }
+
+        // === V4.0 访问控制模块 getters/setters ===
+        public boolean isOpPrivilegeMonitor() { return opPrivilegeMonitor; }
+        public void setOpPrivilegeMonitor(boolean opPrivilegeMonitor) { this.opPrivilegeMonitor = opPrivilegeMonitor; }
+        public boolean isConfigTamperDetection() { return configTamperDetection; }
+        public void setConfigTamperDetection(boolean configTamperDetection) { this.configTamperDetection = configTamperDetection; }
+        public boolean isBackdoorPluginScanner() { return backdoorPluginScanner; }
+        public void setBackdoorPluginScanner(boolean backdoorPluginScanner) { this.backdoorPluginScanner = backdoorPluginScanner; }
+        public boolean isAntiVpnProxy() { return antiVpnProxy; }
+        public void setAntiVpnProxy(boolean antiVpnProxy) { this.antiVpnProxy = antiVpnProxy; }
+        public boolean isAntiAltAccount() { return antiAltAccount; }
+        public void setAntiAltAccount(boolean antiAltAccount) { this.antiAltAccount = antiAltAccount; }
+        public boolean isAntiNameSpoof() { return antiNameSpoof; }
+        public void setAntiNameSpoof(boolean antiNameSpoof) { this.antiNameSpoof = antiNameSpoof; }
+
+        // === V4.0 聊天社交安全模块 getters/setters ===
+        public boolean isChatFloodProtection() { return chatFloodProtection; }
+        public void setChatFloodProtection(boolean chatFloodProtection) { this.chatFloodProtection = chatFloodProtection; }
+        public boolean isAntiAdvertisement() { return antiAdvertisement; }
+        public void setAntiAdvertisement(boolean antiAdvertisement) { this.antiAdvertisement = antiAdvertisement; }
+        public boolean isAntiPhishingLink() { return antiPhishingLink; }
+        public void setAntiPhishingLink(boolean antiPhishingLink) { this.antiPhishingLink = antiPhishingLink; }
+        public boolean isAntiCommandAbuse() { return antiCommandAbuse; }
+        public void setAntiCommandAbuse(boolean antiCommandAbuse) { this.antiCommandAbuse = antiCommandAbuse; }
+        public boolean isPlayerPrivacy() { return playerPrivacy; }
+        public void setPlayerPrivacy(boolean playerPrivacy) { this.playerPrivacy = playerPrivacy; }
     }
 
     public static class AnnouncementConfig {
