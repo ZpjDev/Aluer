@@ -1,13 +1,11 @@
 package com.aluer.plugin.bridge;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.net.InetAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InternalCommandExecutor {
     private static final Logger logger = LoggerFactory.getLogger(InternalCommandExecutor.class);
 
-    /** 已封禁的 IP 集合（内存缓存，重启后失效，持久化由 BanList API 处理） */
+    /** 已封禁的 IP 集合（内存缓存，重启后失效，持久化由 Bukkit BanList API 处理） */
     private final Set<String> bannedIPs = ConcurrentHashMap.newKeySet();
 
     /** 已封禁的玩家名集合 */
@@ -42,16 +40,6 @@ public class InternalCommandExecutor {
         }
     }
 
-    /** 执行命令并返回是否成功（静默模式，不打日志） */
-    public boolean executeCommandQuiet(String command) {
-        try {
-            return Bukkit.getServer().dispatchCommand(
-                Bukkit.getServer().getConsoleSender(), command);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     // ─── 玩家管理 ──────────────────────────────────────
 
     /** 踢出玩家 */
@@ -66,41 +54,37 @@ public class InternalCommandExecutor {
         return true;
     }
 
-    /** 封禁玩家名 */
+    /** 封禁玩家名（通过 /ban 命令持久化封禁） */
     public boolean banPlayer(String playerName, String reason) {
         if (bannedPlayers.contains(playerName)) {
-            return true; // 已封禁
-        }
-        // 使用 Bukkit BanList API 进行持久化封禁
-        OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(playerName);
-        if (target != null) {
-            Bukkit.getServer().getBanList(org.bukkit.BanList.Type.NAME)
-                .addBan(playerName, reason, null, "Aluer ServerGuard");
-            bannedPlayers.add(playerName);
-            // 如果在线则踢出
-            kickPlayer(playerName, reason);
-            logger.info("Player {} banned: {}", playerName, reason);
             return true;
         }
-        return false;
+        // 使用 dispatchCommand 兼容所有 Paper 版本，避免 BanList API 弃用问题
+        boolean ok = executeCommand("ban " + playerName + " " + reason);
+        if (ok) {
+            bannedPlayers.add(playerName);
+            logger.info("Player {} banned: {}", playerName, reason);
+        }
+        return ok;
     }
 
     /** 解除玩家封禁 */
     public boolean unbanPlayer(String playerName) {
-        Bukkit.getServer().getBanList(org.bukkit.BanList.Type.NAME).pardon(playerName);
-        bannedPlayers.remove(playerName);
-        logger.info("Player {} unbanned", playerName);
-        return true;
+        boolean ok = executeCommand("pardon " + playerName);
+        if (ok) {
+            bannedPlayers.remove(playerName);
+            logger.info("Player {} unbanned", playerName);
+        }
+        return ok;
     }
 
-    /** 封禁 IP */
+    /** 封禁 IP（通过 /ban-ip 命令持久化封禁） */
     public boolean banIP(String ip, String reason) {
         if (bannedIPs.contains(ip)) {
             return true;
         }
-        try {
-            Bukkit.getServer().getBanList(org.bukkit.BanList.Type.IP)
-                .addBan(ip, reason, null, "Aluer ServerGuard");
+        boolean ok = executeCommand("ban-ip " + ip + " " + reason);
+        if (ok) {
             bannedIPs.add(ip);
             // 踢出该 IP 的所有在线玩家
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -112,41 +96,21 @@ public class InternalCommandExecutor {
                 }
             }
             logger.info("IP {} banned: {}", ip, reason);
-            return true;
-        } catch (Exception e) {
-            logger.error("Failed to ban IP {}: {}", ip, e.getMessage());
-            return false;
         }
+        return ok;
     }
 
     /** 解除 IP 封禁 */
     public boolean unbanIP(String ip) {
-        Bukkit.getServer().getBanList(org.bukkit.BanList.Type.IP).pardon(ip);
-        bannedIPs.remove(ip);
-        logger.info("IP {} unbanned", ip);
-        return true;
+        boolean ok = executeCommand("pardon-ip " + ip);
+        if (ok) {
+            bannedIPs.remove(ip);
+            logger.info("IP {} unbanned", ip);
+        }
+        return ok;
     }
 
-    /** 将玩家加入白名单 */
-    public boolean addToWhitelist(String playerName) {
-        OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(playerName);
-        if (target != null) {
-            target.setWhitelisted(true);
-            logger.info("Player {} added to whitelist", playerName);
-            return true;
-        }
-        return false;
-    }
-
-    /** 从白名单移除玩家 */
-    public boolean removeFromWhitelist(String playerName) {
-        OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(playerName);
-        if (target != null) {
-            target.setWhitelisted(false);
-            return true;
-        }
-        return false;
-    }
+    // ─── 白名单管理 ──────────────────────────────────
 
     /** 启用白名单模式 */
     public boolean enableWhitelist() {
@@ -198,21 +162,8 @@ public class InternalCommandExecutor {
         return removed;
     }
 
-    /** 清理实体（按类型） */
-    public int clearEntities(Class<? extends org.bukkit.entity.Entity> entityType) {
-        int removed = 0;
-        for (org.bukkit.World world : Bukkit.getServer().getWorlds()) {
-            for (org.bukkit.entity.Entity entity : world.getEntities()) {
-                if (entityType.isInstance(entity) && !(entity instanceof Player)) {
-                    entity.remove();
-                    removed++;
-                }
-            }
-        }
-        return removed;
-    }
-
     /** 设置生物生成速率 */
+    @SuppressWarnings("deprecation")
     public boolean setSpawnRate(int rate) {
         for (org.bukkit.World world : Bukkit.getServer().getWorlds()) {
             world.setMonsterSpawnLimit(rate);
@@ -224,11 +175,6 @@ public class InternalCommandExecutor {
     /** 获取服务器在线玩家对象列表 */
     public Collection<? extends Player> getOnlinePlayers() {
         return Bukkit.getServer().getOnlinePlayers();
-    }
-
-    /** 按 IP 封禁范围（用于隔离攻击源） */
-    public boolean quarantineIP(String ip) {
-        return banIP(ip, "Aluer Kernel — 安全隔离");
     }
 
     /** 获取已封禁 IP 列表 */
