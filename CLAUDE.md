@@ -23,7 +23,7 @@
 
 ## 技术规范
 
-- Java 17，Spring Boot 3.2.0，Maven 3.9.6 (bundled)
+- Java 21，Spring Boot 3.2.0，Maven 3.9.6 (bundled)
 - 编译：`./apache-maven-3.9.6/bin/mvn compile`
 - 测试：`./apache-maven-3.9.6/bin/mvn test`
 - 打包：`./apache-maven-3.9.6/bin/mvn package -DskipTests`
