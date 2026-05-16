@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f77d5d62-63da-4fce-bc89-0b1a8c0babde" name="更改" comment="修复IDE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/banner.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/banner.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,7 +175,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1778931324270</updated>
-      <workItem from="1778931331043" duration="3770000" />
+      <workItem from="1778931331043" duration="4451000" />
     </task>
     <task id="LOCAL-00001" summary="修复IDE">
       <option name="closed" value="true" />
@@ -186,7 +185,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778934097931</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="修复IDE">
+      <option name="closed" value="true" />
+      <created>1778935164550</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1778935164550</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
