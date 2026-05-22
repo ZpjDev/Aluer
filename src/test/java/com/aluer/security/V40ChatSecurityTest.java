@@ -1,5 +1,10 @@
 package com.aluer.security;
 
+import com.aluer.chat.AntiAdvertisementService;
+import com.aluer.chat.AntiCommandAbuseService;
+import com.aluer.chat.AntiPhishingLinkService;
+import com.aluer.chat.ChatFloodProtectionService;
+import com.aluer.chat.PlayerPrivacyService;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;

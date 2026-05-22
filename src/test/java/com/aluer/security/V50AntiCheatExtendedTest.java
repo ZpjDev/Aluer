@@ -5,6 +5,12 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import com.aluer.anticheat.combat.AntiVelocityService;
+import com.aluer.anticheat.movement.AntiBlinkService;
+import com.aluer.anticheat.movement.AntiElytraFlyService;
+import com.aluer.anticheat.movement.AntiPhaseService;
+import com.aluer.anticheat.movement.AntiTimerService;
+import com.aluer.anticheat.world.AntiFastBreakService;
 
 /**
  * V5.0 反作弊扩展模块测试 — 打靶试验（模拟真实 Minecraft 生产环境数据）

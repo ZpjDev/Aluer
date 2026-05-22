@@ -3,6 +3,12 @@ package com.aluer.security;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
+import com.aluer.anticheat.combat.AntiAutoClickerService;
+import com.aluer.anticheat.player.AntiInventoryManipulationService;
+import com.aluer.anticheat.world.AntiAutoFishService;
+import com.aluer.anticheat.world.AntiBaritoneService;
+import com.aluer.anticheat.world.AntiChestStealService;
+import com.aluer.anticheat.world.AntiNukerService;
 
 /**
  * V4.0 玩家行为安全模块测试 —— 每个模块至少 3 个测试（正常/异常/状态）。

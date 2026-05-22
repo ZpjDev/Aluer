@@ -13,6 +13,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicLong;
+import com.aluer.anticheat.combat.AntiAutoClickerService;
+import com.aluer.anticheat.combat.AntiKillAuraService;
+import com.aluer.anticheat.combat.AntiReachService;
 
 /**
  * 战斗模式识别器 — 基于统计分析识别PVP作弊模式

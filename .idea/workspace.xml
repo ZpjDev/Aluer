@@ -6,6 +6,188 @@
   <component name="ChangeListManager">
     <list default="true" id="f77d5d62-63da-4fce-bc89-0b1a8c0babde" name="更改" comment="修复IDE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/ai/AluerSovereignEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/ai/AluerSovereignEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/config/ServerGuardConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/config/ServerGuardConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/console/AluerMirageShieldService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/console/AluerMirageShieldService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/console/AluerOperationsCenterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/console/AluerOperationsCenterService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/console/RemoteSshGatewayService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/console/RemoteSshGatewayService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/kernel/AluerKernelEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/kernel/AluerKernelEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/kernel/AluerSelfHealingOrchestrator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/kernel/AluerSelfHealingOrchestrator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/ml/CombatPatternRecognizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/ml/CombatPatternRecognizer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/model/AlertType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/model/AlertType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/APIRateLimitService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ARPSpoofDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AdvancedMalwareDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAdvertisementService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAirJumpService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAltAccountService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAnchorService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAntiHungerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoArmorService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoClickerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoCrystalService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoFishService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoLogService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoMineService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoToolService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoTotemService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiAutoTrapService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiBaritoneService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiBlinkService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiBookBanService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiBotDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiBowAimBotService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiChestStealService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiChestSwapService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiCommandAbuseService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiCriticalsService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiDupeDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiElytraFlyService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiFakePlayerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiFastBreakService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiFastFallService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiFastUseService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiFlyDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiGriefDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiHitboxesService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiInventoryManipulationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiJesusService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiKillAuraService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiLongJumpService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiNameSpoofService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiNoFallService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiNoInteractService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiNoSlowService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiNukerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiOfflineModeSpoofService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiPacketFlyService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiPhaseService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiPhishingLinkService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiPistonAuraService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiReachService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiResourcePackExploitService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiScaffoldService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiSignExploitService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiSkinSpoofService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiSpeedMineService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiSpeedService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiSpiderService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiStashFinderService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiStepService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiSurroundService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiTabCompleteCrashService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiTimerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiVClipService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiVPNProxyService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiVeinMinerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiVelocityService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/AntiXrayDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/BackdoorPluginScannerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/BackupIntegrityService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/BackupSecurityService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/BotFingerprintDetector.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/BruteForceProtectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/CSPEnforcementService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ChatFloodProtectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ChunkLoadRateLimiter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/CloudflareIntegrationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/CommandExecutionGuardService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ComplianceScannerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ConfigTamperDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ConnectionHandshakeValidator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ConnectionThrottleService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ContainerSecurityService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/CrashExploitProtectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/CrashExploitSignatureDB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/DDoSDefenseCoordinator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/DDoSProtectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/DNSSecurityService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/DNSTunnelDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/DataLossPreventionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/DatabaseFirewallService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/DistributedAttackMitigationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/EncryptionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/EndpointDetectionResponseService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/EntityCountEnforcer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ExploitSignatureService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/FileIntegrityMonitorService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/FirewallService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/FlowAnalyzerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ForensicsCollectorService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/GeoBlockService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/GeoIPService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/HoneypotService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/HostEnforcementService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/HostIntrusionCountermeasureService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/IPReputationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/IncidentResponseService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/IntrusionDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/IntrusionPreventionSystem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/JwtAuthService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/LagMachineDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/LoadBalancerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/LogAnalysisService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/LogCorrelationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/MemoryProtectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/MinecraftProtocolSecurityService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/NBTExploitPrevention.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/NetworkMonitorService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/NetworkSegmentationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/NetworkSnifferService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/NetworkThreatFusionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/OPPrivilegeMonitorService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/PacketFloodProtectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/PacketInspectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/PlayerPrivacyService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/PlayerSessionValidationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/PluginVerificationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/PortScanDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ProcessInjectionDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ProtocolAnalysisService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ProtocolStateValidator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/RateLimitService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/RedstoneUpdateLimiter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ReverseShellDetectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SIEMService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SSLMonitorService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SSLTLSCertificateService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SSRFProtectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SecureFileDeletionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SecurityAutomationScheduler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SecurityBaselineHardeningService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SecurityOrchestrationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/SessionManagementService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ThreatHuntingService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ThreatIntelligenceService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/TokenBucketRateLimiter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/TrafficAnalysisService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/TrafficShapingService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/WafRequestFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/WebApplicationFirewall.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/XXEProtectionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/security/ZeroTrustArchitectureService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/terminal/AITerminal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/terminal/AITerminal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/web/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/web/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/aluer/web/OperationsConsoleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/aluer/web/OperationsConsoleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/console/AluerEngineHandshakeServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/console/AluerEngineHandshakeServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/console/AluerMirageShieldServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/console/AluerMirageShieldServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/console/RemoteSshGatewayServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/console/RemoteSshGatewayServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/kernel/AluerKernelEngineTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/kernel/AluerKernelEngineTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/kernel/AluerKernelTaskBusTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/kernel/AluerKernelTaskBusTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/kernel/AluerSelfHealingOrchestratorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/kernel/AluerSelfHealingOrchestratorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/MinecraftSecurityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/MinecraftSecurityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/NetworkThreatFusionServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/NetworkThreatFusionServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/SecurityBaselineHardeningServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/SecurityBaselineHardeningServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/SuperEvolutionSecurityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/SuperEvolutionSecurityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/V33SecurityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/V33SecurityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40AccessControlTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40AccessControlTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40AntiCheatTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40AntiCheatTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40ChatSecurityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40ChatSecurityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40PlayerBehaviorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40PlayerBehaviorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40ServerProtectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/V40ServerProtectionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/V50AntiCheatExtendedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/V50AntiCheatExtendedTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/V50ServerProtectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/V50ServerProtectionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/aluer/security/WebApplicationFirewallTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/aluer/security/WebApplicationFirewallTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,34 +197,53 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ZpjDev&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ZpjDev/Aluer.git&quot;,
+    &quot;accountId&quot;: &quot;2f77546d-1fe1-49c3-bbd4-023ce7ce19af&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="3E2a1Y25K9tCjlmiOKHix4MMvBC" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Maven.serverguard [clean,compile].executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "Spring Boot.ServerGuard (8080).executor": "Run",
-    "cidr.known.project.marker": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.serverguard [clean,compile].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ServerGuard (8080).executor&quot;: &quot;Run&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Spring Boot.ServerGuard (8080)">
     <configuration name="All Tests (323)" type="JUnit" factoryName="JUnit">
       <module name="serverguard" />
@@ -175,7 +376,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1778931324270</updated>
-      <workItem from="1778931331043" duration="4451000" />
+      <workItem from="1778931331043" duration="4857000" />
+      <workItem from="1779378967851" duration="223000" />
+      <workItem from="1779430073678" duration="32000" />
+      <workItem from="1779442486822" duration="3805000" />
     </task>
     <task id="LOCAL-00001" summary="修复IDE">
       <option name="closed" value="true" />
@@ -193,11 +397,30 @@
       <option name="project" value="LOCAL" />
       <updated>1778935164550</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="修复IDE">
+      <option name="closed" value="true" />
+      <created>1778935872703</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1778935872703</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="修复IDE" />

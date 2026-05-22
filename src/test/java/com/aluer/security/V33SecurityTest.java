@@ -3,6 +3,12 @@ package com.aluer.security;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
+import com.aluer.anticheat.player.AntiSkinSpoofService;
+import com.aluer.defense.BackupIntegrityService;
+import com.aluer.defense.GeoBlockService;
+import com.aluer.defense.PlayerSessionValidationService;
+import com.aluer.defense.PluginVerificationService;
+import com.aluer.network.ConnectionThrottleService;
 
 class V33SecurityTest {
 

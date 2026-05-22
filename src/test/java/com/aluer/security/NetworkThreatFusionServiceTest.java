@@ -1,5 +1,16 @@
 package com.aluer.security;
 
+import com.aluer.defense.IntrusionDetectionService;
+import com.aluer.network.DDoSProtectionService;
+import com.aluer.network.FirewallService;
+import com.aluer.network.GeoIPService;
+import com.aluer.network.IPReputationService;
+import com.aluer.network.NetworkMonitorService;
+import com.aluer.network.NetworkThreatFusionService;
+import com.aluer.network.PacketInspectionService;
+import com.aluer.network.PortScanDetectionService;
+import com.aluer.network.RateLimitService;
+import com.aluer.network.TrafficAnalysisService;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;

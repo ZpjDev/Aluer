@@ -2,8 +2,8 @@ package com.aluer.console;
 
 import com.aluer.audit.SecurityAuditService;
 import com.aluer.config.ServerGuardConfig;
-import com.aluer.security.CommandExecutionGuardService;
-import com.aluer.security.IntrusionDetectionService;
+import com.aluer.defense.CommandExecutionGuardService;
+import com.aluer.defense.IntrusionDetectionService;
 import com.aluer.service.RconClient;
 import org.junit.jupiter.api.Test;
 

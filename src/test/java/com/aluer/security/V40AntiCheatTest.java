@@ -1,5 +1,11 @@
 package com.aluer.security;
 
+import com.aluer.anticheat.combat.AntiKillAuraService;
+import com.aluer.anticheat.combat.AntiReachService;
+import com.aluer.anticheat.movement.AntiJesusService;
+import com.aluer.anticheat.movement.AntiNoFallService;
+import com.aluer.anticheat.movement.AntiScaffoldService;
+import com.aluer.anticheat.movement.AntiSpeedService;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

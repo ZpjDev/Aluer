@@ -1,10 +1,10 @@
 package com.aluer.kernel;
 
 import com.aluer.config.ServerGuardConfig;
-import com.aluer.security.CommandExecutionGuardService;
-import com.aluer.security.NetworkThreatFusionService;
-import com.aluer.security.SecurityBaselineHardeningService;
-import com.aluer.security.WebApplicationFirewall;
+import com.aluer.defense.CommandExecutionGuardService;
+import com.aluer.network.NetworkThreatFusionService;
+import com.aluer.defense.SecurityBaselineHardeningService;
+import com.aluer.defense.WebApplicationFirewall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,6 @@
 package com.aluer.security;
 
+import com.aluer.defense.WebApplicationFirewall;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;

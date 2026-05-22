@@ -5,7 +5,7 @@ import com.aluer.config.ServerGuardConfig;
 import com.aluer.model.MetricsData;
 import com.aluer.monitor.ProcessMonitor;
 import com.aluer.monitor.ResourceMonitor;
-import com.aluer.security.SecurityBaselineHardeningService;
+import com.aluer.defense.SecurityBaselineHardeningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

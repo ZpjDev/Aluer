@@ -7,7 +7,7 @@ import com.aluer.console.RemoteSshGatewayService;
 import com.aluer.kernel.AluerKernelEngine;
 import com.aluer.kernel.AluerKernelTaskBus;
 import com.aluer.kernel.AluerSelfHealingOrchestrator;
-import com.aluer.security.NetworkThreatFusionService;
+import com.aluer.network.NetworkThreatFusionService;
 import com.aluer.service.RconClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

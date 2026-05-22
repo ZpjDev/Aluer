@@ -1,20 +1,20 @@
 package com.aluer.kernel;
 
 import com.aluer.config.ServerGuardConfig;
-import com.aluer.security.CommandExecutionGuardService;
-import com.aluer.security.DDoSProtectionService;
-import com.aluer.security.FirewallService;
-import com.aluer.security.GeoIPService;
-import com.aluer.security.IPReputationService;
-import com.aluer.security.IntrusionDetectionService;
-import com.aluer.security.NetworkMonitorService;
-import com.aluer.security.NetworkThreatFusionService;
-import com.aluer.security.PacketInspectionService;
-import com.aluer.security.PortScanDetectionService;
-import com.aluer.security.RateLimitService;
-import com.aluer.security.SecurityBaselineHardeningService;
-import com.aluer.security.TrafficAnalysisService;
-import com.aluer.security.WebApplicationFirewall;
+import com.aluer.defense.CommandExecutionGuardService;
+import com.aluer.network.DDoSProtectionService;
+import com.aluer.network.FirewallService;
+import com.aluer.network.GeoIPService;
+import com.aluer.network.IPReputationService;
+import com.aluer.defense.IntrusionDetectionService;
+import com.aluer.network.NetworkMonitorService;
+import com.aluer.network.NetworkThreatFusionService;
+import com.aluer.network.PacketInspectionService;
+import com.aluer.network.PortScanDetectionService;
+import com.aluer.network.RateLimitService;
+import com.aluer.defense.SecurityBaselineHardeningService;
+import com.aluer.network.TrafficAnalysisService;
+import com.aluer.defense.WebApplicationFirewall;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;

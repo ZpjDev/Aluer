@@ -1,6 +1,7 @@
 package com.aluer.security;
 
 import com.aluer.config.ServerGuardConfig;
+import com.aluer.defense.SecurityBaselineHardeningService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

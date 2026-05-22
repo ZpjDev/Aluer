@@ -3,6 +3,11 @@ package com.aluer.security;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
+import com.aluer.anticheat.movement.AntiFlyDetectionService;
+import com.aluer.anticheat.world.AntiDupeDetectionService;
+import com.aluer.anticheat.world.AntiXrayDetectionService;
+import com.aluer.server.CrashExploitProtectionService;
+import com.aluer.server.LagMachineDetectionService;
 
 class MinecraftSecurityTest {
 

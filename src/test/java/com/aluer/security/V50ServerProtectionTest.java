@@ -6,6 +6,13 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
+import com.aluer.defense.BotFingerprintDetector;
+import com.aluer.defense.ChunkLoadRateLimiter;
+import com.aluer.defense.CrashExploitSignatureDB;
+import com.aluer.defense.EntityCountEnforcer;
+import com.aluer.defense.ProtocolStateValidator;
+import com.aluer.defense.RedstoneUpdateLimiter;
+import com.aluer.defense.TokenBucketRateLimiter;
 
 /**
  * V5.0 服务器保护模块测试 — 打靶试验（模拟真实 Minecraft 生产环境数据）
